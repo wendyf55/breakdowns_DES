@@ -1,118 +1,80 @@
-"""Generic BBM → external-platform cross-reference audit.
+"""BBM → external-platform cross-reference audit.
 
-Reads data/bbm_records.csv, scans every field for a platform's identifier,
-looks each id up on that platform, and classifies the link:
+Platform-agnostic engine over the `Platform` tree in `platforms.py`: it asks a
+platform to establish BBM↔platform correspondences (independent platforms via
+the id BBM stored; harvested platforms via our GUID), then classifies each:
 
-  bidirectional        — BBM cites the platform id *and* the platform record
-                         cites one of our identifiers (catalog no. or GUID) back
-  unidirectional       — BBM cites it, the record exists, but doesn't cite us
-  dangling             — BBM cites it, but the id doesn't resolve
-
-Each platform is a LinkProvider (reference regex + lookup + reverse-cite check);
-the scan/classify engine is platform-agnostic.
+  bidirectional  — the correspondence resolves AND the platform record cites us
+  unidirectional — resolves but doesn't cite us back
+  dangling       — we reference/expect it, but it isn't there (unresolved id, or
+                   a harvest gap for downstream platforms)
 
     python link_audit.py --platform mo
     python link_audit.py --platform mycoportal
-    python link_audit.py --platform mycoportal --probe UBC16931   # confirm API shape
+    python link_audit.py --platform mycoportal --probe <guid>   # confirm API shape
 """
 
 import argparse
 import csv
-import json
 import logging
-import re
-import time
-import urllib.parse
-import urllib.request
 
 from config import DATA_DIR, REPORTS_DIR
+# Re-exported so get_mo_records / audit_mo_links / the notebook import from here.
+from platforms import (  # noqa: F401
+    Platform, IndependentPlatform, HarvestedPlatform,
+    MushroomObserver, MyCoPortal, PLATFORMS, fetch_json, BbmRecord, Correspondence,
+)
 
 logger = logging.getLogger(__name__)
 
 INPUT = DATA_DIR / "bbm_records.csv"
-
-# BBM columns holding our own identifiers (what a platform might cite back)
 OUR_ID_COLUMNS = ["catalognumber", "altcatalognumber", "guid"]
 
 
-# ── HTTP helper ────────────────────────────────────────────────────
+# ── BBM loading ─────────────────────────────────────────────────────────────
 
-def fetch_json(url, params=None):
-    """GET a JSON endpoint, return parsed JSON (or {} on any error)."""
-    if params:
-        url = f"{url}?{urllib.parse.urlencode(params)}"
-    req = urllib.request.Request(url, headers={"User-Agent": "breakdowns-DES/0.1"})
-    try:
-        with urllib.request.urlopen(req, timeout=60) as r:
-            return json.loads(r.read().decode("utf-8"))
-    except Exception as e:  # noqa: BLE001 — log and continue
-        logger.warning("request failed (%s): %s", e, url)
-        return {}
-
-
-# ── Provider base ──────────────────────────────────────────────────
-
-class LinkProvider:
-    """One external platform. Subclasses set ref_patterns and implement lookup /
-    cites_us_back / record_url."""
-
-    name = ""            # cli slug, e.g. "mo"
-    label = ""           # human label
-    ref_patterns = []    # compiled regexes; group(1) is the platform id
-
-    def extract_ids(self, text):
-        """Return the set of platform ids referenced in a string."""
-        if not text:
-            return set()
-        ids = set()
-        for pat in self.ref_patterns:
-            for m in pat.finditer(text):
-                ids.add(m.group(1).strip())
-        return ids
-
-    def lookup(self, ids):
-        """{id: record} for the ids that resolve on the platform."""
-        raise NotImplementedError
-
-    def cites_us_back(self, record, our_ids):
-        """True if this platform record references any of our identifiers."""
-        raise NotImplementedError
-
-    def record_url(self, rid, record=None):
-        return ""
-
-    def display_name(self, record):
-        return ""
-
-    def probe(self, rid):
-        """Fetch one id and print the raw response shape (self-diagnostic)."""
-        raise NotImplementedError
+def load_bbm_records(path=INPUT):
+    """Read bbm_records.csv → [BbmRecord]."""
+    out = []
+    with open(path, newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            blob = " ".join(str(v) for v in row.values() if v)
+            out.append(BbmRecord(
+                id=row.get("catalognumber") or row.get("id") or "?",
+                catalog=(row.get("catalognumber") or "").strip(),
+                altcatalog=(row.get("altcatalognumber") or "").strip(),
+                guid=(row.get("guid") or "").strip(),
+                text=blob,
+            ))
+    return out
 
 
-# ── Engine ─────────────────────────────────────────────────────────
+def scan(platform, path=INPUT):
+    """Scan BBM text for a platform's reference ids → (ref_map, n_rows, n_with_ref).
 
-def scan(provider, path=INPUT):
-    """Scan the BBM CSV for a platform's ids.
-
-    Returns (ref_map, n_rows, n_with_ref) where ref_map maps each cited
-    platform id → the set of OUR identifiers (catalog no. + GUID) on the
-    records that cite it (used for the reverse-cite check).
+    Uses `ref_patterns` for independent platforms, `legacy_ref_patterns` for
+    harvested ones (their in-record annotation is not a queryable id — the real
+    link is the GUID — but the count is still worth reporting).
     """
-    ref_map = {}
-    n_rows = 0
-    n_with_ref = 0
+    patterns = getattr(platform, "ref_patterns", None) or getattr(platform, "legacy_ref_patterns", [])
+    ref_map, n_rows, n_with_ref = {}, 0, 0
     with open(path, newline="", encoding="utf-8") as f:
         for row in csv.DictReader(f):
             n_rows += 1
             blob = " ".join(str(v) for v in row.values() if v)
-            ids = provider.extract_ids(blob)
+            ids = set()
+            for pat in patterns:
+                for m in pat.finditer(blob):
+                    ids.add(m.group(1).strip())
             if ids:
                 n_with_ref += 1
-            our_ids = {row.get(c, "").strip() for c in OUR_ID_COLUMNS if row.get(c)}
+            our = {row.get(c, "").strip() for c in OUR_ID_COLUMNS if row.get(c)}
             for pid in ids:
-                ref_map.setdefault(pid, set()).update(our_ids)
+                ref_map.setdefault(pid, set()).update(our)
     return ref_map, n_rows, n_with_ref
 
+
+# ── engine ──────────────────────────────────────────────────────────────────
 
 def classify(exists, cited_back):
     if not exists:
@@ -120,214 +82,93 @@ def classify(exists, cited_back):
     return "bidirectional" if cited_back else "unidirectional"
 
 
-def audit(provider, input_path=INPUT, limit=None):
-    """Full scan → lookup → classify. Returns a results dict (no file writes)."""
-    ref_map, n_rows, n_with_ref = scan(provider, str(input_path))
-    ids = set(ref_map)
-    if limit:
-        ids = set(sorted(ids)[:limit])
-    found = provider.lookup(ids) if ids else {}
+def audit(platform, input_path=INPUT, limit=None):
+    """Establish correspondences via the platform, classify each (grouped by ref)."""
+    bbm_records = load_bbm_records(input_path)
+    corr = platform.establish_correspondences(bbm_records)
 
-    rows = []
+    # group correspondences by the id/guid that established them (one platform
+    # record per ref; our_ids is the union across BBM records sharing that ref)
+    by_ref = {}
+    for c in corr:
+        e = by_ref.setdefault(c.ref, {"record": None, "our_ids": set(),
+                                      "matched_by": c.matched_by, "bbm_ids": set()})
+        e["our_ids"] |= c.bbm.our_ids
+        e["bbm_ids"].add(c.bbm.id)
+        if c.record is not None:
+            e["record"] = c.record
+
+    if limit:
+        for ref in list(by_ref)[limit:]:
+            del by_ref[ref]
+
     counts = {"bidirectional": 0, "unidirectional": 0, "dangling": 0}
-    for pid in sorted(ids):
-        rec = found.get(pid)
-        exists = rec is not None
-        cited_back = provider.cites_us_back(rec, ref_map[pid]) if exists else False
-        cls = classify(exists, cited_back)
+    ref_map, found, rows = {}, {}, []
+    n_with_ref = set()
+    for ref, e in by_ref.items():
+        rec = e["record"]
+        ref_map[ref] = e["our_ids"]
+        n_with_ref |= e["bbm_ids"]
+        if rec is not None:
+            found[ref] = rec
+        cited = rec is not None and platform.cites_us(rec, e["our_ids"])
+        cls = classify(rec is not None, cited)
         counts[cls] += 1
         rows.append({
-            "platform": provider.name,
-            "id": pid,
-            "our_ids": "; ".join(sorted(ref_map[pid])),
-            "exists": exists,
-            "cites_us_back": cited_back,
+            "ref": ref,
+            "matched_by": e["matched_by"],
+            "our_ids": "; ".join(sorted(e["our_ids"])),
+            "exists": rec is not None,
+            "cites_us_back": cited,
             "classification": cls,
-            "url": provider.record_url(pid, rec) if exists else "",
-            "name": provider.display_name(rec) if exists else "",
+            "url": platform.record_url(rec) if rec else "",
+            "name": platform.display_name(rec) if rec else "",
         })
-    return {
-        "n_rows": n_rows,
-        "n_with_ref": n_with_ref,
-        "n_ids": len(ids),
-        "ref_map": ref_map,
-        "found": found,
-        "rows": rows,
-        "counts": counts,
-    }
+
+    return {"n_rows": len(bbm_records), "n_with_ref": len(n_with_ref),
+            "n_ids": len(by_ref), "ref_map": ref_map, "found": found,
+            "rows": rows, "counts": counts}
 
 
-# ── Provider: Mushroom Observer ────────────────────────────────────
-
-class MushroomObserver(LinkProvider):
-    name = "mo"
-    label = "Mushroom Observer"
-    API = "https://mushroomobserver.org/api2/observations"
-    BATCH = 100
-    ref_patterns = [
-        re.compile(r"(?i)\bMO\s*#\s*0*(\d+)"),                 # MO # 82752
-        re.compile(r"(?i)\bMUOB[\s:#._/-]*0*(\d+)"),           # MUOB 12345
-        re.compile(r"(?i)mushroomobserver\.org/(?:obs(?:ervations)?/|observer/show_observation/)?0*(\d+)"),
-    ]
-
-    def lookup(self, ids):
-        found = {}
-        ids = sorted(ids, key=int)
-        for i in range(0, len(ids), self.BATCH):
-            batch = ids[i:i + self.BATCH]
-            data = fetch_json(self.API, {"id": ",".join(batch),
-                                         "detail": "high", "format": "json"})
-            for obs in data.get("results", []):
-                if isinstance(obs, dict) and "id" in obs:
-                    found[str(obs["id"])] = obs
-            time.sleep(1.0)
-        return found
-
-    def cites_us_back(self, record, our_ids):
-        parts = [str(record.get("notes", ""))]
-        for hr in record.get("herbarium_records", []) or []:
-            if isinstance(hr, dict):
-                parts += [str(hr.get("accession_number", "")),
-                          str((hr.get("herbarium") or {}).get("code", ""))]
-        for cn in record.get("collection_numbers", []) or []:
-            if isinstance(cn, dict):
-                parts.append(str(cn.get("number", "")))
-        blob = " ".join(parts)
-        return any(x and x in blob for x in our_ids)
-
-    def record_url(self, rid, record=None):
-        return f"https://mushroomobserver.org/{rid}"
-
-    def display_name(self, record):
-        return (record.get("consensus") or {}).get("name", "")
-
-    def probe(self, rid):
-        data = fetch_json(self.API, {"id": rid, "detail": "high", "format": "json"})
-        res = data.get("results") or []
-        print("top keys:", list(data.keys()), "| results:", len(res))
-        if res and isinstance(res[0], dict):
-            for k in res[0]:
-                print("  ", k)
-            for f in ("notes", "herbarium_records", "collection_numbers"):
-                print(f"\n{f}:", json.dumps(res[0].get(f), indent=2)[:600])
-
-
-# ── Provider: MyCoPortal (Symbiota) ────────────────────────────────
-
-class MyCoPortal(LinkProvider):
-    name = "mycoportal"
-    label = "MyCoPortal"
-    BASE = "https://mycoportal.org/portal/api/v2"
-    # BBM stores the reference as "Mycoportal # UBC16931".
-    ref_patterns = [re.compile(r"(?i)mycoportal\s*#?\s*(UBC\s*\d+)")]
-    # Candidate (endpoint, param) pairs — Symbiota v2 wording varies by install;
-    # the first that returns a record wins. `probe` confirms which is right.
-    SEARCH = [("occurrence", "catalogNumber"),
-              ("occurrence/search", "catalogNumber")]
-
-    def extract_ids(self, text):
-        return {i.replace(" ", "") for i in super().extract_ids(text)}
-
-    def _search(self, cn):
-        for path, param in self.SEARCH:
-            data = fetch_json(f"{self.BASE}/{path}", {param: cn, "limit": 2})
-            recs = data if isinstance(data, list) else (
-                data.get("results") or data.get("data") or [])
-            if recs:
-                return recs[0]
-        return None
-
-    def lookup(self, ids):
-        found = {}
-        for cn in sorted(ids):
-            rec = self._search(cn)
-            if rec:
-                found[cn] = rec
-            time.sleep(0.5)
-        return found
-
-    def cites_us_back(self, record, our_ids):
-        # MyCoPortal is harvested from BBM, so a match should carry our GUID /
-        # catalog number in one of its identifier fields.
-        fields = ["occurrenceID", "occurrenceid", "catalogNumber", "catalognumber",
-                  "otherCatalogNumbers", "othercatalognumbers", "recordID", "recordId"]
-        blob = " ".join(str(record.get(f, "")) for f in fields)
-        return any(x and x in blob for x in our_ids)
-
-    def record_url(self, rid, record=None):
-        occid = (record or {}).get("occid") or (record or {}).get("id")
-        if occid:
-            return f"https://mycoportal.org/portal/collections/individual/index.php?occid={occid}"
-        return f"https://mycoportal.org/portal/ (catalogNumber {rid})"
-
-    def display_name(self, record):
-        return record.get("scientificName") or record.get("sciname") or ""
-
-    def probe(self, rid):
-        print(f"probing catalogNumber {rid} against Symbiota v2 candidates …\n")
-        for path, param in self.SEARCH:
-            url = f"{self.BASE}/{path}"
-            data = fetch_json(url, {param: rid, "limit": 2})
-            shape = (f"list[{len(data)}]" if isinstance(data, list)
-                     else f"dict keys={list(data.keys())}" if isinstance(data, dict)
-                     else type(data).__name__)
-            print(f"  GET {path}?{param}={rid}  ->  {shape}")
-            recs = data if isinstance(data, list) else (
-                data.get("results") or data.get("data") or [])
-            if recs and isinstance(recs[0], dict):
-                print("    first record fields:", list(recs[0].keys()))
-                print("   ", json.dumps(recs[0], indent=2)[:700])
-                return
-        print("\n  No candidate returned a record — the endpoint/param may differ; "
-              "check https://mycoportal.org/portal/api/v2/documentation")
-
-
-# ── Registry + CLI ─────────────────────────────────────────────────
-
-PROVIDERS = {p.name: p for p in [MushroomObserver(), MyCoPortal()]}
-
+# ── CLI ─────────────────────────────────────────────────────────────────────
 
 def main():
     parser = argparse.ArgumentParser(description="BBM → platform cross-reference audit")
-    parser.add_argument("--platform", required=True, choices=sorted(PROVIDERS),
-                        help="which platform to audit")
-    parser.add_argument("--input", default=str(INPUT), help="BBM records CSV")
-    parser.add_argument("--limit", type=int, default=None,
-                        help="only look up the first N distinct ids (probe)")
+    parser.add_argument("--platform", required=True, choices=sorted(PLATFORMS))
+    parser.add_argument("--input", default=str(INPUT))
+    parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--probe", metavar="ID",
-                        help="fetch one id, print the raw API shape, then exit")
+                        help="fetch one id/guid, print the raw API shape, then exit")
     args = parser.parse_args()
-
     logging.basicConfig(level=logging.INFO, format="%(levelname)s  %(message)s")
-    provider = PROVIDERS[args.platform]
+    platform = PLATFORMS[args.platform]
 
     if args.probe is not None:
-        provider.probe(args.probe)
+        platform.probe(args.probe)
         return
 
-    res = audit(provider, input_path=args.input, limit=args.limit)
-    logger.info("Scanned %d BBM rows; %d cite a %s id; %d distinct ids",
-                res["n_rows"], res["n_with_ref"], provider.label, len(res["ref_map"]))
-    if not res["ref_map"]:
-        logger.warning("No %s references found — nothing to look up", provider.label)
-        return
-
+    res = audit(platform, input_path=args.input, limit=args.limit)
+    logger.info("%s (%s coupling): %d BBM rows; %d correspondences (%d resolved)",
+                platform.label, platform.coupling, res["n_rows"], res["n_ids"],
+                sum(1 for r in res["rows"] if r["exists"]))
     rows, counts = res["rows"], res["counts"]
-    REPORTS_DIR.mkdir(exist_ok=True)
-    out = REPORTS_DIR / f"{provider.name}_link_audit.csv"
-    with open(out, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
-        writer.writeheader()
-        writer.writerows(rows)
+    if not rows:
+        logger.warning("No correspondences for %s", platform.label)
+        return
 
-    on_platform = counts["bidirectional"] + counts["unidirectional"]
+    REPORTS_DIR.mkdir(exist_ok=True)
+    out = REPORTS_DIR / f"{platform.name}_link_audit.csv"
+    with open(out, "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
+        w.writeheader(); w.writerows(rows)
+
+    on = counts["bidirectional"] + counts["unidirectional"]
     logger.info("─" * 50)
-    logger.info("Distinct %s ids cited by BBM : %d", provider.label, res["n_ids"])
-    logger.info("  resolve on %-14s: %d", provider.label, on_platform)
-    logger.info("    bidirectional            : %d", counts["bidirectional"])
-    logger.info("    unidirectional (BBM->%s) : %d", provider.name, counts["unidirectional"])
-    logger.info("  dangling (don't resolve)    : %d", counts["dangling"])
-    logger.info("Saved per-id audit → %s", out)
+    logger.info("  resolve on %-12s : %d", platform.label, on)
+    logger.info("    bidirectional         : %d", counts["bidirectional"])
+    logger.info("    unidirectional        : %d", counts["unidirectional"])
+    logger.info("  dangling / not present   : %d", counts["dangling"])
+    logger.info("Saved → %s", out)
 
 
 if __name__ == "__main__":

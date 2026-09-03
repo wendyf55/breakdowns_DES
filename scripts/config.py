@@ -24,6 +24,12 @@ COLLECTION_ID = os.getenv("SPECIFY_COLLECTION_ID", "")
 FILTER_COLLECTORS = _csv_list("FILTER_COLLECTORS")
 FILTER_LOCALITY = _csv_list("FILTER_LOCALITY")
 
+# Mushroom Observer discovery seeds (README §2): the Ceska MO account
+# and the Observatory Hill location. Used by get_mo_records.py.
+MO_USER = os.getenv("MO_USER", "")
+MO_LOCATION = os.getenv("MO_LOCATION", "")
+
 # Directories
 DATA_DIR = PROJECT_ROOT / "data"
 REPORTS_DIR = PROJECT_ROOT / "reports"
+

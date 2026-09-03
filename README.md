@@ -84,3 +84,27 @@ platforms refer to the same physical specimen.
   databases (locality, geography, agent, taxon tables). Its search -> classify ->
   human review -> merge architecture is the template for the entity resolution
   pipeline above.
+
+
+## Vendored from the Specify dedup pipeline (`scripts/evaluators/`)
+
+Rather than depend on the orchestration repo at runtime, the **classify half** of
+its evaluator subsystem is copied into `scripts/evaluators/` and used by
+`resolve.py` for cross-platform record resolution. What was taken:
+
+- `rule_based.py` — `RuleBasedEvaluator`, the first-match-wins ordered-predicate
+  engine; drives the confident matches (name + date + locality/collector overlap).
+- `llm.py` + `llm_client.py` + `prompts.py` — `LLMEvaluator` and its
+  OpenAI/Ollama-compatible client; adjudicates the ambiguous middle when an LLM
+  endpoint is configured (`LLM_MODEL` etc. in `.env`).
+- `base.py`, `types.py` — the `BaseEvaluator` interface and the `MatchRule` /
+  `EvaluationConfig` / `MatchContext` types the engine consumes.
+- `record.py` (`RecordObject`) and `equality.py` (`get_matches`) — the record
+  model and the pure matching helper the rule engine reaches through.
+
+What was **not** vendored: candidate generation (replaced by genus-blocking in
+`resolve.py`), the LangGraph workflow engine, the RabbitMQ review queue, and all
+merge code (Specify-schema-bound and irreversible). Cross-package imports were
+rewritten package-local; each file names its upstream source. The copy is a
+snapshot — re-sync deliberately if the upstream evaluator contract changes.
+Runtime dependency: `requests` only.

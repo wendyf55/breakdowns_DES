@@ -19,7 +19,7 @@ from link_audit import INPUT, MushroomObserver, scan, audit as _audit
 MO = MushroomObserver()
 
 # notebook-facing helpers, bound to the MO provider
-extract_muob_ids = MO.extract_ids
+extract_muob_ids = MO.extract_refs
 
 
 def scan_bbm_csv(path=INPUT):
