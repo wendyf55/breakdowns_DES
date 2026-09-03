@@ -9,31 +9,34 @@ from a sample to the full collection and begins automating the audit.
 
 ### 1. Quantifying cross-platform representation
 
-For the full BBM fungal collection, answer:
+For the full BBM fungal collection, harmonization assessment:
 
-- **How many BBM records appear on each global platform?** For every BBM fungal
-  specimen, search MO (DONE), MyCoPortal (comes straight from our database), GBIF, and GenBank to determine whether a corresponding record exist under a same unique identifying number (bidirectional)
+- Bidrectional: we cite a foreign key or number used on a public database, and that database cites back to our record's internal ID
 
-- **How many MO records are likely ours?** Query MO for observations by known BBM
-  collectors (the Ceskas, other contributors), filtered by locality (Observatory
-  Hill, Victoria BC), and estimate how many MO records correspond to BBM holdings —
-  including ones that have never been linked.
+- Unidirection: our database contains the id number or link of a public record on a database, but that record does not point back to us
+  ---- OR ----
+  an online record points to our database, and gives an id number we have in the database, but in BBM system, we don't list the public record anywhere
 
-- **What is the harmonization quality across matched pairs?** For every
-  BBM-to-platform match, classify the cross-referencing as:
-  - **Bidirectional** — both records cite each other's identifier
-  - **Unidirectional (BBM -> platform)** — BBM record cites the platform's ID, but
-    not vice versa
-  - **Unidirectional (platform -> BBM)** — the platform record cites BBM's ID, but
-    not vice versa
-  - **Absent** — no cross-reference in either direction, match cannot be established
+- Absent - we dont cite the public record, the public record doesnt site us. same exact specimen or sighting, but not connected in either way to each other.
 
-  This extends the paper's Figure 2 findings (8 bidirectional, 18 unidirectional,
-  8 absent out of 34 matched specimens) to the full collection.
+- MO: we list the MO number in our database as MO # 66139, Mushroom Observer observation #254611, "MO posted as Leucopaxillus gentianeus (Qu�l.) Kotl." (so there is a record associated, but no MO number).
+- once these references were gathered, I used that to query the MO database and find the associated record, which answers bidrectional, and unidrectional UBC --> MO
 
 - **Extend beyond fungi.** Run the same analysis for other BBM taxa (lichens,
-  bryophytes, algae) against corresponding Symbiota portals (Lichen Portal,
-  Bryophyte Portal, Algae Herbarium Portal, etc.) and GBIF.
+  bryophytes, algae) against other databases.
+
+### 2. Quantifying Ceska / Observatory hill completeness in our database
+
+- **How many MO records are likely ours, but are not connected?** Query MO for observations by known BBM
+  collectors (the Ceskas), filter by locality (Observatory
+  Hill, Victoria BC), and find:
+  - total number of records with these filters on MO
+  - our number of records with these filters
+  - how many records have a bidirectional relationship
+  - how many records have unidrectional relationship, going either direction
+  
+  estimate:
+  - how many MO records likely correspond to BBM holdings - equal to Ceska OH records? or more filters needed?
 
 ### 2. Entity resolution pipeline
 
