@@ -1,0 +1,14 @@
+name: breakdowns-des
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.12
+  # core pipeline (scripts/)
+  - requests
+  - python-dotenv
+  # analysis + notebooks (reports/)
+  - pandas
+  - jupyterlab
+  - ipykernel
