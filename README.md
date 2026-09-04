@@ -22,9 +22,6 @@ For the full BBM fungal collection, harmonization assessment:
 - MO: we list the MO number in our database as MO # 66139, Mushroom Observer observation #254611, "MO posted as Leucopaxillus gentianeus (Qu�l.) Kotl." (so there is a record associated, but no MO number).
 - once these references were gathered, I used that to query the MO database and find the associated record, which answers bidrectional, and unidrectional UBC --> MO
 
-- **Extend beyond fungi.** Run the same analysis for other BBM taxa (lichens,
-  bryophytes, algae) against other databases.
-
 ### 2. Quantifying Ceska / Observatory hill completeness in our database
 
 - **How many MO records are likely ours, but are not connected?** Query MO for observations by known BBM
@@ -44,7 +41,7 @@ Build a system that can determine whether two records from the same or different
 platforms refer to the same physical specimen.
 
 - **Cross-platform specimen matching.** Given a specimen record, generate candidate
-  matches on other platforms by searching on scientific name (expanded to all known
+  matches on other platforms by searching on scientific name (NOT expanded to all known
   synonyms via the synonym pipeline), collector, collection date, and locality.
   Score each candidate on the strength of the match across these fields plus
   identifier cross-references and (where available) image similarity. Flag
@@ -52,39 +49,17 @@ platforms refer to the same physical specimen.
 
   This directly automates the paper's matching procedure (A10 / Figure 3): "filter
   occurrence searches based on scientific name, locality, and collection date" to
-  produce a shortlist, then compare identifiers, collection information, and
-  photographs.
-
-  Architecture draws from the Specify dedup pipeline (search -> classify -> human
-  review -> act): candidate generation produces groups, a rule-based evaluator
-  scores confidence, high-confidence matches are linked automatically,
-  low-confidence matches are queued for curatorial review.
+  produce a shortlist, then compare identifiers, collection information.
 
 - **Automated lineage audit.** Given a specimen record (or a matched pair), trace
   its full lineage across BBM -> MP -> GBIF -> MO -> GenBank and check every
-  cross-reference link:
+  cross-reference link (not in place yet; audits occur separately)
   - Is the MO ID present on the UBC record? Does it point to the right MO record?
   - Is the catalog number present on the MO record? Is it correct?
   - Does the GBIF record carry the correct occurrenceID / catalog number?
   - Does the GenBank accession link back to the voucher specimen?
-  - Are any links broken (dead URLs, re-minted identifiers)?
 
-  Assign a harmonization quality score (the paper's 0-5 scale) and output a report
-  of what needs fixing. This audit should be re-runnable to detect harmonization
-  decay (breakdown category 07 — links that were once correct but broke over time).
-
-## Related assets
-
-- **Synonym lookup pipeline** — API clients for GBIF, MO, MyCoPortal (Symbiota),
-  GenBank, ITIS, Tropicos, Index Fungorum, Catalogue of Life, FishBase. Used to
-  expand taxonomic names to all known synonyms before cross-platform searching, so
-  matches aren't missed due to nomenclature differences (breakdown category 05).
-
-- **Specify dedup pipeline** — LangGraph-based deduplication system for Specify 7
-  databases (locality, geography, agent, taxon tables). Its search -> classify ->
-  human review -> merge architecture is the template for the entity resolution
-  pipeline above.
-
+  Assign a harmonization quality score (the paper's 0-5 scale) and output a report.
 
 ## Vendored from the Specify dedup pipeline (`scripts/evaluators/`)
 
@@ -108,3 +83,75 @@ merge code (Specify-schema-bound and irreversible). Cross-package imports were
 rewritten package-local; each file names its upstream source. The copy is a
 snapshot — re-sync deliberately if the upstream evaluator contract changes.
 Runtime dependency: `requests` only.
+
+## Platforms (`scripts/platforms.py`)
+
+Each external database the paper touches is one `Platform`, organized by **coupling**
+(which decides the matching method). Audit, discovery, and resolution all consume
+these — a new database is one subclass, no new script.
+
+| Platform | Class | Coupling | Matched by |
+| --- | --- | --- | --- |
+| Mushroom Observer | `MushroomObserver` | independent | the MO id BBM stored (`MO # 82752`) |
+| GenBank | `GenBank` | independent | a cited accession; reverse-linked via `specimen_voucher` |
+| MyCoPortal | `MyCoPortal` | harvested | our GUID (`occurrenceID`) |
+| GBIF | `GBIF` | harvested | our GUID (`occurrenceID`), via the UBC Fungi dataset |
+
+Independent platforms are upstream/separately maintained (BBM stores *their* id;
+they cite us only in free text). Harvested platforms are downstream of BBM
+(Symbiota/GBIF harvest our Specify records, so they carry our GUID + catalog).
+
+## Running the pipeline
+
+All commands run from the repo root on a machine with the `.env` credentials and
+network access. Fetches hit live APIs; the notebook writes up the numbers.
+
+### One-time setup
+
+```bash
+conda env create -f environment.yml        # creates the "breakdowns-des" env
+conda activate breakdowns-des
+python -m ipykernel install --user --name breakdowns-des
+```
+
+`.env` holds the Specify creds and MO discovery seeds (see `.env.example`).
+Leaving `FILTER_COLLECTORS` / `FILTER_LOCALITY` blank fetches the **whole**
+fungal collection; set them (e.g. `Ceska` / `Observatory Hill`) for the pilot
+subset. Set `LLM_MODEL` to enable the resolver's LLM tier.
+
+### 1 — Fetch data (network → `data/`)
+
+```bash
+python scripts/get_bbm_records.py                 # our side  → data/bbm_records.csv
+python scripts/get_records.py --platform mo        #           → data/mo_records.csv
+python scripts/get_records.py --platform mycoportal
+python scripts/get_records.py --platform gbif      # heavy: ~35k occurrences
+python scripts/get_records.py --platform genbank   # sparse: voucher search
+```
+
+Add `--limit N` to any `get_records.py` call for a quick smoke test.
+
+### 2 — Findings notebook (regenerates every number)
+
+```bash
+jupyter lab reports/harmonization_findings.ipynb
+```
+
+Select the **breakdowns-des** kernel, then Run All. Cells are self-locating, so
+the launch directory does not matter. Network cells: §1 MO audit, §3 resolution,
+§6 GenBank. Offline cells (read the CSVs): §2 MyCoPortal, §4 comparison, §5 GBIF.
+
+### Or run the pieces from the CLI
+
+```bash
+python scripts/link_audit.py --platform mo         # cross-ref audit → counts
+python scripts/link_audit.py --platform genbank
+python scripts/resolve.py    --platform mo         # attribute resolution → mo_resolution.csv
+python scripts/resolve.py    --platform mo --no-llm  # rule-based only
+```
+
+`resolve.py` needs `data/bbm_records.csv` and `data/<platform>_records.csv`
+present first. `link_audit.py --probe <ID>` checks a single id end-to-end.
+
+**Typical loop:** run step 1 once to refresh the CSVs, then step 2 to regenerate
+all the numbers.

@@ -18,14 +18,18 @@ One place per database. Consumed by:
 """
 
 import json
+import logging
 import re
 import time
 import urllib.parse
 import urllib.request
+import xml.etree.ElementTree as ET
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 from config import MO_USER, MO_LOCATION
+
+logger = logging.getLogger(__name__)
 
 
 # ── shared HTTP ─────────────────────────────────────────────────────────────
@@ -41,6 +45,19 @@ def fetch_json(url, params=None):
     except Exception as e:  # noqa: BLE001
         print(f"request failed ({e}): {url}")
         return {}
+
+
+def fetch_text(url, params=None):
+    """GET a text/XML endpoint, return the body string (or "" on any error)."""
+    if params:
+        url = f"{url}?{urllib.parse.urlencode(params)}"
+    req = urllib.request.Request(url, headers={"User-Agent": "breakdowns-DES/0.1"})
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            return r.read().decode("utf-8", "replace")
+    except Exception as e:  # noqa: BLE001
+        print(f"request failed ({e}): {url}")
+        return ""
 
 
 # ── data carriers ───────────────────────────────────────────────────────────
@@ -173,7 +190,7 @@ class MushroomObserver(IndependentPlatform):
         re.compile(r"(?i)mushroom\s*observer\s*(?:observation)?\s*#?\s*0*(\d+)"),
         re.compile(r"(?i)mushroomobserver\.org/(?:obs(?:ervations)?/|observer/show_observation/)?0*(\d+)"),
     ]
-    _UBC_RE = re.compile(r"(?i)\bUBC\s*F?\s*0*(\d+)")
+    _UBC_RE = re.compile(r"(?i)\bUBC[:\s]*F?\s*0*(\d+)")
 
     def __init__(self, user=MO_USER, location=MO_LOCATION):
         self.user = user
@@ -263,7 +280,7 @@ class MyCoPortal(HarvestedPlatform):
     label = "MyCoPortal"
     BASE = "https://mycoportal.org/portal/api/v2"
     COLLID = 49
-    PAGE = 1000
+    PAGE = 300      # Symbiota v2 caps limit at 300
     guid_field = "occurrenceID"
     identity_fields = ("occurrenceID", "catalogNumber", "otherCatalogNumbers",
                        "recordID", "dbpk")
@@ -276,6 +293,7 @@ class MyCoPortal(HarvestedPlatform):
                               {"collid": self.COLLID, "limit": self.PAGE, "offset": offset})
             results = data.get("results") or []
             recs += results
+            logger.info("  mycoportal: %d / %s", len(recs), data.get("count"))
             if data.get("endOfRecords") or len(results) < self.PAGE:
                 return recs
             offset += len(results)
@@ -307,4 +325,154 @@ class MyCoPortal(HarvestedPlatform):
             print(json.dumps(res[0], indent=2)[:700])
 
 
-PLATFORMS = {p.name: p for p in [MushroomObserver(), MyCoPortal()]}
+# ── concrete: GBIF (harvested — global aggregator) ──────────────────────────
+
+class GBIF(HarvestedPlatform):
+    name = "gbif"
+    label = "GBIF"
+    BASE = "https://api.gbif.org/v1"
+    # The UBC Herbarium Fungi dataset (occurrenceID carries our GUID, catalogNumber
+    # our F-number). Set additional dataset keys here if UBC fungi reach GBIF via
+    # more than one publisher.
+    DATASET_KEY = "ca1bcd7e-7387-42f9-81ba-1470db55e3e8"
+    PAGE = 300
+    guid_field = "occurrenceID"
+    identity_fields = ("occurrenceID", "catalogNumber", "otherCatalogNumbers")
+
+    def fetch_ours(self):
+        recs, offset = [], 0
+        while True:
+            data = fetch_json(f"{self.BASE}/occurrence/search",
+                              {"datasetKey": self.DATASET_KEY, "limit": self.PAGE, "offset": offset})
+            results = data.get("results") or []
+            recs += results
+            logger.info("  gbif: %d / %s", len(recs), data.get("count"))
+            if data.get("endOfRecords") or len(results) < self.PAGE or offset > 99000:
+                return recs
+            offset += len(results)
+            time.sleep(0.2)
+
+    def to_common(self, record):
+        return {
+            "id": f"GBIF:{record.get('key')}",
+            "sci_name": record.get("scientificName") or record.get("species", ""),
+            "collector": record.get("recordedBy", ""),
+            "date": record.get("eventDate", ""),
+            "locality": record.get("locality") or record.get("stateProvince", ""),
+        }
+
+    def record_url(self, record):
+        return f"https://www.gbif.org/occurrence/{record.get('key')}"
+
+    def display_name(self, record):
+        return record.get("scientificName", "")
+
+    def probe(self, guid):
+        data = fetch_json(f"{self.BASE}/occurrence/search", {"occurrenceID": guid, "limit": 2})
+        res = data.get("results") or []
+        print("count:", data.get("count"), "| results:", len(res))
+        if res:
+            r = res[0]
+            for k in ("key", "occurrenceID", "catalogNumber", "institutionCode",
+                      "scientificName", "recordedBy", "eventDate", "locality", "isInCluster"):
+                print(f"  {k}: {r.get(k)}")
+
+
+# ── concrete: GenBank (independent — sequence database, voucher-linked) ──────
+
+class GenBank(IndependentPlatform):
+    name = "genbank"
+    label = "GenBank"
+    BASE = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
+    # Accessions BBM might cite in free text (conservative: 1-2 letters + 5-8
+    # digits, optional .version). BBM cites GenBank rarely, so expect few.
+    ref_patterns = [re.compile(r"\b([A-Z]{2}\d{6})(?:\.\d+)?\b")]  # modern accession; avoids F###### catalogs
+    _UBC_RE = re.compile(r"(?i)\bUBC[:\s]*F?\s*0*(\d+)")
+    # Discovery query for our sequences (approximate — refine on live data).
+    SEARCH_TERM = '"University of British Columbia"[All Fields] AND fungi[filter]'
+    RETMAX = 500
+
+    # --- XML helpers -------------------------------------------------------
+    @staticmethod
+    def _parse_gbseq(seq):
+        rec = {"accession": seq.findtext("GBSeq_primary-accession", ""),
+               "organism": seq.findtext("GBSeq_organism", "")}
+        for feat in seq.findall("GBSeq_feature-table/GBFeature"):
+            for q in feat.findall("GBFeature_quals/GBQualifier"):
+                name = q.findtext("GBQualifier_name", "")
+                val = q.findtext("GBQualifier_value", "")
+                if name in ("specimen_voucher", "collected_by", "collection_date",
+                            "country", "note") and val and not rec.get(name):
+                    rec[name] = val
+        return rec
+
+    def _efetch(self, ids):
+        if not ids:
+            return {}
+        xml = fetch_text(f"{self.BASE}/efetch.fcgi",
+                         {"db": "nuccore", "id": ",".join(ids),
+                          "rettype": "gb", "retmode": "xml"})
+        out = {}
+        try:
+            root = ET.fromstring(xml)
+        except ET.ParseError:
+            return out
+        for seq in root.findall("GBSeq"):
+            rec = self._parse_gbseq(seq)
+            if rec["accession"]:
+                out[rec["accession"]] = rec
+        time.sleep(0.4)
+        return out
+
+    def _esearch(self, term):
+        xml = fetch_text(f"{self.BASE}/esearch.fcgi",
+                         {"db": "nuccore", "term": term, "retmax": self.RETMAX})
+        try:
+            root = ET.fromstring(xml)
+        except ET.ParseError:
+            return []
+        return [e.text for e in root.findall(".//IdList/Id") if e.text]
+
+    # --- Platform contract -------------------------------------------------
+    def lookup(self, ids):
+        # BBM cites an accession → fetch it; key by primary accession.
+        return self._efetch(sorted(ids))
+
+    def their_refs_to_us(self, record):
+        blob = f"{record.get('specimen_voucher','')} {record.get('note','')}"
+        return {f"F{m.group(1)}" for m in self._UBC_RE.finditer(blob)}
+
+    def fetch_ours(self):
+        uids = self._esearch(self.SEARCH_TERM)
+        recs = []
+        for i in range(0, len(uids), 200):
+            recs += list(self._efetch(uids[i:i + 200]).values())
+        return recs
+
+    def to_common(self, record):
+        return {
+            "id": f"GB:{record.get('accession')}",
+            "sci_name": record.get("organism", ""),
+            "collector": record.get("collected_by", ""),
+            "date": record.get("collection_date", ""),
+            "locality": record.get("country", ""),
+        }
+
+    def record_url(self, record):
+        return f"https://www.ncbi.nlm.nih.gov/nuccore/{record.get('accession')}"
+
+    def display_name(self, record):
+        return record.get("organism", "")
+
+    def probe(self, accession):
+        recs = self._efetch([accession])
+        rec = recs.get(accession) or (next(iter(recs.values())) if recs else None)
+        print("fetched:", bool(rec))
+        if rec:
+            for k in ("accession", "organism", "specimen_voucher", "collected_by",
+                      "collection_date", "country"):
+                print(f"  {k}: {rec.get(k)}")
+            print("  their_refs_to_us:", self.their_refs_to_us(rec))
+
+
+PLATFORMS = {p.name: p for p in [MushroomObserver(), MyCoPortal(), GBIF(), GenBank()]}
