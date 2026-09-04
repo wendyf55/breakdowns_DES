@@ -1,19 +1,20 @@
 """External-platform abstractions.
 
 Each database the paper touches (Mushroom Observer, MyCoPortal, GBIF, GenBank)
-is one Platform. **Coupling decides the matching method** — established
-empirically in this project:
+is one Platform. **Coupling decides the matching method** (established
+empirically in this project):
 
   IndependentPlatform  — upstream / maintained separately; BBM stores THEIR id
-                         (e.g. "MO # 82752"). Matched by that stored id, and the
-                         record cites us back only in free text. (MO, GenBank)
+                         ("MO # 82752"). Matched by that id; they cite us only
+                         in free text. (MO, GenBank)
   HarvestedPlatform    — downstream of BBM (Symbiota/GBIF harvest our Specify
                          records), so the record carries OUR GUID + catalog.
                          Matched by GUID. (MyCoPortal, GBIF)
 
-The audit engine (link_audit), the discovery fetch, and the resolver all consume
-Platform, so a database is defined in exactly one place. Adding GBIF or GenBank
-is one concrete subclass, not a new script.
+One place per database. Consumed by:
+  - link_audit.py   (audit: establish_correspondences → classify)
+  - get_records.py  (discovery: fetch_ours → to_common → CSV, via PlatformRecords)
+  - resolve.py      (resolution: extract_refs on BBM, to_common on platform rows)
 """
 
 import json
@@ -23,6 +24,8 @@ import urllib.parse
 import urllib.request
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+
+from config import MO_USER, MO_LOCATION
 
 
 # ── shared HTTP ─────────────────────────────────────────────────────────────
@@ -35,7 +38,7 @@ def fetch_json(url, params=None):
     try:
         with urllib.request.urlopen(req, timeout=60) as r:
             return json.loads(r.read().decode("utf-8"))
-    except Exception as e:  # noqa: BLE001 — log and continue
+    except Exception as e:  # noqa: BLE001
         print(f"request failed ({e}): {url}")
         return {}
 
@@ -44,12 +47,11 @@ def fetch_json(url, params=None):
 
 @dataclass
 class BbmRecord:
-    """A BBM row reduced to what cross-referencing needs."""
     id: str
     catalog: str
     altcatalog: str
     guid: str
-    text: str            # all columns concatenated (for reference scanning)
+    text: str
 
     @property
     def our_ids(self):
@@ -58,27 +60,42 @@ class BbmRecord:
 
 @dataclass
 class Correspondence:
-    """One (BBM record, platform record) pairing the engine will classify."""
     bbm: BbmRecord
-    record: dict | None       # the platform record, or None if it didn't resolve
-    matched_by: str           # "cited_id" | "guid"
-    ref: str                  # the id/guid that established the pairing
+    record: dict | None
+    matched_by: str          # "cited_id" | "guid"
+    ref: str
 
 
 # ── abstract base ───────────────────────────────────────────────────────────
 
 class Platform(ABC):
-    name = ""      # cli slug
-    label = ""     # human label
-    coupling = ""  # "independent" | "harvested"
+    name = ""
+    label = ""
+    coupling = ""
 
+    # audit ------------------------------------------------------------------
     @abstractmethod
     def establish_correspondences(self, bbm_records):
         """[Correspondence] linking BBM records to this platform's records."""
 
-    @abstractmethod
+    def their_refs_to_us(self, record) -> set:
+        """The identifiers of OURS this platform record carries/cites (catalog
+        numbers or GUID). Empty set if none. Basis for cites_us and, in
+        discovery, the `cites_ubc` flag."""
+        return set()
+
     def cites_us(self, record, our_ids) -> bool:
-        """True if this platform record references any of our identifiers."""
+        return bool(self.their_refs_to_us(record) & set(our_ids))
+
+    # discovery --------------------------------------------------------------
+    @abstractmethod
+    def fetch_ours(self):
+        """Pull the platform's records that correspond to BBM holdings → [record]."""
+
+    # mapping / display ------------------------------------------------------
+    def to_common(self, record) -> dict:
+        """→ {id, sci_name, collector, date, locality} for the resolver."""
+        return {}
 
     def record_url(self, record) -> str:
         return ""
@@ -86,17 +103,12 @@ class Platform(ABC):
     def display_name(self, record) -> str:
         return ""
 
-    def to_common(self, record) -> dict:
-        """Map a platform record to the common comparable fields used by the
-        resolver: {id, sci_name, collector, date, locality}."""
-        return {}
 
-
-# ── coupling layer: independent (matched by the id BBM stored) ───────────────
+# ── coupling: independent (matched by the id BBM stored) ────────────────────
 
 class IndependentPlatform(Platform):
     coupling = "independent"
-    ref_patterns = []          # compiled regexes; group(1) is the platform id
+    ref_patterns = []
 
     def extract_refs(self, text):
         ids = set()
@@ -123,23 +135,23 @@ class IndependentPlatform(Platform):
         return out
 
 
-# ── coupling layer: harvested (matched by our GUID) ─────────────────────────
+# ── coupling: harvested (matched by our GUID) ───────────────────────────────
 
 class HarvestedPlatform(Platform):
     coupling = "harvested"
-    identity_fields = ()       # platform fields that carry our GUID / catalog
-    legacy_ref_patterns = []   # non-queryable annotations, kept for reporting only
+    guid_field = "occurrenceID"     # platform field carrying our GUID
+    identity_fields = ()            # platform fields carrying our GUID / catalog
+    legacy_ref_patterns = []        # non-queryable in-record annotations (reporting only)
 
-    @abstractmethod
-    def fetch_ours(self):
-        """Bulk-fetch our records from the platform → {guid: record}."""
-
-    def cites_us(self, record, our_ids) -> bool:
-        blob = " ".join(str(record.get(f, "")) for f in self.identity_fields)
-        return any(x and x in blob for x in our_ids)
+    def their_refs_to_us(self, record) -> set:
+        return {str(record.get(f)) for f in self.identity_fields if record.get(f)}
 
     def establish_correspondences(self, bbm_records):
-        by_guid = {g.lower(): rec for g, rec in self.fetch_ours().items()}
+        by_guid = {}
+        for rec in self.fetch_ours():
+            g = rec.get(self.guid_field)
+            if g:
+                by_guid[str(g).lower()] = rec
         out = []
         for b in bbm_records:
             if not b.guid:
@@ -156,12 +168,18 @@ class MushroomObserver(IndependentPlatform):
     API = "https://mushroomobserver.org/api2/observations"
     BATCH = 100
     ref_patterns = [
-        re.compile(r"(?i)\bMO\s*#\s*0*(\d+)"),                     # MO # 82752
-        re.compile(r"(?i)\bMUOB[\s:#._/-]*0*(\d+)"),              # MUOB 12345
+        re.compile(r"(?i)\bMO\s*#\s*0*(\d+)"),
+        re.compile(r"(?i)\bMUOB[\s:#._/-]*0*(\d+)"),
         re.compile(r"(?i)mushroom\s*observer\s*(?:observation)?\s*#?\s*0*(\d+)"),
         re.compile(r"(?i)mushroomobserver\.org/(?:obs(?:ervations)?/|observer/show_observation/)?0*(\d+)"),
     ]
+    _UBC_RE = re.compile(r"(?i)\bUBC\s*F?\s*0*(\d+)")
 
+    def __init__(self, user=MO_USER, location=MO_LOCATION):
+        self.user = user
+        self.location = location
+
+    # audit
     def lookup(self, ids):
         found = {}
         ids = sorted(ids, key=int)
@@ -175,24 +193,43 @@ class MushroomObserver(IndependentPlatform):
             time.sleep(1.0)
         return found
 
-    def cites_us(self, record, our_ids):
-        parts = [str(record.get("notes", ""))]
+    def their_refs_to_us(self, record):
+        blob = str(record.get("notes", ""))
         for hr in record.get("herbarium_records", []) or []:
             if isinstance(hr, dict):
-                parts += [str(hr.get("accession_number", "")),
-                          str((hr.get("herbarium") or {}).get("code", ""))]
+                blob += " " + str(hr.get("accession_number", ""))
         for cn in record.get("collection_numbers", []) or []:
             if isinstance(cn, dict):
-                parts.append(str(cn.get("number", "")))
-        blob = " ".join(parts)
-        return any(x and x in blob for x in our_ids)
+                blob += " " + str(cn.get("number", ""))
+        return {f"F{m.group(1)}" for m in self._UBC_RE.finditer(blob)}
 
-    def record_url(self, record):
-        return f"https://mushroomobserver.org/{record.get('id')}"
+    # discovery
+    def _fetch_all(self, params):
+        out, page = [], 1
+        while True:
+            data = fetch_json(self.API, {**params, "format": "json", "page": page})
+            out += data.get("results", []) or []
+            if page >= (data.get("number_of_pages", 1) or 1):
+                return out
+            page += 1
+            time.sleep(1.0)
 
-    def display_name(self, record):
-        return (record.get("consensus") or {}).get("name", "")
+    def _obs_ids(self, **params):
+        return [str(x) for x in self._fetch_all({**params, "detail": "none"})]
 
+    def fetch_ours(self):
+        ids = set()
+        if self.user:
+            ids.update(self._obs_ids(user=self.user))
+        if self.location:
+            ids.update(self._obs_ids(location=self.location))
+        ids = sorted(ids, key=int)
+        recs = []
+        for i in range(0, len(ids), self.BATCH):
+            recs += self._fetch_all({"id": ",".join(ids[i:i + self.BATCH]), "detail": "high"})
+        return recs
+
+    # mapping / display
     def to_common(self, record):
         return {
             "id": f"MO:{record.get('id')}",
@@ -201,6 +238,12 @@ class MushroomObserver(IndependentPlatform):
             "date": record.get("date", ""),
             "locality": (record.get("location") or {}).get("name", ""),
         }
+
+    def record_url(self, record):
+        return f"https://mushroomobserver.org/{record.get('id')}"
+
+    def display_name(self, record):
+        return (record.get("consensus") or {}).get("name", "")
 
     def probe(self, rid):
         data = fetch_json(self.API, {"id": rid, "detail": "high", "format": "json"})
@@ -219,38 +262,24 @@ class MyCoPortal(HarvestedPlatform):
     name = "mycoportal"
     label = "MyCoPortal"
     BASE = "https://mycoportal.org/portal/api/v2"
-    COLLID = 49                # UBC fungi collection on MyCoPortal
+    COLLID = 49
     PAGE = 1000
-    identity_fields = ("occurrenceID", "occurrenceid", "catalogNumber",
-                       "catalognumber", "otherCatalogNumbers", "recordID", "dbpk")
-    # Non-queryable — BBM records annotate "Mycoportal # UBC16931" as legacy
-    # free text, but the real link is the GUID. Kept only for a reporting count.
+    guid_field = "occurrenceID"
+    identity_fields = ("occurrenceID", "catalogNumber", "otherCatalogNumbers",
+                       "recordID", "dbpk")
     legacy_ref_patterns = [re.compile(r"(?i)mycoportal\s*#?\s*(UBC\s*\d+)")]
 
     def fetch_ours(self):
-        """Bulk-page the UBC collection → {occurrenceID: record}."""
-        by_guid, offset = {}, 0
+        recs, offset = [], 0
         while True:
             data = fetch_json(f"{self.BASE}/occurrence",
                               {"collid": self.COLLID, "limit": self.PAGE, "offset": offset})
             results = data.get("results") or []
-            for rec in results:
-                guid = rec.get("occurrenceID")
-                if guid:
-                    by_guid[guid] = rec
+            recs += results
             if data.get("endOfRecords") or len(results) < self.PAGE:
-                break
+                return recs
             offset += len(results)
             time.sleep(0.5)
-        return by_guid
-
-    def record_url(self, record):
-        occid = record.get("occid")
-        return (f"https://mycoportal.org/portal/collections/individual/index.php?occid={occid}"
-                if occid else "https://mycoportal.org/portal/")
-
-    def display_name(self, record):
-        return record.get("sciname") or record.get("scientificName") or ""
 
     def to_common(self, record):
         return {
@@ -260,6 +289,14 @@ class MyCoPortal(HarvestedPlatform):
             "date": record.get("eventDate", ""),
             "locality": record.get("locality", ""),
         }
+
+    def record_url(self, record):
+        occid = record.get("occid")
+        return (f"https://mycoportal.org/portal/collections/individual/index.php?occid={occid}"
+                if occid else "https://mycoportal.org/portal/")
+
+    def display_name(self, record):
+        return record.get("sciname") or record.get("scientificName") or ""
 
     def probe(self, guid):
         data = fetch_json(f"{self.BASE}/occurrence", {"occurrenceID": guid, "limit": 2})

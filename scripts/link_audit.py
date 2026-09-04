@@ -19,6 +19,7 @@ import csv
 import logging
 
 from config import DATA_DIR, REPORTS_DIR
+import harmonization as harm
 # Re-exported so get_mo_records / audit_mo_links / the notebook import from here.
 from platforms import (  # noqa: F401
     Platform, IndependentPlatform, HarvestedPlatform,
@@ -114,6 +115,10 @@ def audit(platform, input_path=INPUT, limit=None):
         cited = rec is not None and platform.cites_us(rec, e["our_ids"])
         cls = classify(rec is not None, cited)
         counts[cls] += 1
+        score, _just = harm.confidence(cls, dangling=(rec is None))
+        cats = harm.classify_breakdowns(
+            cross_ref=cls, exists=rec is not None, coupling=platform.coupling,
+            ref_in_free_text=(platform.coupling == "independent"))
         rows.append({
             "ref": ref,
             "matched_by": e["matched_by"],
@@ -121,6 +126,8 @@ def audit(platform, input_path=INPUT, limit=None):
             "exists": rec is not None,
             "cites_us_back": cited,
             "classification": cls,
+            "confidence": "" if score is None else score,
+            "breakdown": ",".join(cats),
             "url": platform.record_url(rec) if rec else "",
             "name": platform.display_name(rec) if rec else "",
         })
@@ -168,6 +175,9 @@ def main():
     logger.info("    bidirectional         : %d", counts["bidirectional"])
     logger.info("    unidirectional        : %d", counts["unidirectional"])
     logger.info("  dangling / not present   : %d", counts["dangling"])
+    cat_lists = [r["breakdown"].split(",") if r["breakdown"] else [] for r in rows]
+    for code, n in harm.summarize(cat_lists).items():
+        logger.info("  breakdown %s (%s): %d", code, harm.CATEGORIES[code], n)
     logger.info("Saved → %s", out)
 
 

@@ -1,0 +1,5 @@
+bbm,platform_record,match_type,quadrant,confidence,justification,breakdown
+BBM:F022976,MO:82752,strict,bidirectional,5.0,"explicit, attributed identifier links both records",02
+BBM:F030001,MO:83026,strict,unidirectional_ubc_to_platform,4.0,one-directional cross-reference (id present on only one side),"01,02"
+BBM:F040002,MO:40088,strict,unidirectional_platform_to_ubc,4.0,one-directional cross-reference (id present on only one side),"01,02"
+BBM:F050003,MO:50099,strict,absent,3.0,name + exact date + locality/collector match; no cross-reference or image,"01,02"
