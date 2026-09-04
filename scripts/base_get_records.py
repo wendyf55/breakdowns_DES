@@ -1,5 +1,5 @@
 # base_get_records.py is script with the abstract class BaseGetRecords
-#base of fetching, organizing records, and saving the csvs to reports/
+#base of fetching, organizing records, and saving the csvs to data/
 
 """Abstract base for the record-fetching scripts.
 

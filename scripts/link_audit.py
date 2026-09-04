@@ -24,6 +24,7 @@ import harmonization as harm
 from platforms import (  # noqa: F401
     Platform, IndependentPlatform, HarvestedPlatform,
     MushroomObserver, MyCoPortal, PLATFORMS, fetch_json, BbmRecord, Correspondence,
+    norm_catalog,
 )
 
 logger = logging.getLogger(__name__)
@@ -46,6 +47,7 @@ def load_bbm_records(path=INPUT):
                 altcatalog=(row.get("altcatalognumber") or "").strip(),
                 guid=(row.get("guid") or "").strip(),
                 text=blob,
+                fields=dict(row),
             ))
     return out
 
@@ -93,9 +95,11 @@ def audit(platform, input_path=INPUT, limit=None):
     by_ref = {}
     for c in corr:
         e = by_ref.setdefault(c.ref, {"record": None, "our_ids": set(),
-                                      "matched_by": c.matched_by, "bbm_ids": set()})
+                                      "matched_by": c.matched_by, "bbm_ids": set(),
+                                      "source_cols": set()})
         e["our_ids"] |= c.bbm.our_ids
         e["bbm_ids"].add(c.bbm.id)
+        e["source_cols"] |= set(c.source_cols)
         if c.record is not None:
             e["record"] = c.record
 
@@ -103,28 +107,43 @@ def audit(platform, input_path=INPUT, limit=None):
         for ref in list(by_ref)[limit:]:
             del by_ref[ref]
 
+    ref_cols = set(getattr(platform, "reference_fields", ()) or ())
     counts = {"bidirectional": 0, "unidirectional": 0, "dangling": 0}
+    cat02 = {"id_wrong": 0, "wrong_field": 0}
     ref_map, found, rows = {}, {}, []
     n_with_ref = set()
     for ref, e in by_ref.items():
         rec = e["record"]
-        ref_map[ref] = e["our_ids"]
+        our = e["our_ids"]
+        ref_map[ref] = our
         n_with_ref |= e["bbm_ids"]
         if rec is not None:
             found[ref] = rec
-        cited = rec is not None and platform.cites_us(rec, e["our_ids"])
+        # normalize both sides so padded/unpadded catalog numbers compare equal
+        back = {norm_catalog(x) for x in platform.their_refs_to_us(rec)} if rec else set()
+        cited = bool(back & {norm_catalog(x) for x in our})
         cls = classify(rec is not None, cited)
         counts[cls] += 1
+        # category-02 sub-cases (per record, per §5.1.3)
+        id_wrong = bool(back) and not cited          # this record's citer(s) all wrong
+        src = e["source_cols"]
+        wrong_field = bool(ref_cols) and bool(src) and not (src & ref_cols)
+        if wrong_field:
+            cat02["wrong_field"] += 1
         score, _just = harm.confidence(cls, dangling=(rec is None))
         cats = harm.classify_breakdowns(
             cross_ref=cls, exists=rec is not None, coupling=platform.coupling,
-            ref_in_free_text=(platform.coupling == "independent"))
+            id_wrong=id_wrong, id_wrong_field=wrong_field)
         rows.append({
             "ref": ref,
             "matched_by": e["matched_by"],
-            "our_ids": "; ".join(sorted(e["our_ids"])),
+            "our_ids": "; ".join(sorted(our)),
             "exists": rec is not None,
             "cites_us_back": cited,
+            "id_wrong": id_wrong,
+            "wrong_field": wrong_field,
+            "ref_source_cols": "; ".join(sorted(src)),
+            "back_refs": "; ".join(sorted(back)),
             "classification": cls,
             "confidence": "" if score is None else score,
             "breakdown": ",".join(cats),
@@ -132,9 +151,25 @@ def audit(platform, input_path=INPUT, limit=None):
             "name": platform.display_name(rec) if rec else "",
         })
 
+    # Category-02 "wrong id" counted per BBM *record* (the paper's unit): a row
+    # cites a platform record that resolves and carries UBC back-refs, but none
+    # match this row -> its id points to a different specimen. Done per
+    # correspondence so a wrong citation is still caught when the same platform
+    # record is co-cited by its true owner (which ref-level grouping would mask).
+    wrong = []
+    for c in corr:
+        if c.record is None:
+            continue
+        back = {norm_catalog(x) for x in platform.their_refs_to_us(c.record)}
+        if back and not (back & {norm_catalog(x) for x in c.bbm.our_ids}):
+            wrong.append({"bbm": c.bbm.id, "ref": c.ref,
+                          "our_ids": "; ".join(sorted(c.bbm.our_ids)),
+                          "back_refs": "; ".join(sorted(back))})
+    cat02["id_wrong"] = len(wrong)
+
     return {"n_rows": len(bbm_records), "n_with_ref": len(n_with_ref),
             "n_ids": len(by_ref), "ref_map": ref_map, "found": found,
-            "rows": rows, "counts": counts}
+            "rows": rows, "counts": counts, "cat02": cat02, "wrong": wrong}
 
 
 # ── CLI ─────────────────────────────────────────────────────────────────────
@@ -175,6 +210,14 @@ def main():
     logger.info("    bidirectional         : %d", counts["bidirectional"])
     logger.info("    unidirectional        : %d", counts["unidirectional"])
     logger.info("  dangling / not present   : %d", counts["dangling"])
+    c02 = res.get("cat02", {})
+    if c02.get("id_wrong") or c02.get("wrong_field"):
+        logger.info("  category 02 · identifier integrity:")
+        logger.info("    wrong id (cites a different catalog) : %d", c02.get("id_wrong", 0))
+        logger.info("    wrong-field (id outside a ref field) : %d", c02.get("wrong_field", 0))
+        for w in res.get("wrong", []):
+            logger.info("      BBM %s → %s: cites %s, not ours",
+                        w["bbm"], w["ref"], w["back_refs"])
     cat_lists = [r["breakdown"].split(",") if r["breakdown"] else [] for r in rows]
     for code, n in harm.summarize(cat_lists).items():
         logger.info("  breakdown %s (%s): %d", code, harm.CATEGORIES[code], n)

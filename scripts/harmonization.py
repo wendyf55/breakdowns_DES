@@ -19,12 +19,24 @@ CATEGORIES = {
 
 
 def classify_breakdowns(*, cross_ref, exists, coupling,
-                        ref_in_free_text=False, name_mismatch=False,
-                        ambiguous=False):
+                        id_wrong=False, id_wrong_field=False, id_hanging=False,
+                        name_mismatch=False, ambiguous=False):
     """Map our audit/resolve signals to breakdown category codes (a list).
 
     A record can trigger several at once — we classify every problem, not just
     the first (per the spec).
+
+    Category 02 (identifier integrity) is driven by the three sub-cases the paper
+    names (§5.1.3), tested per record — NOT by platform coupling:
+      id_wrong        the cross-reference resolves to a *different* specimen (the
+                      platform record cites another catalog number) — a mis-assigned
+                      or typo'd id.
+      id_wrong_field  the id sits in a free-text column, not a structured
+                      cross-reference field, so it does not propagate downstream.
+      id_hanging      the id carries no recognizable prefix/attribution, so it is
+                      not readable as a cross-reference without insider knowledge.
+                      (A prefixed id in a platform's recognized reference column —
+                      see Platform.reference_fields — is not hanging.)
     """
     cats = []
     if not exists:
@@ -32,13 +44,13 @@ def classify_breakdowns(*, cross_ref, exists, coupling,
         if coupling == "harvested":
             cats.append("03")          # never published downstream (harvest gap)
         else:
-            cats += ["02", "07"]       # wrong id, or a decayed / dead link
+            cats += ["02", "07"]       # dead / decayed id (points to nothing)
         return cats
     if cross_ref in ("unidirectional", "unidirectional_ubc_to_platform",
                      "unidirectional_platform_to_ubc", "absent"):
         cats.append("01")              # a link that should exist doesn't
-    if ref_in_free_text:
-        cats.append("02")              # id sits in a notes field → won't propagate
+    if id_wrong or id_wrong_field or id_hanging:
+        cats.append("02")              # identifier integrity (wrong / wrong-field / hanging)
     if name_mismatch:
         cats.append("05")
     if ambiguous:

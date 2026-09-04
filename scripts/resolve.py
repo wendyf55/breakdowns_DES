@@ -22,7 +22,6 @@ import csv
 import logging
 import os
 import re
-import sys
 from dataclasses import dataclass
 
 from config import DATA_DIR, REPORTS_DIR
@@ -58,11 +57,49 @@ def genus_species(name):
     toks = norm_name(name).split()
     return (toks[0] if toks else "", toks[1] if len(toks) > 1 else "")
 
+_MONTHS = {m: i for i, m in enumerate(
+    ["jan", "feb", "mar", "apr", "may", "jun",
+     "jul", "aug", "sep", "oct", "nov", "dec"], 1)}
+
+
+def _mk(y, mo, d):
+    return f"{y}-{mo:02d}-{d:02d}" if 1 <= mo <= 12 and 1 <= d <= 31 else ""
+
+
 def norm_date(s):
-    m = re.search(r"(\d{4})\D+(\d{1,2})\D+(\d{1,2})", str(s or ""))
-    if m and m.group(2) != "0" and m.group(3) != "0":
-        return f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
-    m = re.search(r"(\d{4})", str(s or ""))
+    """Normalize a date to YYYY-MM-DD (or bare YYYY, or "").
+
+    Handles ISO / datetime (year-first), verbatim forms Specify stores in
+    startDateVerbatim ("17 Nov 2001", "Nov 17, 2001", "11/17/2001"), and
+    year-only. Numeric year-last is read as M/D/Y unless the first number is
+    >12 (then D/M/Y). Both a BBM verbatim date and MO's ISO date collapse to
+    the same string so the strict tier can compare them."""
+    s = str(s or "").strip()
+    if not s:
+        return ""
+    m = re.search(r"\b(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})", s)      # YYYY-M-D
+    if m:
+        r = _mk(m.group(1), int(m.group(2)), int(m.group(3)))
+        if r:
+            return r
+    m = re.search(r"\b(\d{1,2})\s+([A-Za-z]{3,9})\.?,?\s+(\d{4})\b", s)  # 17 Nov 2001
+    if m and m.group(2)[:3].lower() in _MONTHS:
+        r = _mk(m.group(3), _MONTHS[m.group(2)[:3].lower()], int(m.group(1)))
+        if r:
+            return r
+    m = re.search(r"\b([A-Za-z]{3,9})\.?\s+(\d{1,2}),?\s+(\d{4})\b", s)  # Nov 17, 2001
+    if m and m.group(1)[:3].lower() in _MONTHS:
+        r = _mk(m.group(3), _MONTHS[m.group(1)[:3].lower()], int(m.group(2)))
+        if r:
+            return r
+    m = re.search(r"\b(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})\b", s)   # M/D/YYYY or D/M/YYYY
+    if m:
+        a, b = int(m.group(1)), int(m.group(2))
+        mo, d = (a, b) if a <= 12 else (b, a)
+        r = _mk(m.group(3), mo, d)
+        if r:
+            return r
+    m = re.search(r"\b(\d{4})\b", s)                              # year only
     return m.group(1) if m else ""
 
 def norm_text(s):
@@ -178,11 +215,42 @@ def _cross_platform_pairs(group, meta, label):
     plat = [i for i in ids if meta[i]["platform"] != "BBM"]
     return [(b, m, label) for b in bbm for m in plat]
 
-def resolve(bbm_rows, plat_rows, meta, use_llm=True):
-    ev = RuleBasedEvaluator()
+
+def _same_platform_pairs(group, meta, label):
+    """Records in one matched cluster that share a platform are duplicate
+    records for a single specimen (category 06). Candidate-level: attribute
+    matching alone is weak evidence, so these are flagged for review, not
+    asserted."""
+    ids = [c[0] for c in group["candidates"]]
+    out = []
+    for i in range(len(ids)):
+        for j in range(i + 1, len(ids)):
+            a, b = ids[i], ids[j]
+            if meta[a]["platform"] == meta[b]["platform"]:
+                out.append((a, b, meta[a]["platform"], label))
+    return out
+
+def resolve(bbm_rows, plat_rows, meta, use_llm=True, force_llm=False):
+    """Return (cross_platform_pairs, same_platform_duplicate_pairs).
+
+    A matched cluster with a BBM and a platform record is a cross-platform
+    match (the quadrant scoring); two records in one cluster that share a
+    platform are duplicate records for one specimen (category 06).
+
+    force_llm=True routes EVERY multi-platform block through the LLM and ignores
+    the rule-based matcher — an LLM-only pass for a clean rule-based-vs-LLM
+    comparison on the same candidate set (needs LLM_MODEL). use_llm alone keeps
+    the rule-based matcher and sends only its leftovers to the LLM."""
     ecfg = _eval_config()
-    pairs, leftover_blocks = [], []
-    for genus, cands in _blocks(bbm_rows + plat_rows).items():
+    blocks = _blocks(bbm_rows + plat_rows)
+    if force_llm:
+        if not os.getenv("LLM_MODEL"):
+            raise RuntimeError("--force-llm needs LLM_MODEL set in .env "
+                               "(start Ollama, then set LLM_MODEL)")
+        return _llm_only(blocks, meta, ecfg)
+    ev = RuleBasedEvaluator()
+    pairs, dups, leftover_blocks = [], [], []
+    for genus, cands in blocks.items():
         if len(cands) < 2:
             continue
         groups = ev.evaluate(cands, {}, COLS, _TableCfg(), ecfg)
@@ -192,17 +260,20 @@ def resolve(bbm_rows, plat_rows, meta, use_llm=True):
                 leftovers.extend(g["candidates"])
             else:
                 pairs.extend(_cross_platform_pairs(g, meta, g["classification"]))
+                dups.extend(_same_platform_pairs(g, meta, g["classification"]))
         plats = {meta[c[0]]["platform"] for c in leftovers}
         if use_llm and "BBM" in plats and len(plats) > 1 and len(leftovers) >= 2:
             leftover_blocks.append(leftovers)
     if use_llm and leftover_blocks and os.getenv("LLM_MODEL"):
-        pairs.extend(_llm_pass(leftover_blocks, meta, ecfg))
-    return pairs
+        lpairs, ldups = _llm_pass(leftover_blocks, meta, ecfg)
+        pairs.extend(lpairs)
+        dups.extend(ldups)
+    return pairs, dups
 
 def _llm_pass(leftover_blocks, meta, ecfg):
     _prompts.DOMAIN_HINTS["specimen"] = harm.LLM_DOMAIN_HINT
     ev = LLMEvaluator()
-    out = []
+    pairs, dups = [], []
     for cands in leftover_blocks:
         try:
             groups = ev.evaluate(cands, {}, COLS, _TableCfg(), ecfg)
@@ -211,8 +282,30 @@ def _llm_pass(leftover_blocks, meta, ecfg):
             continue
         for g in groups:
             if g["classification"] == LLM_MATCH_KEY:
-                out.extend(_cross_platform_pairs(g, meta, LLM))
-    return out
+                pairs.extend(_cross_platform_pairs(g, meta, LLM))
+                dups.extend(_same_platform_pairs(g, meta, LLM))
+    return pairs, dups
+
+
+def _llm_only(blocks, meta, ecfg):
+    """LLM decides every multi-platform block (force_llm) — rule-based ignored."""
+    _prompts.DOMAIN_HINTS["specimen"] = harm.LLM_DOMAIN_HINT
+    ev = LLMEvaluator()
+    pairs, dups = [], []
+    for genus, cands in blocks.items():
+        plats = {meta[c[0]]["platform"] for c in cands}
+        if len(cands) < 2 or "BBM" not in plats or len(plats) < 2:
+            continue
+        try:
+            groups = ev.evaluate(cands, {}, COLS, _TableCfg(), ecfg)
+        except Exception:
+            logger.exception("LLM block failed for genus %s; skipping", genus)
+            continue
+        for g in groups:
+            if g["classification"] == LLM_MATCH_KEY:
+                pairs.extend(_cross_platform_pairs(g, meta, LLM))
+                dups.extend(_same_platform_pairs(g, meta, LLM))
+    return pairs, dups
 
 
 # ── quadrant scoring ────────────────────────────────────────────────────────
@@ -220,7 +313,9 @@ def _llm_pass(leftover_blocks, meta, ecfg):
 def quadrant(bbm_id, plat_id, meta):
     b, m = meta[bbm_id], meta[plat_id]
     bbm_cites = m["native"] in b["cited"]
-    plat_cites = bool(m["ubc_ref"] & {b["catalog"], b["altcatalog"]})
+    plat_refs = {P.norm_catalog(r) for r in m["ubc_ref"]}
+    our_refs = {P.norm_catalog(x) for x in (b["catalog"], b["altcatalog"]) if x}
+    plat_cites = bool(plat_refs & our_refs)
     if bbm_cites and plat_cites:
         return "bidirectional"
     if bbm_cites:
@@ -236,6 +331,8 @@ def main():
     parser.add_argument("--bbm", default=str(DATA_DIR / "bbm_records.csv"))
     parser.add_argument("--records", default=None, help="platform CSV (default data/<platform>_records.csv)")
     parser.add_argument("--no-llm", action="store_true")
+    parser.add_argument("--force-llm", action="store_true",
+                        help="LLM-only: route every block through the LLM (ignore rule-based)")
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(levelname)s  %(message)s")
 
@@ -247,8 +344,10 @@ def main():
     meta = {**bbm_meta, **plat_meta}
     logger.info("Loaded %d BBM + %d %s records", len(bbm_rows), len(plat_rows), platform.label)
 
-    pairs = resolve(bbm_rows, plat_rows, meta, use_llm=not args.no_llm)
-    logger.info("Matched %d cross-platform pairs", len(pairs))
+    pairs, dups = resolve(bbm_rows, plat_rows, meta,
+                          use_llm=not args.no_llm, force_llm=args.force_llm)
+    logger.info("Matched %d cross-platform pairs; %d same-platform duplicate pairs (cat 06)",
+                len(pairs), len(dups))
 
     counts = {"bidirectional": 0, "unidirectional_ubc_to_platform": 0,
               "unidirectional_platform_to_ubc": 0, "absent": 0}
@@ -258,9 +357,13 @@ def main():
         counts[q] += 1
         b, m = meta[bbm_id], meta[plat_id]
         name_mismatch = bool(b["sci_name"] and m["sci_name"] and b["sci_name"] != m["sci_name"])
+        # category-02 "wrong id": the platform record cites a DIFFERENT UBC catalog
+        plat_refs = {P.norm_catalog(r) for r in m["ubc_ref"]}
+        our_refs = {P.norm_catalog(x) for x in (b["catalog"], b["altcatalog"]) if x}
+        id_wrong = bool(plat_refs) and not (plat_refs & our_refs)
         cats = harm.classify_breakdowns(
             cross_ref=q, exists=True, coupling=platform.coupling,
-            ref_in_free_text=(platform.coupling == "independent"),
+            id_wrong=id_wrong,
             name_mismatch=name_mismatch, ambiguous=(how == LLM))
         score, just = harm.confidence(q, match_type=how)
         cat_lists.append(cats)
@@ -274,6 +377,16 @@ def main():
         with open(out, "w", newline="", encoding="utf-8") as f:
             w = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
             w.writeheader(); w.writerows(rows)
+
+    if dups:
+        dup_rows = [{"platform": pl, "record_a": a, "record_b": b,
+                     "match_type": how, "breakdown": "06"} for a, b, pl, how in dups]
+        dpath = REPORTS_DIR / f"{args.platform}_duplicates.csv"
+        with open(dpath, "w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=list(dup_rows[0].keys()))
+            w.writeheader(); w.writerows(dup_rows)
+        cat_lists.extend([["06"]] * len(dups))
+        logger.info("Saved %d duplicate pairs → %s", len(dups), dpath)
 
     logger.info("─" * 50)
     for k, v in counts.items():

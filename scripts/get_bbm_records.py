@@ -1,20 +1,3 @@
-#inherits from base_get_records
-#fetches records from specify
-
-"""Fetch BBM specimen records from Specify 7, save all text fields to CSV.
-
-Queries each relevant Specify table via table_rows (flat, paginated), joins
-them in Python, and writes a single CSV with every text field exposed so
-compare_records.py can scan for cross-reference patterns (e.g. MUOB numbers).
-
-Usage:
-    python get_bbm_records.py             # full fetch
-    python get_bbm_records.py --limit 20  # probe: first 20 COs only
-"""
-
-#inherits from base_get_records
-#fetches records from specify
-
 """Fetch BBM specimen records from Specify 7, save all text fields to CSV.
 
 Queries each relevant Specify table via table_rows (flat, paginated), joins
@@ -55,7 +38,9 @@ CO_FIELDS = [
     "text6", "text7", "text8", "description",
     "catalogeddate", "collectingevent_id",           # FK → CE id
 ]
-CE_FIELDS = ["id", "startdate", "locality_id"]        # FK → locality id
+CE_FIELDS = ["id", "startdate", "startdateverbatim", "enddate", "locality_id"]  # startDate &
+# startDateVerbatim are empty on this instance; the collection date lives in endDate
+# (confirmed via probe_ce_fields.py). FK → locality id
 LOC_FIELDS = ["id", "localityname"]
 DET_FIELDS = ["id", "collectionobject_id", "taxon_id", "iscurrent"]  # FK → CO, taxon
 TAXON_FIELDS = ["id", "fullname"]
@@ -165,12 +150,22 @@ class BBMRecords(BaseGetRecords):
         co_ids = set(cos)
 
         logger.info("Fetching collecting events …")
-        ces = {}
-        for row in self.fetch_rows(session, "collectingevent", CE_FIELDS, domainfilter=True):
-            if row["id"] in ce_ids:
-                ces[row["id"]] = row
-                if len(ces) == len(ce_ids):
-                    break
+
+        def _fetch_ce(fields):
+            out = {}
+            for row in self.fetch_rows(session, "collectingevent", fields, domainfilter=True):
+                if row["id"] in ce_ids:
+                    out[row["id"]] = row
+                    if len(out) == len(ce_ids):
+                        break
+            return out
+
+        try:
+            ces = _fetch_ce(CE_FIELDS)
+        except requests.HTTPError:
+            # startdateverbatim may not exist on this instance — degrade, don't crash
+            logger.warning("CE fetch failed for %s; retrying without startdateverbatim", CE_FIELDS)
+            ces = _fetch_ce([f for f in CE_FIELDS if f != "startdateverbatim"])
         logger.info("  %d collecting events", len(ces))
 
         loc_ids = {ce["locality_id"] for ce in ces.values() if ce["locality_id"]}
@@ -215,7 +210,9 @@ class BBMRecords(BaseGetRecords):
 
         logger.info("Fetching agent names …")
         agents = {}
-        for row in self.fetch_rows(session, "agent", AGENT_FIELDS, domainfilter=True):
+        # agents are global, not collection-scoped — domainfilter here hides the
+        # collector agents (why `collectors` came back empty). Scan unfiltered.
+        for row in self.fetch_rows(session, "agent", AGENT_FIELDS, domainfilter=False):
             if row["id"] in agent_ids:
                 agents[row["id"]] = row
                 if len(agents) == len(agent_ids):
@@ -256,7 +253,8 @@ class BBMRecords(BaseGetRecords):
                 "co_text8":         co.get("text8"),
                 "co_description":   co.get("description"),
                 "catalogeddate":    co.get("catalogeddate"),
-                "startdate":        ce.get("startdate"),
+                "startdate":        (ce.get("startdate") or ce.get("startdateverbatim")
+                                    or ce.get("enddate")),
                 "localityname":     loc.get("localityname"),
                 "taxonname":        taxon.get("fullname"),
                 "collectors":       collector_str(co.get("collectingevent_id")),

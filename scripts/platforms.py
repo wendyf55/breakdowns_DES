@@ -60,6 +60,15 @@ def fetch_text(url, params=None):
         return ""
 
 
+def norm_catalog(x):
+    """Canonicalize a UBC catalog reference so padded / unpadded F-numbers compare
+    equal ('F019459' == 'F19459'). Non-catalog references (e.g. GUIDs) pass
+    through uppercased and unchanged."""
+    s = str(x or "").strip().upper()
+    m = re.match(r"^F0*(\d+)$", s)
+    return f"F{m.group(1)}" if m else s
+
+
 # ── data carriers ───────────────────────────────────────────────────────────
 
 @dataclass
@@ -69,6 +78,7 @@ class BbmRecord:
     altcatalog: str
     guid: str
     text: str
+    fields: dict | None = None   # raw column -> value, for per-field ref provenance
 
     @property
     def our_ids(self):
@@ -81,6 +91,7 @@ class Correspondence:
     record: dict | None
     matched_by: str          # "cited_id" | "guid"
     ref: str
+    source_cols: frozenset = frozenset()   # BBM columns the ref was scanned from
 
 
 # ── abstract base ───────────────────────────────────────────────────────────
@@ -102,7 +113,8 @@ class Platform(ABC):
         return set()
 
     def cites_us(self, record, our_ids) -> bool:
-        return bool(self.their_refs_to_us(record) & set(our_ids))
+        theirs = {norm_catalog(x) for x in self.their_refs_to_us(record)}
+        return bool(theirs & {norm_catalog(x) for x in our_ids})
 
     # discovery --------------------------------------------------------------
     @abstractmethod
@@ -126,6 +138,12 @@ class Platform(ABC):
 class IndependentPlatform(Platform):
     coupling = "independent"
     ref_patterns = []
+    # BBM columns that count as *structured* cross-reference fields. A cited id
+    # found only OUTSIDE these is the category-02 "wrong-field" case (§5.1.3).
+    # Empty = none designated: the audit then reports the source columns instead
+    # of asserting wrong-field. Set once the Specify schema's reference field is
+    # confirmed with the maintainer.
+    reference_fields = ()
 
     def extract_refs(self, text):
         ids = set()
@@ -134,6 +152,15 @@ class IndependentPlatform(Platform):
                 ids.add(m.group(1).strip())
         return ids
 
+    def refs_by_field(self, fields):
+        """{ref: set(source columns)} — which BBM column each cited id came from.
+        Basis for the category-02 wrong-field test."""
+        out = {}
+        for col, val in (fields or {}).items():
+            for rid in self.extract_refs(val):
+                out.setdefault(rid, set()).add(col)
+        return out
+
     @abstractmethod
     def lookup(self, ids):
         """{id: record} for the ids that resolve on the platform."""
@@ -141,14 +168,16 @@ class IndependentPlatform(Platform):
     def establish_correspondences(self, bbm_records):
         ref_to_bbm = {}
         for b in bbm_records:
-            for rid in self.extract_refs(b.text):
-                ref_to_bbm.setdefault(rid, []).append(b)
+            by_ref = self.refs_by_field(b.fields) if b.fields else \
+                {rid: set() for rid in self.extract_refs(b.text)}
+            for rid, cols in by_ref.items():
+                ref_to_bbm.setdefault(rid, []).append((b, frozenset(cols)))
         found = self.lookup(set(ref_to_bbm)) if ref_to_bbm else {}
         out = []
-        for rid, bbms in ref_to_bbm.items():
+        for rid, entries in ref_to_bbm.items():
             rec = found.get(rid)
-            for b in bbms:
-                out.append(Correspondence(b, rec, "cited_id", rid))
+            for b, cols in entries:
+                out.append(Correspondence(b, rec, "cited_id", rid, source_cols=cols))
         return out
 
 
@@ -191,6 +220,12 @@ class MushroomObserver(IndependentPlatform):
         re.compile(r"(?i)mushroomobserver\.org/(?:obs(?:ervations)?/|observer/show_observation/)?0*(\d+)"),
     ]
     _UBC_RE = re.compile(r"(?i)\bUBC[:\s]*F?\s*0*(\d+)")
+    # BBM has no dedicated cross-reference field; by practice MO ids live in
+    # `co_remarks`. Treated as the recognized reference column, so a prefixed id
+    # there is neither wrong-field nor hanging (per maintainer). MO mentions with
+    # no resolvable id (e.g. "in MO posted as …") are an incomplete reference (01),
+    # not hanging.
+    reference_fields = ("co_remarks",)
 
     def __init__(self, user=MO_USER, location=MO_LOCATION):
         self.user = user
@@ -443,11 +478,29 @@ class GenBank(IndependentPlatform):
         return {f"F{m.group(1)}" for m in self._UBC_RE.finditer(blob)}
 
     def fetch_ours(self):
-        uids = self._esearch(self.SEARCH_TERM)
+        # Anchor on the collection's known accessions (data/genbank_ground_truth.csv,
+        # from the DAP sheet) rather than a broad institutional search that pulls in
+        # unrelated sequences. Falls back to the voucher search if the seed is absent.
+        accs = self._seed_accessions()
+        if not accs:
+            logger.info("  genbank: no seed accessions — falling back to %s", self.SEARCH_TERM)
+            accs = self._esearch(self.SEARCH_TERM)
+        else:
+            logger.info("  genbank: seeded from %d collection accessions", len(accs))
         recs = []
-        for i in range(0, len(uids), 200):
-            recs += list(self._efetch(uids[i:i + 200]).values())
+        for i in range(0, len(accs), 200):
+            recs += list(self._efetch(accs[i:i + 200]).values())
         return recs
+
+    @staticmethod
+    def _seed_accessions():
+        from config import DATA_DIR
+        p = DATA_DIR / "genbank_ground_truth.csv"
+        if not p.exists():
+            return []
+        import csv as _csv
+        with open(p, newline="", encoding="utf-8") as f:
+            return [r["accession"] for r in _csv.DictReader(f) if r.get("accession")]
 
     def to_common(self, record):
         return {
