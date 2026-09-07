@@ -104,7 +104,7 @@ def summarize(category_lists):
     return {c: n for c, n in counts.items() if n}
 
 
-# ── LLM tier prompt (drives resolve's ambiguous-middle adjudication) ────────
+# ── LLM tier prompt (bounded candidates; resolve applies guardrails after) ───
 LLM_DOMAIN_HINT = (
     "You are harmonizing specimen records across biodiversity platforms (a museum "
     "collection database and an independent platform). Decide which records refer to "

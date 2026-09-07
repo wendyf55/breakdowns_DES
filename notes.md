@@ -46,7 +46,7 @@ actually this; needs access to up to date specify)
 | **03** Absence | backlog / never‑published / orphans | `guid_discovery.py` + ipynb §8 | MP gap 223 / orphan 313; GBIF gap 1,757 / orphan 1,779 | **Done** for harvest‑gap & orphan; backlog n/a |
 | **04** Poor confidence | 0–5 rubric, ambiguous middle | `resolve` confidence + LLM `ambiguous`→04 | (per‑pair, not tallied) | **Done** |
 | **05** Nomenclature | name instability / basionym | `resolve` `name_mismatch`→05 | (per matched pair) | **Partial** — mismatch flagged; basionym needs synonym pipeline |
-| **06** Duplicates | multiple records / specimen | harvested: dup-GUID (`guid_discovery` `present_dup`); independent: same-platform pairs in a matched cluster (`resolve._same_platform_pairs`) -> `reports/<platform>_duplicates.csv` | harvested dup-GUID = 0; MO smoke (1.5k BBM head + full MO): 885 clusters / 3,705 pairs, all `similar`-tier | **Done (candidate-level)** - needs id/LLM/DAP confirm |
+| **06** Duplicates | multiple records / specimen | harvested: dup-GUID (`guid_discovery` `present_dup`); independent: same-platform pairs in a matched cluster (`resolve._same_platform_pairs`) -> `reports/<platform>_duplicates.csv` | harvested dup-GUID = 0; MO full rule run: 22,941 candidate pairs / 4,927 clusters | **Done (candidate-level)** - needs id/curator/gold-set confirm |
 | **07** Decay | DAP unimplemented / dead links | independent dangling→07 (dead cited id) | 1 MO dangling | **Scoped to dead links** (TODO: incorporate DAP data) |
 
 ## Decisions & status on 02 / 03 / 06 / 07
@@ -64,26 +64,43 @@ actually this; needs access to up to date specify)
   (a) *harvested* duplicate-GUID -> `guid_discovery` `present_dup` (currently 0);
   (b) *independent / attribute-level* -> `resolve.py` now keeps same-platform pairs
   within an attribute-matched cluster (`_same_platform_pairs`), tags them 06, and
-  writes `reports/<platform>_duplicates.csv`. **Caveat:** on the single-collector /
-  single-locality Ceska-OH corpus these are almost all `similar`-tier matches (name +
-  locality/collector overlap, no strict date, no id). A smoke run on a 1,500-row BBM
-  head + full MO gave 3,705 pairs = **885 clusters** (634 size-2, a few size 30+), so
-  the raw count is dominated by false positives (same taxon + site, different dates =
-  distinct specimens - the weak-evidence case the LLM domain hint warns about). Treat
-  as **review candidates**, report **clusters not pairs**, and confirm via the
-  identifier/LLM tier or the DAP ground truth before trusting a number. Open design
-  question: have `resolve()` emit clusters (with size) instead of pairwise rows?
+  writes `reports/<platform>_duplicates.csv`. Current full-MO rule run writes
+  **22,941 candidate duplicate pairs / 4,927 clusters**. **Caveat:** on the single-collector /
+  single-locality Ceska-OH corpus many are weak `similar`-tier candidates (same
+  taxon + site, sometimes different dates = distinct specimens). Treat as
+  **review candidates**, not a final duplicate count, until there is either
+  identifier evidence, a curated duplicate gold set, or a stronger cluster-level
+  evaluation. Open design question: have `resolve()` emit clusters (with size)
+  instead of only pairwise rows?
 - **07 — dead links only.** The DAP 2025 dataset has not yet been diffed against,
   so decay is scoped to **dead links**: an independent cited id that no longer
   resolves (`link_audit` dangling → 07). DAP drift / re‑minted GUIDs are out of reach.
 
 ## Validation against DAP ground truth (C2) — items 1 & 2
 
-`scripts/validate_dap.py` runs `resolve.py` and scores MO->UBC matching against the gold
-F#. **Rule-based baseline (OH, default scoped run): 261/355 = 73.5% recovered,
-split 237 strict / 24 similar, with 17 wrong links and 77 unmatched.** The 94
-wrong+unmatched records are the LLM tier's target. Per-record output:
-`reports/dap_validation_rules.csv`; notebook §9.
+`scripts/validate_dap.py` runs `resolve.py` and scores MO->UBC matching against
+the gold F#. **Rule-based baseline (OH, default scoped run): 261/355 = 73.5%
+recovered, split 237 strict / 24 similar correct links, with 17 wrong-F# links
+and 77 unmatched.** Precision among linked records is **93.9%**; wrong-link rate
+is **6.1%**. Per-record output: `reports/dap_validation_rules.csv`; notebook §9.
+
+LLM validation is now opt-in and auditable. `RUN_LLM_VALIDATION = False` in the
+notebook by default; when enabled with `LLM_MODEL`, §9 compares `rules`,
+`rules+llm`, and `force-llm` in `reports/dap_validation_summary.csv`. LLM calls
+receive bounded candidate groups instead of whole genus blocks, then deterministic
+guardrails reject incompatible exact dates/years, conflicting explicit catalog
+refs, and weak-evidence links. Validation/report CSVs include `llm_reason`,
+`guardrail`, candidate group size/ids, and the compared BBM/MO field values.
+LLM-derived links are `review_required` unless they also pass the stricter
+`LLM_ACCEPT_SCORE` threshold; keep LLM out of headline numbers if recall gains
+come with too many wrong-F# links.
+
+New diagnostics for improvement tracking:
+- `reports/dap_validation_<mode>_wrong_links.csv` - side-by-side DAP gold BBM,
+  matched BBM, and MO fields for wrong-F# links.
+- `reports/dap_validation_<mode>_unmatched_reasons.csv` - unmatched gold links
+  with deterministic failure reasons. Current rule baseline: 49 genus mismatch /
+  blocking failures, 25 name-below-threshold failures, 3 exact date conflicts.
 
 ## The working harmonization pipeline (for the automation section)
 
@@ -106,9 +123,13 @@ wrong+unmatched records are the LLM tier's target. Per-record output:
   the saved discovery CSV, reconciles BBM GUIDs both directions, writes
   `reports/<platform>_guid_discovery.csv` + a four‑quadrant summary.
 - **`resolve.py` — specimen resolution (Goal 2).** Attribute matching (name/date/
-  locality/collector) via the vendored rule engine + optional LLM tier, then scores
-  matched pairs into the four quadrants. Tags 04 (ambiguous), 05 (name mismatch),
-  02 (platform cites a different catalog). Also returns same-platform duplicate pairs -> 06 (candidate-level; `reports/<platform>_duplicates.csv`).
+  locality/collector) via the vendored rule engine + optional bounded LLM tier,
+  then scores matched pairs into the four quadrants. Tags 04 (ambiguous), 05
+  (name mismatch), and 02 (platform cites a different catalog). Also returns
+  same-platform duplicate pairs -> 06 (candidate-level;
+  `reports/<platform>_duplicates.csv`). Main report rows now carry audit columns
+  for LLM reason, guardrail result, candidate group size/ids, review status, and
+  the compared fields.
 - **`harmonization.py` — the framework as code.** Seven categories, the 0–5
   confidence rubric (maps to Fig‑4), and `classify_breakdowns`, driven by explicit
   02 sub‑case signals.

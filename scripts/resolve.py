@@ -39,6 +39,11 @@ COMPARE_FIELDS = ["platform", "sci_name", "genus", "species", "collector", "date
 COLS = {"base_cols": COMPARE_FIELDS, "related_specs": {}}
 STRICT, SIMILAR, LLM, NO_MATCH = "strict", "similar", "llm", "no_match"
 NAME_SIM = 0.85
+LLM_NAME_SIM = 0.65
+DEFAULT_LLM_MAX_GROUP = 6
+DEFAULT_LLM_MIN_SCORE = 4
+DEFAULT_LLM_ACCEPT_SCORE = 10
+MATCH_DETAILS = {}
 
 
 @dataclass(frozen=True)
@@ -132,6 +137,138 @@ def _overlap(a, b, n=1):
     return len(ta & tb) >= n or ta <= tb or tb <= ta
 
 
+def _row_fields(row):
+    return dict(zip(("id", *COMPARE_FIELDS), row))
+
+
+def _detail_key(bbm_id, plat_id, how):
+    return (bbm_id, plat_id, how)
+
+
+def match_detail(bbm_id, plat_id, how):
+    """Audit metadata for a pair returned by the most recent resolve() call."""
+    return MATCH_DETAILS.get(_detail_key(bbm_id, plat_id, how), {})
+
+
+def _record_details(row, prefix):
+    fields = _row_fields(row)
+    return {f"{prefix}_{k}": fields.get(k, "") for k in COMPARE_FIELDS}
+
+
+def _group_detail(group, label):
+    cands = group["candidates"]
+    return {
+        "candidate_group_size": len(cands),
+        "candidate_group_ids": "; ".join(c[0] for c in cands),
+        "llm_reason": group.get("reason", "") if label == LLM else "",
+        "review_required": label == LLM,
+        "accepted": label != LLM,
+    }
+
+
+def _store_detail(bbm_row, plat_row, group, label, meta, guardrail=""):
+    detail = _group_detail(group, label)
+    detail.update(_record_details(bbm_row, "bbm"))
+    detail.update(_record_details(plat_row, "platform"))
+    if label == LLM:
+        accepted, reason = _llm_acceptance(bbm_row, plat_row, meta)
+        detail["accepted"] = accepted
+        detail["review_required"] = not accepted
+        if reason:
+            guardrail = f"{guardrail};{reason}" if guardrail else reason
+    detail["guardrail"] = guardrail
+    MATCH_DETAILS[_detail_key(bbm_row[0], plat_row[0], label)] = detail
+
+
+def _compatible_dates(bbm_row, plat_row):
+    bd, pd = bbm_row[6], plat_row[6]
+    if len(bd) == 10 and len(pd) == 10 and bd != pd:
+        return False, "incompatible_exact_dates"
+    if _year(bd) and _year(pd) and _year(bd) != _year(pd):
+        return False, "incompatible_years"
+    return True, ""
+
+
+def _explicit_ref_signal(bbm_id, plat_id, meta):
+    b, m = meta[bbm_id], meta[plat_id]
+    bbm_cites_platform = m.get("native") in b.get("cited", set())
+    plat_refs = {P.norm_catalog(r) for r in m.get("ubc_ref", set())}
+    our_refs = {P.norm_catalog(x) for x in (b.get("catalog"), b.get("altcatalog")) if x}
+    platform_cites_bbm = bool(plat_refs & our_refs)
+    platform_conflicts = bool(plat_refs) and not platform_cites_bbm
+    bbm_conflicts = bool(b.get("cited")) and not bbm_cites_platform
+    return bbm_cites_platform, platform_cites_bbm, bbm_conflicts, platform_conflicts
+
+
+def _pair_evidence_score(bbm_row, plat_row, meta):
+    compatible, reason = _compatible_dates(bbm_row, plat_row)
+    if not compatible:
+        return -999, [reason]
+    evidence, score = [], 0
+    if bbm_row[3] and bbm_row[3] == plat_row[3]:
+        evidence.append("same_genus"); score += 2
+    sim = edit_sim(bbm_row[2], plat_row[2])
+    if bbm_row[2] and bbm_row[2] == plat_row[2]:
+        evidence.append("same_name"); score += 3
+    elif sim >= LLM_NAME_SIM:
+        evidence.append("similar_name"); score += 2
+    if len(bbm_row[6]) == 10 and bbm_row[6] == plat_row[6]:
+        evidence.append("same_exact_date"); score += 3
+    elif _year(bbm_row[6]) and _year(bbm_row[6]) == _year(plat_row[6]):
+        evidence.append("same_year"); score += 1
+    if _overlap(bbm_row[7], plat_row[7], 2):
+        evidence.append("locality_overlap"); score += 2
+    elif _overlap(bbm_row[7], plat_row[7], 1):
+        evidence.append("weak_locality_overlap"); score += 1
+    if _overlap(bbm_row[5], plat_row[5], 1):
+        evidence.append("collector_overlap"); score += 1
+    bbm_ref, plat_ref, bbm_conflict, plat_conflict = _explicit_ref_signal(bbm_row[0], plat_row[0], meta)
+    if bbm_ref or plat_ref:
+        evidence.append("explicit_cross_ref"); score += 4
+    if bbm_conflict:
+        evidence.append("bbm_cites_different_platform_record")
+    if plat_conflict:
+        evidence.append("platform_cites_different_catalog")
+    return score, evidence
+
+
+def _llm_pair_guardrail(bbm_row, plat_row, meta):
+    compatible, reason = _compatible_dates(bbm_row, plat_row)
+    if not compatible:
+        return False, reason
+    _bbm_ref, _plat_ref, bbm_conflict, plat_conflict = _explicit_ref_signal(
+        bbm_row[0], plat_row[0], meta
+    )
+    if bbm_conflict or plat_conflict:
+        return False, "conflicting_explicit_refs"
+    score, evidence = _pair_evidence_score(bbm_row, plat_row, meta)
+    has_date = "same_exact_date" in evidence or "same_year" in evidence
+    has_place_or_collector = any(e in evidence for e in (
+        "locality_overlap", "weak_locality_overlap", "collector_overlap"
+    ))
+    has_name = "same_name" in evidence or "similar_name" in evidence
+    if "explicit_cross_ref" in evidence:
+        return True, f"passed_guardrails:{','.join(evidence)}"
+    if score >= _llm_min_score() and has_date and has_place_or_collector and has_name:
+        return True, f"passed_guardrails:{','.join(evidence)}"
+    return False, "missing_minimum_evidence"
+
+
+def _llm_acceptance(bbm_row, plat_row, meta):
+    """Allow an LLM pair into accepted output only with strong rule-like evidence."""
+    score, evidence = _pair_evidence_score(bbm_row, plat_row, meta)
+    has_exact_date = "same_exact_date" in evidence
+    has_name = "same_name" in evidence
+    has_context = any(e in evidence for e in (
+        "locality_overlap", "collector_overlap", "explicit_cross_ref"
+    ))
+    explicit_link = "explicit_cross_ref" in evidence and has_name
+    strong_attributes = score >= _llm_accept_score() and has_exact_date and has_name and has_context
+    if explicit_link or strong_attributes:
+        return True, f"accepted_strict_evidence:{','.join(evidence)}"
+    return False, "review_required"
+
+
 # ── predicates ──────────────────────────────────────────────────────────────
 
 def strict_pred(c, o, context):
@@ -210,10 +347,21 @@ def _blocks(rows):
     return b
 
 def _cross_platform_pairs(group, meta, label):
-    ids = [c[0] for c in group["candidates"]]
-    bbm = [i for i in ids if meta[i]["platform"] == "BBM"]
-    plat = [i for i in ids if meta[i]["platform"] != "BBM"]
-    return [(b, m, label) for b in bbm for m in plat]
+    bbm = [c for c in group["candidates"] if meta[c[0]]["platform"] == "BBM"]
+    plat = [c for c in group["candidates"] if meta[c[0]]["platform"] != "BBM"]
+    out = []
+    for b in bbm:
+        for m in plat:
+            if label == LLM:
+                ok, guardrail = _llm_pair_guardrail(b, m, meta)
+                if not ok:
+                    logger.info("Rejected LLM pair %s <-> %s: %s", b[0], m[0], guardrail)
+                    continue
+            else:
+                guardrail = ""
+            _store_detail(b, m, group, label, meta, guardrail=guardrail)
+            out.append((b[0], m[0], label))
+    return out
 
 
 def _same_platform_pairs(group, meta, label):
@@ -230,6 +378,37 @@ def _same_platform_pairs(group, meta, label):
                 out.append((a, b, meta[a]["platform"], label))
     return out
 
+
+def _llm_max_group():
+    return int(os.getenv("LLM_MAX_GROUP_SIZE", DEFAULT_LLM_MAX_GROUP))
+
+
+def _llm_min_score():
+    return int(os.getenv("LLM_MIN_PREFILTER_SCORE", DEFAULT_LLM_MIN_SCORE))
+
+
+def _llm_accept_score():
+    return int(os.getenv("LLM_ACCEPT_SCORE", DEFAULT_LLM_ACCEPT_SCORE))
+
+
+def _bounded_llm_groups(cands, meta):
+    """Build small LLM candidate sets instead of sending a whole genus block."""
+    max_group = max(2, _llm_max_group())
+    min_score = _llm_min_score()
+    bbm = [c for c in cands if meta[c[0]]["platform"] == "BBM"]
+    plat = [c for c in cands if meta[c[0]]["platform"] != "BBM"]
+    groups = []
+    for b in bbm:
+        scored = []
+        for p in plat:
+            score, evidence = _pair_evidence_score(b, p, meta)
+            if score >= min_score:
+                scored.append((score, len(evidence), p))
+        scored.sort(key=lambda x: (-x[0], -x[1], x[2][0]))
+        if scored:
+            groups.append([b] + [p for _score, _n, p in scored[:max_group - 1]])
+    return groups
+
 def resolve(bbm_rows, plat_rows, meta, use_llm=True, force_llm=False):
     """Return (cross_platform_pairs, same_platform_duplicate_pairs).
 
@@ -237,10 +416,11 @@ def resolve(bbm_rows, plat_rows, meta, use_llm=True, force_llm=False):
     match (the quadrant scoring); two records in one cluster that share a
     platform are duplicate records for one specimen (category 06).
 
-    force_llm=True routes EVERY multi-platform block through the LLM and ignores
-    the rule-based matcher — an LLM-only pass for a clean rule-based-vs-LLM
-    comparison on the same candidate set (needs LLM_MODEL). use_llm alone keeps
-    the rule-based matcher and sends only its leftovers to the LLM."""
+    force_llm=True routes bounded candidate sets through the LLM and ignores
+    the rule-based matcher — an LLM-only pass for a rule-based-vs-LLM comparison
+    on the same source rows (needs LLM_MODEL). use_llm alone keeps the rule-based
+    matcher and sends only bounded leftovers to the LLM."""
+    MATCH_DETAILS.clear()
     ecfg = _eval_config()
     blocks = _blocks(bbm_rows + plat_rows)
     if force_llm:
@@ -261,9 +441,8 @@ def resolve(bbm_rows, plat_rows, meta, use_llm=True, force_llm=False):
             else:
                 pairs.extend(_cross_platform_pairs(g, meta, g["classification"]))
                 dups.extend(_same_platform_pairs(g, meta, g["classification"]))
-        plats = {meta[c[0]]["platform"] for c in leftovers}
-        if use_llm and "BBM" in plats and len(plats) > 1 and len(leftovers) >= 2:
-            leftover_blocks.append(leftovers)
+        if use_llm and len(leftovers) >= 2:
+            leftover_blocks.extend(_bounded_llm_groups(leftovers, meta))
     if use_llm and leftover_blocks and os.getenv("LLM_MODEL"):
         lpairs, ldups = _llm_pass(leftover_blocks, meta, ecfg)
         pairs.extend(lpairs)
@@ -275,6 +454,7 @@ def _llm_pass(leftover_blocks, meta, ecfg):
     ev = LLMEvaluator()
     pairs, dups = [], []
     for cands in leftover_blocks:
+        logger.info("LLM candidate group size: %d", len(cands))
         try:
             groups = ev.evaluate(cands, {}, COLS, _TableCfg(), ecfg)
         except Exception:
@@ -288,7 +468,7 @@ def _llm_pass(leftover_blocks, meta, ecfg):
 
 
 def _llm_only(blocks, meta, ecfg):
-    """LLM decides every multi-platform block (force_llm) — rule-based ignored."""
+    """LLM decides bounded multi-platform candidate groups; rule-based ignored."""
     _prompts.DOMAIN_HINTS["specimen"] = harm.LLM_DOMAIN_HINT
     ev = LLMEvaluator()
     pairs, dups = [], []
@@ -296,15 +476,17 @@ def _llm_only(blocks, meta, ecfg):
         plats = {meta[c[0]]["platform"] for c in cands}
         if len(cands) < 2 or "BBM" not in plats or len(plats) < 2:
             continue
-        try:
-            groups = ev.evaluate(cands, {}, COLS, _TableCfg(), ecfg)
-        except Exception:
-            logger.exception("LLM block failed for genus %s; skipping", genus)
-            continue
-        for g in groups:
-            if g["classification"] == LLM_MATCH_KEY:
-                pairs.extend(_cross_platform_pairs(g, meta, LLM))
-                dups.extend(_same_platform_pairs(g, meta, LLM))
+        for group in _bounded_llm_groups(cands, meta):
+            logger.info("LLM-only candidate group size: %d", len(group))
+            try:
+                groups = ev.evaluate(group, {}, COLS, _TableCfg(), ecfg)
+            except Exception:
+                logger.exception("LLM block failed for genus %s; skipping", genus)
+                continue
+            for g in groups:
+                if g["classification"] == LLM_MATCH_KEY:
+                    pairs.extend(_cross_platform_pairs(g, meta, LLM))
+                    dups.extend(_same_platform_pairs(g, meta, LLM))
     return pairs, dups
 
 
@@ -332,7 +514,7 @@ def main():
     parser.add_argument("--records", default=None, help="platform CSV (default data/<platform>_records.csv)")
     parser.add_argument("--no-llm", action="store_true")
     parser.add_argument("--force-llm", action="store_true",
-                        help="LLM-only: route every block through the LLM (ignore rule-based)")
+                        help="LLM-only: route bounded candidate sets through the LLM")
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(levelname)s  %(message)s")
 
@@ -367,9 +549,34 @@ def main():
             name_mismatch=name_mismatch, ambiguous=(how == LLM))
         score, just = harm.confidence(q, match_type=how)
         cat_lists.append(cats)
-        rows.append({"bbm": bbm_id, "platform_record": plat_id, "match_type": how,
-                     "quadrant": q, "confidence": score, "justification": just,
-                     "breakdown": ",".join(cats)})
+        detail = match_detail(bbm_id, plat_id, how)
+        rows.append({
+            "bbm": bbm_id,
+            "platform_record": plat_id,
+            "match_type": how,
+            "quadrant": q,
+            "confidence": score,
+            "justification": just,
+            "breakdown": ",".join(cats),
+            "review_required": detail.get("review_required", how == LLM),
+            "accepted": detail.get("accepted", how != LLM),
+            "llm_reason": detail.get("llm_reason", ""),
+            "guardrail": detail.get("guardrail", ""),
+            "candidate_group_size": detail.get("candidate_group_size", ""),
+            "candidate_group_ids": detail.get("candidate_group_ids", ""),
+            "bbm_sci_name": detail.get("bbm_sci_name", ""),
+            "bbm_genus": detail.get("bbm_genus", ""),
+            "bbm_species": detail.get("bbm_species", ""),
+            "bbm_collector": detail.get("bbm_collector", ""),
+            "bbm_date": detail.get("bbm_date", ""),
+            "bbm_locality": detail.get("bbm_locality", ""),
+            "platform_sci_name": detail.get("platform_sci_name", ""),
+            "platform_genus": detail.get("platform_genus", ""),
+            "platform_species": detail.get("platform_species", ""),
+            "platform_collector": detail.get("platform_collector", ""),
+            "platform_date": detail.get("platform_date", ""),
+            "platform_locality": detail.get("platform_locality", ""),
+        })
 
     REPORTS_DIR.mkdir(exist_ok=True)
     out = REPORTS_DIR / f"{args.platform}_resolution.csv"

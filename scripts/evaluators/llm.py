@@ -56,8 +56,9 @@ class LLMEvaluator(BaseEvaluator):
         try:
             result = self.client.query(system=system, user=user)
             return self._parse_response(result, candidates, eval_config)
-        except Exception:
-            logger.exception("LLM evaluation failed; falling back to unmatched")
+        except Exception as e:
+            logger.warning("LLM evaluation failed; falling back to unmatched: %s", e)
+            logger.debug("LLM evaluation traceback", exc_info=True)
             return [{
                 "candidates": [c],
                 "classification": eval_config.unmatched_key,
@@ -93,6 +94,7 @@ class LLMEvaluator(BaseEvaluator):
             groups.append({
                 "candidates": [by_id[i] for i in valid_ids],
                 "classification": LLM_MATCH_KEY,
+                "reason": reason,
             })
 
         # Everything the LLM didn't cluster (including its explicit "unmatched"

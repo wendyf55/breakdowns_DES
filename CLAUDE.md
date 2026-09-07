@@ -28,11 +28,13 @@ categories + 0–5 confidence). Scripts in `scripts/`:
   `audit_mo_links.py` is a thin MO-bound shim kept working for the notebook.
 - **`resolve.py`** — cross-platform specimen resolution (`--platform`): shape BBM +
   platform records into the vendored evaluator contract, cluster same-specimen
-  records (rule-based + optional LLM), and score the four quadrants (bidirectional /
-  unidirectional UBC→platform / platform→UBC / absent) with categories + confidence.
+  records (rule-based + optional bounded LLM), and score the four quadrants
+  (bidirectional / unidirectional UBC→platform / platform→UBC / absent) with
+  categories + confidence. Report rows include audit columns for LLM reason,
+  guardrail result, candidate group size/ids, review status, and compared fields.
 - **`harmonization.py`** — the framework as code: the seven breakdown categories,
-  the 0–5 confidence rubric, the report shape, and the LLM tier's guiding principles
-  (from the `specimen-harmonization` skill / Kholmatova 2026).
+  the 0–5 confidence rubric, the report shape, and the LLM tier's guiding
+  principles (from the `specimen-harmonization` skill / Kholmatova 2026).
 - **`base_get_records.py`** — `BaseGetRecords`, the shared fetch → filter → save
   pipeline the fetchers subclass. `config.py` loads `.env`.
 
@@ -53,10 +55,12 @@ The **classify half** of the orchestration dedup pipeline's evaluator subsystem,
 copied in so this repo is self-contained (no dependency on that repo's path or
 install): `RuleBasedEvaluator`, `LLMEvaluator` + client + prompts, the
 `BaseEvaluator` interface and `MatchRule` / `EvaluationConfig` types, plus
-`RecordObject` and the pure `get_matches` helper. `resolve.py` imports from here.
-Only classify was taken — no search / workflow / merge. Cross-package imports were
-rewritten package-local; each file names its upstream source. It is a snapshot —
-re-sync deliberately if the upstream contract changes. Runtime dep: `requests`.
+`RecordObject` and the pure `get_matches` helper. `resolve.py` imports from here
+but now bounds LLM inputs before calling the evaluator and applies deterministic
+guardrails after it. Only classify was taken — no search / workflow / merge.
+Cross-package imports were rewritten package-local; each file names its upstream
+source. It is a snapshot — re-sync deliberately if the upstream contract changes.
+Runtime dep: `requests`.
 
 ## Conventions
 
