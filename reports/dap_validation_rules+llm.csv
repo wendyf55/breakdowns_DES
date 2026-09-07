@@ -1,356 +1,356 @@
-mo_id,gold_F,matched_F,tier,result
-202702,F19470,F19470,strict,correct
-191206,F19454,F8067,llm,wrong_F
-159260,F25054,F25054,strict,correct
-74905,F19659,F19659,strict,correct
-72828,F19499,F19499,similar,correct
-66965,F19493,F19493,similar,correct
-66321,F19368,F19368,strict,correct
-66305,F19258,F19258,strict,correct
-66304,F19352,F19352,strict,correct
-166513,F19584,,,absent
-64022,F19355,F19355,strict,correct
-218853,F17260,F17260,strict,correct
-210193,F19553,,,absent
-162109,F19618,F19618,strict,correct
-209961,F19266,F19266,llm,correct
-202610,F19645,F8072,llm,wrong_F
-191211,F19450,F8069,llm,wrong_F
-74819,F16364,F16364,strict,correct
-167151,F19611,F19599,strict,wrong_F
-166830,F19599,F19611,similar,wrong_F
-166825,F19593,,,absent
-166543,F19544,F19544,strict,correct
-157035,F19274,F19274,strict,correct
-156780,F19255,F19255,strict,correct
-156778,F19257,F19257,strict,correct
-156777,F19256,F19256,strict,correct
-156771,F19259,F19259,strict,correct
-85244,F27331,F27331,strict,correct
-132649,F16319,,,absent
-166061,F29822,F16947,llm,wrong_F
-75671,F19354,F19354,strict,correct
-74998,F19660,F19660,strict,correct
-74901,F19655,F19655,similar,correct
-73020,F19465,F19465,strict,correct
-72897,F19521,F19521,strict,correct
-72889,F19522,,,absent
-72857,F19492,,,absent
-71652,F19441,,,absent
-146033,F33821,,,absent
-148518,F26145,F26145,strict,correct
-330089,F19540,F19540,strict,correct
-64347,F24557,,,absent
-164803,F26479,F26479,strict,correct
-160579,F25924,F677,llm,wrong_F
-159014,F25111,F25111,strict,correct
-149944,F26200,F26200,strict,correct
-144428,F25553,,,absent
-136789,F25988,F25988,strict,correct
-129959,F25876,,,absent
-95526,F25496,F25496,strict,correct
-71570,F29427,,,absent
-218820,F20130,F20130,similar,correct
-202712,F27094,F27094,strict,correct
-153803,F26366,F26366,strict,correct
-153618,F26274,F26274,strict,correct
-153612,F26339,F26339,strict,correct
-151560,F26246,F26246,strict,correct
-149941,F26163,,,absent
-149863,F26116,F26116,strict,correct
-148514,F26148,F26148,strict,correct
-145997,F26060,F26060,strict,correct
-144839,F26026,F26026,strict,correct
-144427,F26028,F26028,strict,correct
-144387,F26038,F26038,strict,correct
-139393,F25923,,,absent
-136760,F25991,F25991,strict,correct
-136429,F25908,F25908,strict,correct
-130240,F25875,F25875,strict,correct
-128847,F25806,F25806,strict,correct
-106282,F23430,F23430,similar,correct
-237405,F28978,F28978,strict,correct
-103034,F23445,F23445,strict,correct
-102451,F25547,F25547,strict,correct
-98424,F25524,F25524,strict,correct
-66969,F24400,,,absent
-152711,F26258,F26258,similar,correct
-65673,F27310,F27310,similar,correct
-65167,F26544,,,absent
-64910,F20266,F20266,similar,correct
-64908,F20228,,,absent
-64000,F26599,F26599,strict,correct
-63767,F26526,F26526,strict,correct
-203748,F24279,F24279,strict,correct
-191204,F29428,F29428,strict,correct
-190669,F26410,F26410,strict,correct
-172838,F28929,F28929,strict,correct
-172733,F28792,F28792,strict,correct
-140003,F16326,F16326,llm,correct
-170938,F24476,,,absent
-170808,F24455,F24455,strict,correct
-170785,F24448,F24448,strict,correct
-168948,F29154,F29154,strict,correct
-166541,F22962,F22962,strict,correct
-166104,F29841,F29841,strict,correct
-166103,F29840,F29840,strict,correct
-165193,F26589,F26589,strict,correct
-163801,F20103,F8066,llm,wrong_F
-161585,F24420,F24420,strict,correct
-161569,F24374,F24374,strict,correct
-161534,F24342,F24342,strict,correct
-161533,F24363,F24363,strict,correct
-161532,F24358,F24358,strict,correct
-160704,F26118,F26118,similar,correct
-160662,F26107,F26107,strict,correct
-160580,F25937,F25937,similar,correct
-160424,F25961,F25961,strict,correct
-160417,F25953,F25953,strict,correct
-160381,F25927,F25927,strict,correct
-160380,F25928,F25928,strict,correct
-160378,F25930,F25930,strict,correct
-160377,F25915,F25915,strict,correct
-159833,F25282,,,absent
-159821,F25250,,,absent
-159804,F25226,F25226,strict,correct
-159756,F25200,F25200,strict,correct
-159755,F25203,F25203,strict,correct
-159754,F25202,F25202,strict,correct
-159753,F25199,F25199,strict,correct
-159703,F24923,F24923,strict,correct
-159702,F24943,F24943,strict,correct
-159694,F25462,,,absent
-159693,F24944,F24944,strict,correct
-159336,F25002,F25002,strict,correct
-159319,F25005,,,absent
-159256,F25063,F25063,strict,correct
-159096,F25068,F25068,strict,correct
-159094,F25070,,,absent
-159093,F25092,F25092,strict,correct
-159049,F25080,F25080,strict,correct
-159048,F25084,F25084,similar,correct
-159047,F25091,F25091,strict,correct
-159011,F25103,F25103,strict,correct
-157498,F26371,F26371,strict,correct
-156944,F29666,,,absent
-156089,F26406,F26406,strict,correct
-155785,F26198,F26198,similar,correct
-155784,F26194,,,absent
-155754,F26391,,,absent
-155752,F26392,F26392,strict,correct
-155746,F26380,F26380,strict,correct
-155602,F26404,F26404,similar,correct
-154945,F26379,F26379,strict,correct
-154944,F26397,F26397,strict,correct
-154934,F26172,F26172,strict,correct
-154933,F26173,F26173,strict,correct
-154902,F26346,F26346,similar,correct
-154832,F26409,F26409,similar,correct
-154831,F26372,F26372,strict,correct
-154830,F26344,F26344,strict,correct
-154826,F26359,F26359,strict,correct
-154494,F26319,F26319,strict,correct
-154379,F26377,F26377,strict,correct
-154378,F26400,F26400,strict,correct
-154377,F26376,F26376,strict,correct
-154375,F26341,F26341,similar,correct
-154374,F26370,F26370,similar,correct
-154366,F26388,F26388,strict,correct
-154364,F26354,F26354,strict,correct
-154363,F26347,F26347,strict,correct
-154362,F26345,F26345,strict,correct
-154355,F26348,F26348,strict,correct
-153895,F26395,F26395,strict,correct
-153894,F26368,,,absent
-153893,F26320,F26320,strict,correct
-153890,F26321,F26321,strict,correct
-153840,F26322,F26322,strict,correct
-153837,F26318,F26318,strict,correct
-153802,F26340,F26340,strict,correct
-153801,F26361,F26361,strict,correct
-153626,F26314,F26314,strict,correct
-153624,F26334,F26334,strict,correct
-153598,F26323,F26323,strict,correct
-153552,F26281,F26281,strict,correct
-152922,F26242,F26242,llm,correct
-157064,F19276,F19276,strict,correct
-152704,F26271,F26271,strict,correct
-152320,F26245,F26245,strict,correct
-152319,F26299,F26299,strict,correct
-152317,F26305,F26305,similar,correct
-152315,F26301,F26301,strict,correct
-152312,F26312,F26312,strict,correct
-152311,F26308,F26308,strict,correct
-152310,F26307,F26307,strict,correct
-152309,F26270,,,absent
-152307,F26257,F26257,strict,correct
-152235,F26309,F26309,strict,correct
-152200,F26268,F26268,strict,correct
-152199,F26267,F26267,strict,correct
-152086,F26195,,,absent
-151889,F26231,F26231,strict,correct
-151888,F26230,F26230,strict,correct
-151887,F26216,F26216,strict,correct
-151874,F26220,F26220,strict,correct
-151873,F26029,F26029,strict,correct
-151566,F26238,F26238,strict,correct
-151565,F26219,F26219,strict,correct
-151564,F26237,F26237,strict,correct
-151561,F26236,F26236,strict,correct
-151558,F26101,,,absent
-151393,F26255,F26255,strict,correct
-151392,F26252,F26252,strict,correct
-151390,F26239,F26239,similar,correct
-151312,F26082,F26082,strict,correct
-151310,F26083,F26083,strict,correct
-151306,F26084,F26084,strict,correct
-151305,F26092,F26092,strict,correct
-150955,F23383,F23383,strict,correct
-150347,F26171,F26171,strict,correct
-150346,F26208,F26208,strict,correct
-149942,F26197,F26197,strict,correct
-149940,F26174,F26174,strict,correct
-149939,F26205,F26205,strict,correct
-149052,F26144,,,absent
-149044,F26142,F26142,strict,correct
-148533,F26128,,,absent
-148517,F26149,F26149,strict,correct
-148515,F26151,F26151,strict,correct
-148513,F26130,F26130,strict,correct
-148507,F26110,F26110,strict,correct
-148369,F26109,F26109,strict,correct
-148364,F26123,F26123,strict,correct
-147967,F26124,F26124,strict,correct
-147965,F26099,F26099,strict,correct
-147800,F26121,F26121,strict,correct
-146405,F26056,F26056,strict,correct
-146394,F26068,F26068,strict,correct
-146314,F26065,F26065,strict,correct
-146290,F26057,F26057,strict,correct
-146214,F26071,F26071,strict,correct
-146019,F26079,,,absent
-145998,F26062,F26062,strict,correct
-145996,F26061,F26061,strict,correct
-145413,F26023,F26023,strict,correct
-145346,F26045,F26045,similar,correct
-145220,F26046,F26046,strict,correct
-145219,F26047,F26047,strict,correct
-144649,F26024,F26024,strict,correct
-144639,F26030,F26030,strict,correct
-144627,F26036,,,absent
-144430,F26020,,,absent
-144358,F26037,,,absent
-144126,F26034,F26034,strict,correct
-144125,F26033,F26033,strict,correct
-140347,F26012,F26012,strict,correct
-139594,F26019,F26019,strict,correct
-139556,F26000,F26000,similar,correct
-139497,F26002,F26002,strict,correct
-139355,F25913,F25913,strict,correct
-139341,F25815,F25815,strict,correct
-138878,F26009,F26009,strict,correct
-138701,F25997,,,absent
-138379,F25999,F25999,strict,correct
-138260,F26007,F26007,strict,correct
-137896,F25977,F25977,similar,correct
-137103,F25990,F25990,strict,correct
-137028,F25975,F25975,strict,correct
-136891,F25982,F25982,strict,correct
-136701,F25978,F25978,strict,correct
-136695,F25995,F25995,strict,correct
-136694,F25987,F25987,strict,correct
-136688,F25994,F25994,strict,correct
-136188,F25979,F25979,strict,correct
-135411,F25936,F25936,strict,correct
-135266,F25962,F25962,strict,correct
-135237,F25963,,,absent
-135153,F25954,F25954,strict,correct
-135119,F25959,F25959,strict,correct
-135116,F25952,F25952,strict,correct
-135114,F25938,F25938,strict,correct
-135031,F25934,F35035,similar,wrong_F
-135023,F25948,F25948,strict,correct
-134880,F25951,,,absent
-134707,F25943,,,absent
-134698,F25909,F25909,strict,correct
-134502,F25940,F25940,strict,correct
-134501,F25942,F25942,strict,correct
-134291,F25944,,,absent
-134267,F25949,F25949,strict,correct
-134128,F25935,F25935,strict,correct
-134021,F25886,F25886,strict,correct
-133127,F25899,F25899,strict,correct
-133032,F25918,F25918,strict,correct
-132660,F25917,F25917,strict,correct
-130633,F25866,F25866,strict,correct
-130631,F25895,F25895,strict,correct
-130399,F25856,F25856,strict,correct
-130190,F25844,F25844,strict,correct
-130189,F25829,F25829,strict,correct
-130107,F25881,,,absent
-129990,F25882,F25882,strict,correct
-129940,F25868,,,absent
-129939,F25864,F25864,strict,correct
-129938,F25884,F25884,strict,correct
-129738,F25827,F25827,strict,correct
-129693,F25849,F25849,strict,correct
-129022,F25807,F25807,strict,correct
-128891,F25790,F25790,strict,correct
-128817,F25793,F25793,strict,correct
-127155,F25787,,,absent
-123474,F25783,F25783,strict,correct
-123270,F25779,,,absent
-119494,F25680,F25680,strict,correct
-115808,F25579,F25579,strict,correct
-113842,F25559,,,absent
-106279,F23427,F23427,similar,correct
-106169,F23506,F23506,strict,correct
-102706,F25551,F25551,strict,correct
-102538,F25541,F25541,strict,correct
-99423,F23497,,,absent
-99129,F23449,F23449,strict,correct
-95657,F25503,F25503,strict,correct
-95648,F25486,F25486,strict,correct
-95524,F25500,F25500,strict,correct
-93223,F25020,F25020,strict,correct
-87641,F25391,F35157,similar,wrong_F
-83450,F25193,F25193,strict,correct
-83188,F25258,F25258,strict,correct
-83051,F23513,F23513,similar,correct
-83025,F22978,F22978,strict,correct
-82406,F25229,F25229,strict,correct
-83181,F23548,F23548,strict,correct
-74865,F29584,,,absent
-146031,F25079,,,absent
-73091,F25079,,,absent
-73025,F25079,,,absent
-72975,F25079,F24235,similar,wrong_F
-72945,F25079,,,absent
-71514,F25079,,,absent
-68217,F25079,,,absent
-223631,F25079,,,absent
-224260,F25079,F27202,strict,wrong_F
-187485,F25079,,,absent
-235975,F25079,,,absent
-77711,F25079,,,absent
-261927,F25079,,,absent
-281725,F25079,,,absent
-293813,F25079,,,absent
-303770,F25079,,,absent
-95658,F25079,,,absent
-189823,F25079,,,absent
-63563,F25079,,,absent
-63555,F25079,,,absent
-218601,F25079,,,absent
-203279,F25079,,,absent
-189620,F25079,,,absent
-188815,F25079,,,absent
-188814,F25079,F8002,llm,wrong_F
-224045,F25079,F1000,llm,wrong_F
-224193,F25079,,,absent
-225723,F25079,F29427,llm,wrong_F
-256634,F25079,,,absent
-260682,F25079,F8004,llm,wrong_F
-261227,F25079,F8010,llm,wrong_F
-265045,F25079,,,absent
-361632,F25079,F22306,llm,wrong_F
+mo_id,gold_F,matched_F,tier,result,review_required,llm_reason,guardrail,candidate_group_size,candidate_group_ids,bbm_sci_name,bbm_date,bbm_collector,bbm_locality,mo_sci_name,mo_date,mo_collector,mo_locality
+202702,F19470,F19470,strict,correct,False,,,2,BBM:F019470; MO:202702,inocybe jacobi,2007-11-07,,"victoria, saanich, observatory hill",inocybe jacobi,2007-11-07,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+191206,F19454,,,absent,,,,,,,,,,,,,
+159260,F25054,F25054,strict,correct,False,,,2,BBM:F025054; MO:159260,ramaricium albo,2011-05-12,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road",ramaricium albo,2011-05-12,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+74905,F19659,F19659,strict,correct,False,,,2,BBM:F019659; MO:74905,inocybe abjecta,2009-05-31,,"victoria, saanich, observatory hill",inocybe abjecta,2009-05-31,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+72828,F19499,F19499,similar,correct,False,,,4,BBM:F019493; BBM:F019499; MO:66965; MO:72828,inocybe assimilata,2008-03-08,,"victoria, saanich, observatory hill",inocybe assimilata,2008-03-08,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+66965,F19493,F19493,similar,correct,False,,,4,BBM:F019493; BBM:F019499; MO:66965; MO:72828,inocybe assimilata,2008-01-12,,"victoria, saanich, observatory hill",inocybe assimilata,2008-01-08,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+66321,F19368,F19368,strict,correct,False,,,2,BBM:F019368; MO:66321,inocybe griseolilacina,2005-12-07,,"victoria, saanich, observatory hill",inocybe griseolilacina,2005-12-07,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+66305,F19258,F19258,strict,correct,False,,,2,BBM:F019258; MO:66305,inocybe cinnamomea,2004-11-27,,"victoria, saanich, observatory hill",inocybe cinnamomea,2004-11-27,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+66304,F19352,F19352,strict,correct,False,,,2,BBM:F019352; MO:66304,inocybe auricoma,2005-11-13,,"victoria, saanich, observatory hill",inocybe auricoma,2005-11-13,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+166513,F19584,,,absent,,,,,,,,,,,,,
+64022,F19355,F19355,strict,correct,False,,,2,BBM:F019355; MO:64022,inocybe chondroderma,2005-11-22,,"victoria, saanich, observatory hill",inocybe chondroderma,2005-11-22,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+218853,F17260,F17260,strict,correct,False,,,2,BBM:F017260; MO:218853,cortinarius albosericeus,2005-11-26,,"observatory hill, saanich, behind smaller dome",cortinarius albosericeus,2005-11-26,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+210193,F19553,,,absent,,,,,,,,,,,,,
+162109,F19618,F19618,strict,correct,False,,,2,BBM:F019618; MO:162109,cortinarius olivaceopictus,2008-12-11,,"victoria, saanich, observatory hill",cortinarius olivaceopictus,2008-12-11,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+209961,F19266,,,absent,,,,,,,,,,,,,
+202610,F19645,,,absent,,,,,,,,,,,,,
+191211,F19450,,,absent,,,,,,,,,,,,,
+74819,F16364,F16364,strict,correct,False,,,2,BBM:F016364; MO:74819,cortinarius parkeri,2008-03-08,,"sw slope, just above the main gate, observatory hill, saanich",cortinarius parkeri,2008-03-08,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+167151,F19611,F19599,strict,wrong_F,False,,,2,BBM:F019599; MO:167151,inocybe pseudodestricta,2008-11-22,,"victoria, saanich, observatory hill",inocybe pseudodestricta,2008-11-22,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+166830,F19599,F19611,similar,wrong_F,False,,,2,BBM:F019611; MO:166830,inocybe pseudodestricta,2008-11-25,,"victoria, saanich, observatory hill",inocybe pseudodestricta,2008-11-21,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+166825,F19593,,,absent,,,,,,,,,,,,,
+166543,F19544,F19544,strict,correct,False,,,2,BBM:F019544; MO:166543,inocybe hotsoniana,2008-10-26,,"victoria, saanich, observatory hill",inocybe hotsoniana,2008-10-26,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+157035,F19274,F19274,strict,correct,False,,,2,BBM:F019274; MO:157035,inocybe griseolilacina,2004-12-28,,"victoria, saanich, observatory hill",inocybe griseolilacina,2004-12-28,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+156780,F19255,F19255,strict,correct,False,,,2,BBM:F019255; MO:156780,inocybe abjecta,2004-11-27,,"victoria, saanich, observatory hill",inocybe abjecta,2004-11-27,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+156778,F19257,F19257,strict,correct,False,,,2,BBM:F019257; MO:156778,inocybe hirtella,2004-11-27,,"victoria, saanich, observatory hill",inocybe hirtella,2004-11-27,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+156777,F19256,F19256,strict,correct,False,,,2,BBM:F019256; MO:156777,inocybe xanthomelas,2004-11-27,,"victoria, saanich, observatory hill",inocybe xanthomelas,2004-11-27,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+156771,F19259,F19259,strict,correct,False,,,2,BBM:F019259; MO:156771,inocybe rennyi,2004-11-27,,"victoria, saanich, observatory hill",inocybe rennyi,2004-11-27,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+85244,F27331,F27331,strict,correct,False,,,2,BBM:F027331; MO:85244,ceriporiopsis subvermispora,2009-12-25,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",ceriporiopsis subvermispora,2009-12-25,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+132649,F16319,,,absent,,,,,,,,,,,,,
+166061,F29822,,,absent,,,,,,,,,,,,,
+75671,F19354,F19354,strict,correct,False,,,2,BBM:F019354; MO:75671,inocybe grammata,2005-11-13,,"victoria, saanich, observatory hill",inocybe grammata,2005-11-13,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+74998,F19660,F19660,strict,correct,False,,,2,BBM:F019660; MO:74998,inocybe praetervisa,2009-06-21,,"victoria, saanich, observatory hill",inocybe praetervisa,2009-06-21,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+74901,F19655,F19655,similar,correct,False,,,2,BBM:F019655; MO:74901,inocybe amblyspora,2009-05-21,,"victoria, saanich, observatory hill",inocybe amblyospora,2009-05-21,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+73020,F19465,F19465,strict,correct,False,,,2,BBM:F019465; MO:73020,inocybe fuscodisca,2007-11-07,,"victoria, saanich, observatory hill",inocybe fuscodisca,2007-11-07,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+72897,F19521,F19521,strict,correct,False,,,2,BBM:F019521; MO:72897,inocybe dulcamara,2008-06-15,,"victoria, saanich, observatory hill",inocybe dulcamara,2008-06-15,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+72889,F19522,,,absent,,,,,,,,,,,,,
+72857,F19492,,,absent,,,,,,,,,,,,,
+71652,F19441,,,absent,,,,,,,,,,,,,
+146033,F33821,,,absent,,,,,,,,,,,,,
+148518,F26145,F26145,strict,correct,False,,,2,BBM:F026145; MO:148518,pluteus pumae,2013-10-12,,"victoria, saanich peninsula, observatory hill; 'ravine"" on the w margin of observatory road, shortcut between the admin buildings and the hairpin curve",pluteus pumae,2013-10-12,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+330089,F19540,F19540,strict,correct,False,,,2,BBM:F019540; MO:330089,inocybe pallidicremea,2008-10-17,,"victoria, saanich, observatory hill",inocybe pallidicremea,2008-10-17,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+64347,F24557,,,absent,,,,,,,,,,,,,
+164803,F26479,F26479,strict,correct,False,,,2,BBM:F026479; MO:164803,tephrocybe boudieri,2008-01-25,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road going up",tephrocybe boudieri,2008-01-25,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+160579,F25924,,,absent,,,,,,,,,,,,,
+159014,F25111,F25111,strict,correct,False,,,2,BBM:F025111; MO:159014,tomentella terrestris,2011-06-15,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",tomentella terrestris,2011-06-15,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+149944,F26200,F26200,strict,correct,False,,,2,BBM:F026200; MO:149944,psathyrella longistriata,2013-10-24,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",psathyrella longistriata,2013-10-24,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+144428,F25553,,,absent,,,,,,,,,,,,,
+136789,F25988,F25988,strict,correct,False,,,2,BBM:F025988; MO:136789,lasiosphaeria strigosa,2013-06-10,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road",lasiosphaeria strigosa,2013-06-10,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+129959,F25876,,,absent,,,,,,,,,,,,,
+95526,F25496,F25496,strict,correct,False,,,2,BBM:F025496; MO:95526,mycena leptocephala,2012-05-25,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",mycena leptocephala,2012-05-25,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+71570,F29427,,,absent,,,,,,,,,,,,,
+218820,F20130,F20130,similar,correct,False,,,2,BBM:F020130; MO:218820,cortinarius biformis,2009-11-18,,"victoria, saanich, observatory hill",cortinarius biformis,2009-11-08,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+202712,F27094,F27094,strict,correct,False,,,2,BBM:F027094; MO:202712,hebeloma cavipes,2009-10-27,,"victoria, saanich peninsula, observatory hill; mixed forest behind the small dome",hebeloma cavipes,2009-10-27,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+153803,F26366,F26366,strict,correct,False,,,2,BBM:F026366; MO:153803,tricholoma virgatum,2013-11-26,,"victoria, saanich peninsula, observatory hill; between the paved road and the ephemeral creek",tricholoma virgatum,2013-11-26,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+153618,F26274,F26274,strict,correct,False,,,2,BBM:F026274; MO:153618,cortinarius candelaris,2013-11-14,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",cortinarius candelaris,2013-11-14,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+153612,F26339,F26339,strict,correct,False,,,2,BBM:F026339; MO:153612,russula crenulata,2013-11-20,,"victoria, saanich peninsula, observatory hill; ridge behind the small dome",russula crenulata,2013-11-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+151560,F26246,F26246,strict,correct,False,,,2,BBM:F026246; MO:151560,hygrophorus eburneus,2013-11-06,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",hygrophorus eburneus,2013-11-06,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+149941,F26163,,,absent,,,,,,,,,,,,,
+149863,F26116,F26116,strict,correct,False,,,2,BBM:F026116; MO:149863,mycena mirata,2013-10-08,,"victoria, saanich peninsula, observatory hill; 'ravine"" on the w margin of observatory road, shortcut between the admin buildings and the hairpin curve",mycena mirata,2013-10-08,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+148514,F26148,F26148,strict,correct,False,,,4,BBM:F026148; BBM:F026149; MO:148514; MO:148517,russula cessans,2013-10-12,,"victoria, saanich peninsula, observatory hill; along the road on the right side of the road going down from the admin buildings to the hairpin curve",russula cessans,2013-10-12,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+145997,F26060,F26060,strict,correct,False,,,2,BBM:F026060; MO:145997,coprinopsis friesii,2013-09-17,,"victoria, saanich peninsula, observatory hill; along the paved road, just above the main gate, on the right side going up",coprinopsis friesii,2013-09-17,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+144839,F26026,F26026,strict,correct,False,,,2,BBM:F026026; MO:144839,orbilia sarraziniana,2013-08-21,,"victoria, saanich peninsula, observatory hill; below the paved road, margin of the drying up small wetland",orbilia sarraziniana,2013-08-21,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+144427,F26028,F26028,strict,correct,False,,,2,BBM:F026028; MO:144427,phlebia subochracea,2013-08-21,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",phlebia subochracea,2013-08-21,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+144387,F26038,F26038,strict,correct,False,,,2,BBM:F026038; MO:144387,calyptella capula,2013-08-30,,"victoria, saanich peninsula, observatory hill; nw corner",calyptella capula,2013-08-30,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+139393,F25923,,,absent,,,,,,,,,,,,,
+136760,F25991,F25991,strict,correct,False,,,2,BBM:F025991; MO:136760,skeletocutis alutacea,2013-06-10,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road",skeletocutis alutacea,2013-06-10,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+136429,F25908,F25908,strict,correct,False,,,2,BBM:F025908; MO:136429,perrotia distincta,2013-04-22,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",perrotia distincta,2013-04-22,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+130240,F25875,F25875,strict,correct,False,,,2,BBM:F025875; MO:130240,lachnellula gallica,2013-03-03,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",lachnellula gallica,2013-03-03,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+128847,F25806,F25806,strict,correct,False,,,2,BBM:F025806; MO:128847,nemania aenea,2013-02-03,,"victoria, saanich peninsula, observatory hill; the ridge behind the small dome",nemania aenea,2013-02-03,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+106282,F23430,F23430,similar,correct,False,,,4,BBM:F023427; BBM:F023430; MO:106279; MO:106282,inocybe assimilata,2012-02-19,,"victoria, observatory hill; ridge behind the small dome",inocybe assimilata,2012-02-19,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+237405,F28978,F28978,strict,correct,False,,,2,BBM:F028978; MO:237405,resupinatus applicatus,2006-11-07,,"victoria, saanich peninsula, observatory hill; mixed forest behind the smaller dome",resupinatus applicatus,2006-11-07,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+103034,F23445,F23445,strict,correct,False,,,2,BBM:F023445; MO:103034,inocybe calida,2012-07-20,,"victoria, observatory hill; along the paved road just above the main gate on the right side going up",inocybe calida,2012-07-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+102451,F25547,F25547,strict,correct,False,,,2,BBM:F025547; MO:102451,amanita gemmata,2012-07-20,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",amanita gemmata,2012-07-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+98424,F25524,F25524,strict,correct,False,,,3,BBM:F025524; BBM:F025523; MO:98424,pluteus primus,2012-06-20,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",pluteus primus,2012-06-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+66969,F24400,,,absent,,,,,,,,,,,,,
+152711,F26258,F26258,similar,correct,False,,,2,BBM:F026258; MO:152711,lepista irina,2013-11-06,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",lepista irina,2013-11-14,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+65673,F27310,F27310,similar,correct,False,,,5,BBM:F027310; BBM:F027034; BBM:F035450; BBM:F035572; MO:65673,leptoporus mollis,2009-12-18,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",leptoporus mollis,2009-12-19,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+65167,F26544,,,absent,,,,,,,,,,,,,
+64910,F20266,F20266,similar,correct,False,,,2,BBM:F020266; MO:64910,inocybe calamistrata,2010-01-01,,"victoria, saanich, observatory hill",inocybe calamistrata,2010-06-11,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+64908,F20228,,,absent,,,,,,,,,,,,,
+64000,F26599,F26599,strict,correct,False,,,2,BBM:F026599; MO:64000,scutellinia scutellata,2008-07-03,,"victoria, saanich peninsula, observatory hill; mixed forest between the paved road and the ephemeral creek",scutellinia scutellata,2008-07-03,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+63767,F26526,F26526,strict,correct,False,,,2,BBM:F026526; MO:63767,mycena longiseta,2008-02-21,,"victoria, saanich peninsula, observatory hill; 'ravine"" on the w margin of observatory road, shortcut between the admin buildings and the hairpin curve",mycena longiseta,2008-02-21,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+203748,F24279,F24279,strict,correct,False,,,2,BBM:F024279; MO:203748,pithya vulgaris,2010-02-19,,"victoria, saanich peninsula, observatory hill; behind the small dome",pithya vulgaris,2010-02-19,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+191204,F29428,F29428,strict,correct,False,,,2,BBM:F029428; MO:191204,lepiota pseudoasperula,2007-10-29,,"victoria, saanich peninsula, observatory hill; forest margin behind the smaller dome",lepiota pseudoasperula,2007-10-29,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+190669,F26410,F26410,strict,correct,False,,,2,BBM:F026410; MO:190669,tricholoma griseoviolaceum,2013-11-29,,"victoria, saanich peninsula, observatory hill; e slope behind the smaller dome",tricholoma griseoviolaceum,2013-11-29,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+172838,F28929,F28929,strict,correct,False,,,2,BBM:F028929; MO:172838,conocybe tenera,2006-10-24,,"victoria, saanich peninsula, observatory hill; mixed forest between the paved road and the ephemeral creek",conocybe tenera,2006-10-24,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+172733,F28792,F28792,strict,correct,False,,,2,BBM:F028792; MO:172733,tephrocybe boudieri,2006-01-26,,"victoria, saanich peninsula, observatory hill; mixed forest between the paved road and the ephemeral creek",tephrocybe boudieri,2006-01-26,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+140003,F16326,,,absent,,,,,,,,,,,,,
+170938,F24476,,,absent,,,,,,,,,,,,,
+170808,F24455,F24455,strict,correct,False,,,2,BBM:F024455; MO:170808,lachnum rhytismatis,2010-06-14,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",lachnum rhytismatis,2010-06-14,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+170785,F24448,F24448,strict,correct,False,,,2,BBM:F024448; MO:170785,tubulicrinis angustus,2010-06-11,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road",tubulicrinis angustus,2010-06-11,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+168948,F29154,F29154,strict,correct,False,,,2,BBM:F029154; MO:168948,mycena subsupina,2007-02-25,,"victoria, saanich peninsula, observatory hill; mixed forest between the paved road and the ephemeral creek",mycena subsupina,2007-02-25,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+166541,F22962,F22962,strict,correct,False,,,2,BBM:F022962; MO:166541,russula cessans,2008-10-26,,"victoria, observatory hill; along the paved road just above the main gate on the right side going up",russula cessans,2008-10-26,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+166104,F29841,F29841,strict,correct,False,,,2,BBM:F029841; MO:166104,lepiota josserandii,2008-10-17,,"victoria, saanich peninsula, observatory hill; 'ravine"" on the w margin of observatory road, shortcut between the admin buildings and the hairpin curve",lepiota josserandii,2008-10-17,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+166103,F29840,F29840,strict,correct,False,,,2,BBM:F029840; MO:166103,lepiota cristata,2008-10-17,,"victoria, saanich peninsula, observatory hill; 'ravine"" on the w margin of observatory road, shortcut between the admin buildings and the hairpin curve",lepiota cristata,2008-10-17,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+165193,F26589,F26589,strict,correct,False,,,2,BBM:F026589; MO:165193,scutellinia scutellata,2008-06-17,,"victoria, saanich peninsula, observatory hill; e slope below the observatory rd., just below the hairpin curve",scutellinia scutellata,2008-06-17,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+163801,F20103,,,absent,,,,,,,,,,,,,
+161585,F24420,F24420,strict,correct,False,,,2,BBM:F024420; MO:161585,mycena ulmicola,2010-05-23,,"victoria, saanich peninsula, observatory hill; e-slope",mycena ulmicola,2010-05-23,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+161569,F24374,F24374,strict,correct,False,,,2,BBM:F024374; MO:161569,hyphoderma setigerum,2010-05-08,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",hyphoderma setigerum,2010-05-08,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+161534,F24342,F24342,strict,correct,False,,,2,BBM:F024342; MO:161534,hymenoscyphus herbarum,2010-04-18,,"victoria, saanich peninsula, observatory hill; forest behind the small dome",hymenoscyphus herbarum,2010-04-18,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+161533,F24363,F24363,strict,correct,False,,,2,BBM:F024363; MO:161533,schizopora paradoxa,2010-04-18,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",schizopora paradoxa,2010-04-18,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+161532,F24358,F24358,strict,correct,False,,,2,BBM:F024358; MO:161532,omphalina rivulicola,2010-04-18,,"victoria, saanich peninsula, observatory hill; e-slope, below the paved road, along the wetland",omphalina rivulicola,2010-04-18,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+160704,F26118,F26118,similar,correct,False,,,5,BBM:F026118; BBM:F026198; BBM:F035227; MO:155785; MO:160704,mycenella bryophila,2013-10-08,,"victoria, saanich peninsula, observatory hill; 'ravine"" on the w margin of observatory road, shortcut between the admin buildings and the hairpin curve",mycenella bryophila,2013-11-06,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+160662,F26107,F26107,strict,correct,False,,,2,BBM:F026107; MO:160662,inocybe dulcamara,2013-10-08,,"victoria, saanich peninsula, observatory hill; along the road on the left side of the road going down from the admin buildings to the hairpin curve",inocybe dulcamara,2013-10-08,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+160580,F25937,F25937,similar,correct,False,,,3,BBM:F025937; BBM:F034626; MO:160580,hymenochaete fuliginosa,2013-05-20,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",hymenochaete fuliginosa,2013-04-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+160424,F25961,F25961,strict,correct,False,,,2,BBM:F025961; MO:160424,crepidotus epibryus,2013-05-28,,"victoria, saanich peninsula, observatory hill; below the paved road, above the ephemeral creek",crepidotus epibryus,2013-05-28,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+160417,F25953,F25953,strict,correct,False,,,2,BBM:F025953; MO:160417,tremella aurantia,2013-05-20,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",tremella aurantia,2013-05-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+160381,F25927,F25927,strict,correct,False,,,2,BBM:F025927; MO:160381,nolanea lucida,2013-04-24,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",nolanea lucida,2013-04-24,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+160380,F25928,F25928,strict,correct,False,,,2,BBM:F025928; MO:160380,ramaria marrii,2013-04-24,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",ramaria marrii,2013-04-24,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+160378,F25930,F25930,strict,correct,False,,,2,BBM:F025930; MO:160378,tarzetta cupularis,2013-04-24,,"victoria, saanich peninsula, observatory hill; below the paved road, around and above a small wetland connected with the ephemeral creek",tarzetta cupularis,2013-04-24,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+160377,F25915,F25915,strict,correct,False,,,2,BBM:F025915; MO:160377,helvella compressa,2013-04-24,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",helvella compressa,2013-04-24,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+159833,F25282,,,absent,,,,,,,,,,,,,
+159821,F25250,,,absent,,,,,,,,,,,,,
+159804,F25226,F25226,strict,correct,False,,,2,BBM:F025226; MO:159804,galerina fontinalis,2011-11-10,,"victoria, saanich peninsula, observatory hill; behind the smaller dome, rock outcrops by the royal canadian astronomical society hut",galerina fontinalis,2011-11-10,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+159756,F25200,F25200,strict,correct,False,,,2,BBM:F025200; MO:159756,leptoporus mollis,2011-10-25,,"victoria, saanich peninsula, observatory hill; behind the small dome, ridge",leptoporus mollis,2011-10-25,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+159755,F25203,F25203,strict,correct,False,,,2,BBM:F025203; MO:159755,ripartites serotinus,2011-10-25,,"victoria, saanich peninsula, observatory hill; behind the small dome, ridge",ripartites serotinus,2011-10-25,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+159754,F25202,F25202,strict,correct,False,,,2,BBM:F025202; MO:159754,pholiota decorata,2011-10-25,,"victoria, saanich peninsula, observatory hill; behind the small dome, ridge",pholiota decorata,2011-10-25,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+159753,F25199,F25199,strict,correct,False,,,2,BBM:F025199; MO:159753,lepiota josserandii,2011-10-25,,"victoria, saanich peninsula, observatory hill; disturbed area in front of the administrative building",lepiota josserandii,2011-10-25,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+159703,F24923,F24923,strict,correct,False,,,2,BBM:F024923; MO:159703,hyphoderma cremeoalbum,2011-02-10,,"victoria, saanich peninsula, observatory hill; southern slope below the main herzberg institute of astrophysics building",hyphoderma cremeoalbum,2011-02-10,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+159702,F24943,F24943,strict,correct,False,,,2,BBM:F024943; MO:159702,gloeocystidiellum furfuraceum,2011-02-13,,"victoria, saanich peninsula, observatory hill; 'ravine"" on the w margin of observatory road, shortcut between the admin buildings and the hairpin curve",gloeocystidiellum furfuraceum,2011-02-13,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+159694,F25462,F24916,strict,wrong_F,False,,,2,BBM:F024916; MO:159694,botryobasidium conspersum,2011-02-10,,"victoria, saanich peninsula, observatory hill; southern slope below the main herzberg institute of astrophysics building",botryobasidium conspersum,2011-02-10,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+159693,F24944,F24944,strict,correct,False,,,2,BBM:F024944; MO:159693,grandinia alutaria,2011-02-13,,"victoria, saanich peninsula, observatory hill; 'ravine"" on the w margin of observatory road, shortcut between the admin buildings and the hairpin curve",grandinia alutaria,2011-02-13,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+159336,F25002,F25002,strict,correct,False,,,2,BBM:F025002; MO:159336,paullicorticium niveocremeum,2011-03-15,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",paullicorticium niveocremeum,2011-03-15,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+159319,F25005,,,absent,,,,,,,,,,,,,
+159256,F25063,F25063,strict,correct,False,,,3,BBM:F025063; BBM:F025064; MO:159256,xenasma rimicola,2011-05-12,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road",xenasma rimicola,2011-05-12,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+159096,F25068,F25068,strict,correct,False,,,2,BBM:F025068; MO:159096,lachnum virgineum,2011-05-18,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",lachnum virgineum,2011-05-18,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+159094,F25070,,,absent,,,,,,,,,,,,,
+159093,F25092,F25092,strict,correct,False,,,3,BBM:F025092; BBM:F025093; MO:159093,tubulicrinis glebulosus,2011-05-28,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",tubulicrinis glebulosus,2011-05-28,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+159049,F25080,F25080,strict,correct,False,,,2,BBM:F025080; MO:159049,basidiodendron eyrei,2011-05-28,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",basidiodendron eyrei,2011-05-28,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+159048,F25084,F25084,similar,correct,False,,,2,BBM:F025084; MO:159048,nitschkia grevilllei,2011-05-28,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",nitschkia grevillei,2011-05-28,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+159047,F25091,F25091,strict,correct,False,,,2,BBM:F025091; MO:159047,tubulicrinis borealis,2011-05-28,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",tubulicrinis borealis,2011-05-28,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+159011,F25103,F25103,strict,correct,False,,,2,BBM:F025103; MO:159011,nitschkia confertula,2011-06-15,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",nitschkia confertula,2011-06-15,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+157498,F26371,F26371,strict,correct,False,,,2,BBM:F026371; MO:157498,cortinarius idahoensis,2013-11-27,,"victoria, saanich peninsula, observatory hill; along the paved road, just above the main gate, on the right side going up",cortinarius idahoensis,2013-11-27,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+156944,F29666,,,absent,,,,,,,,,,,,,
+156089,F26406,F26406,strict,correct,False,,,2,BBM:F026406; MO:156089,cortinarius paleaceus,2013-11-29,,"victoria, saanich peninsula, observatory hill; ridge behind the small dome",cortinarius paleaceus,2013-11-29,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+155785,F26198,F26198,similar,correct,False,,,5,BBM:F026118; BBM:F026198; BBM:F035227; MO:155785; MO:160704,mycenella bryophila,2013-10-24,,"victoria, saanich peninsula, observatory hill; ridge behind the small dome",mycenella bryophila,2013-10-24,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+155784,F26194,,,absent,,,,,,,,,,,,,
+155754,F26391,,,absent,,,,,,,,,,,,,
+155752,F26392,F26392,strict,correct,False,,,2,BBM:F026392; MO:155752,otidea smithii,2013-11-27,,"victoria, saanich peninsula, observatory hill; between the paved road and the ephemeral creek",otidea smithii,2013-11-27,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+155746,F26380,F26380,strict,correct,False,,,2,BBM:F026380; MO:155746,hygrocybe miniata,2013-11-27,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",hygrocybe miniata,2013-11-27,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+155602,F26404,F26404,similar,correct,False,,,2,BBM:F026404; MO:155602,cortinarius laetus,2013-11-29,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",cortinarius laetus,2013-11-27,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+154945,F26379,F26379,strict,correct,False,,,2,BBM:F026379; MO:154945,hygrocybe acutoconica,2013-11-27,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",hygrocybe acutoconica,2013-11-27,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+154944,F26397,F26397,strict,correct,False,,,2,BBM:F026397; MO:154944,thelephora palmata,2013-11-27,,"victoria, saanich peninsula, observatory hill; along the paved road, just above the main gate, on the right side going up",thelephora palmata,2013-11-27,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+154934,F26172,F26172,strict,correct,False,,,2,BBM:F026172; MO:154934,hebeloma velutipes,2013-10-24,,"victoria, saanich peninsula, observatory hill; ridge behind the small dome",hebeloma velutipes,2013-10-24,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+154933,F26173,F26173,strict,correct,False,,,2,BBM:F026173; MO:154933,hebeloma cavipes,2013-10-24,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",hebeloma cavipes,2013-10-24,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+154902,F26346,F26346,similar,correct,False,,,2,BBM:F026346; MO:154902,cortinarius variicolor,2013-11-26,,"victoria, saanich peninsula, observatory hill; between the paved road and the ephemeral creek",cortinarius variicolor,2013-11-27,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+154832,F26409,F26409,similar,correct,False,,,3,BBM:F026409; BBM:F026355; MO:154832,hypomyces cervinigenus,2013-11-29,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",hypomyces cervinigenus,2013-11-27,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+154831,F26372,F26372,strict,correct,False,,,2,BBM:F026372; MO:154831,cortinarius infractus,2013-11-27,,"victoria, saanich peninsula, observatory hill; between the paved road and the ephemeral creek",cortinarius infractus,2013-11-27,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+154830,F26344,F26344,strict,correct,False,,,2,BBM:F026344; MO:154830,cortinarius infractus,2013-11-26,,"victoria, saanich peninsula, observatory hill; between the paved road and the ephemeral creek",cortinarius infractus,2013-11-26,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+154826,F26359,F26359,strict,correct,False,,,2,BBM:F026359; MO:154826,lepista densifolia,2013-11-26,,"victoria, saanich peninsula, observatory hill; between the paved road and the ephemeral creek",lepista densifolia,2013-11-26,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+154494,F26319,F26319,strict,correct,False,,,2,BBM:F026319; MO:154494,cortinarius incisus,2013-11-20,,"victoria, saanich peninsula, observatory hill; ridge behind the small dome",cortinarius incisus,2013-11-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+154379,F26377,F26377,strict,correct,False,,,2,BBM:F026377; MO:154379,hebeloma praeolidum,2013-11-27,,"victoria, saanich peninsula, observatory hill; along the paved road, just above the main gate",hebeloma praeolidum,2013-11-27,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+154378,F26400,F26400,strict,correct,False,,,2,BBM:F026400; MO:154378,amanita constricta,2013-11-29,,"victoria, saanich peninsula, observatory hill; e slope behind the smaller dome",amanita constricta,2013-11-29,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+154377,F26376,F26376,strict,correct,False,,,2,BBM:F026376; MO:154377,gymnopilus picreus,2013-11-27,,"victoria, saanich peninsula, observatory hill; between the paved road and the ephemeral creek",gymnopilus picreus,2013-11-27,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+154375,F26341,F26341,similar,correct,False,,,2,BBM:F026341; MO:154375,cortinarius epipoleus,2013-11-26,,"victoria, saanich peninsula, observatory hill; below the paved road, above the ephemeral creek",cortinarius epipoleus,2013-11-27,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+154374,F26370,F26370,similar,correct,False,,,2,BBM:F026370; MO:154374,cortinarius helveolus,2013-11-27,,"victoria, saanich peninsula, observatory hill; between the paved road and the ephemeral creek",cortinarius helvolus,2013-11-27,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+154366,F26388,F26388,strict,correct,False,,,2,BBM:F026388; MO:154366,inocybe pudica,2013-11-27,,"victoria, saanich peninsula, observatory hill; between the paved road and the ephemeral creek",inocybe pudica,2013-11-27,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+154364,F26354,F26354,strict,correct,False,,,2,BBM:F026354; MO:154364,hygrocybe conica,2013-11-26,,"victoria, saanich peninsula, observatory hill; between the paved road and the ephemeral creek",hygrocybe conica,2013-11-26,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+154363,F26347,F26347,strict,correct,False,,,2,BBM:F026347; MO:154363,cuphophyllus pratensis,2013-11-26,,"victoria, saanich peninsula, observatory hill; between the paved road and the ephemeral creek",cuphophyllus pratensis,2013-11-26,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+154362,F26345,F26345,strict,correct,False,,,2,BBM:F026345; MO:154362,cortinarius obtusus,2013-11-26,,"victoria, saanich peninsula, observatory hill; between the paved road and the ephemeral creek",cortinarius obtusus,2013-11-26,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+154355,F26348,F26348,strict,correct,False,,,2,BBM:F026348; MO:154355,cystolepiota moelleri,2013-11-26,,"victoria, saanich peninsula, observatory hill; between the paved road and the ephemeral creek",cystolepiota moelleri,2013-11-26,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+153895,F26395,F26395,strict,correct,False,,,2,BBM:F026395; MO:153895,russula adusta,2013-11-27,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",russula adusta,2013-11-27,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+153894,F26368,,,absent,,,,,,,,,,,,,
+153893,F26320,F26320,strict,correct,False,,,2,BBM:F026320; MO:153893,cortinarius laetus,2013-11-20,,"victoria, saanich peninsula, observatory hill; ridge behind the small dome",cortinarius laetus,2013-11-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+153890,F26321,F26321,strict,correct,False,,,2,BBM:F026321; MO:153890,cortinarius obtusus,2013-11-20,,"victoria, saanich peninsula, observatory hill; ridge behind the small dome",cortinarius obtusus,2013-11-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+153840,F26322,F26322,strict,correct,False,,,2,BBM:F026322; MO:153840,cortinarius velenovskyi,2013-11-20,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",cortinarius velenovskyi,2013-11-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+153837,F26318,F26318,strict,correct,False,,,2,BBM:F026318; MO:153837,cortinarius helvolus,2013-11-20,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",cortinarius helvolus,2013-11-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+153802,F26340,F26340,strict,correct,False,,,2,BBM:F026340; MO:153802,aphroditeola olida,2013-11-26,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",aphroditeola olida,2013-11-26,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+153801,F26361,F26361,strict,correct,False,,,2,BBM:F026361; MO:153801,ramaria rubrievanescens,2013-11-26,,"victoria, saanich peninsula, observatory hill; between the paved road and the ephemeral creek",ramaria rubrievanescens,2013-11-26,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+153626,F26314,F26314,strict,correct,False,,,2,BBM:F026314; MO:153626,cortinarius acutus,2013-11-20,,"victoria, saanich peninsula, observatory hill; ridge behind the small dome",cortinarius acutus,2013-11-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+153624,F26334,F26334,strict,correct,False,,,2,BBM:F026334; MO:153624,melanoleuca stridula,2013-11-20,,"victoria, saanich peninsula, observatory hill; ridge behind the small dome",melanoleuca stridula,2013-11-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+153598,F26323,F26323,strict,correct,False,,,2,BBM:F026323; MO:153598,heyderia abietis,2013-11-20,,"victoria, saanich peninsula, observatory hill; ridge behind the small dome",heyderia abietis,2013-11-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+153552,F26281,F26281,strict,correct,False,,,2,BBM:F026281; MO:153552,galerina marginata,2013-11-14,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",galerina marginata,2013-11-14,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+152922,F26242,,,absent,,,,,,,,,,,,,
+157064,F19276,F19276,strict,correct,False,,,2,BBM:F019276; MO:157064,inocybe nitidiuscula,2004-12-28,,"victoria, saanich, observatory hill",inocybe nitidiuscula,2004-12-28,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+152704,F26271,F26271,strict,correct,False,,,2,BBM:F026271; MO:152704,clavariadelphus truncatus,2013-11-14,,"victoria, saanich peninsula, observatory hill; between the paved road and the ephemeral creek",clavariadelphus truncatus,2013-11-14,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+152320,F26245,F26245,strict,correct,False,,,2,BBM:F026245; MO:152320,gymnopus fuscopurpureus,2013-11-06,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",gymnopus fuscopurpureus,2013-11-06,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+152319,F26299,F26299,strict,correct,False,,,2,BBM:F026299; MO:152319,laccaria bicolor,2013-11-14,,"victoria, saanich peninsula, observatory hill; between the paved road and the ephemeral creek",laccaria bicolor,2013-11-14,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+152317,F26305,F26305,similar,correct,False,,,2,BBM:F026305; MO:152317,russula rauoltii,2013-11-14,,"victoria, saanich peninsula, observatory hill; between the paved road and the ephemeral creek",russula raoultii,2013-11-14,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+152315,F26301,F26301,strict,correct,False,,,2,BBM:F026301; MO:152315,macrotyphula juncea,2013-11-14,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",macrotyphula juncea,2013-11-14,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+152312,F26312,F26312,strict,correct,False,,,2,BBM:F026312; MO:152312,tricholoma sulphureum,2013-11-14,,"victoria, saanich peninsula, observatory hill; between the paved road and the ephemeral creek",tricholoma sulphureum,2013-11-14,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+152311,F26308,F26308,strict,correct,False,,,2,BBM:F026308; MO:152311,tricholoma aurantio,2013-11-14,,"victoria, saanich peninsula, observatory hill; between the paved road and the ephemeral creek",tricholoma aurantio,2013-11-14,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+152310,F26307,F26307,strict,correct,False,,,2,BBM:F026307; MO:152310,russula stuntzii,2013-11-14,,"victoria, saanich peninsula, observatory hill; between the paved road and the ephemeral creek",russula stuntzii,2013-11-14,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+152309,F26270,,,absent,,,,,,,,,,,,,
+152307,F26257,F26257,strict,correct,False,,,2,BBM:F026257; MO:152307,lepiota felina,2013-11-06,,"victoria, saanich peninsula, observatory hill; between the paved road and the ephemeral creek",lepiota felina,2013-11-06,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+152235,F26309,F26309,strict,correct,False,,,2,BBM:F026309; MO:152235,tricholoma pardinum,2013-11-14,,"victoria, saanich peninsula, observatory hill; along the paved road, just above the main gate, on the right side going up",tricholoma pardinum,2013-11-14,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+152200,F26268,F26268,strict,correct,False,,,2,BBM:F026268; MO:152200,onygena corvina,2013-11-10,,"victoria, saanich peninsula, observatory hill; ridge behind the small dome",onygena corvina,2013-11-10,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+152199,F26267,F26267,strict,correct,False,,,2,BBM:F026267; MO:152199,endogone lactiflua,2013-11-10,,"victoria, saanich peninsula, observatory hill; ridge behind the small dome",endogone lactiflua,2013-11-10,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+152086,F26195,,,absent,,,,,,,,,,,,,
+151889,F26231,F26231,strict,correct,False,,,2,BBM:F026231; MO:151889,inocybe sororia,2013-10-28,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road",inocybe sororia,2013-10-28,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+151888,F26230,F26230,strict,correct,False,,,2,BBM:F026230; MO:151888,inocybe sindonia,2013-10-28,,"victoria, saanich peninsula, observatory hill; along the paved road, just above the main gate, on the left side going up, along the driveway to the forme caretaker's property",inocybe sindonia,2013-10-28,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+151887,F26216,F26216,strict,correct,False,,,3,BBM:F026216; BBM:F026217; MO:151887,hebeloma praeolidum,2013-10-28,,"victoria, saanich peninsula, observatory hill; along the paved road, just above the main gate, on the left side going up",hebeloma praeolidum,2013-10-28,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+151874,F26220,F26220,strict,correct,False,,,2,BBM:F026220; MO:151874,hygrocybe singeri,2013-10-28,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road",hygrocybe singeri,2013-10-28,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+151873,F26029,F26029,strict,correct,False,,,2,BBM:F026029; MO:151873,physisporinus rivulosus,2013-08-21,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",physisporinus rivulosus,2013-08-21,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+151566,F26238,F26238,strict,correct,False,,,2,BBM:F026238; MO:151566,tricholoma intermedium,2013-10-28,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road",tricholoma intermedium,2013-10-28,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+151565,F26219,F26219,strict,correct,False,,,2,BBM:F026219; MO:151565,hydnellum aurantiacum,2013-10-28,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road",hydnellum aurantiacum,2013-10-28,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+151564,F26237,F26237,strict,correct,False,,,2,BBM:F026237; MO:151564,russula xerampelina,2013-10-28,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road",russula xerampelina,2013-10-28,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+151561,F26236,F26236,strict,correct,False,,,2,BBM:F026236; MO:151561,russula densifolia,2013-10-28,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road",russula densifolia,2013-10-28,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+151558,F26101,F25839,similar,wrong_F,False,,,3,BBM:F025839; BBM:F026303; MO:151558,rhodocybe aureicystidiata,2013-02-20,,"victoria, saanich peninsula, observatory hill; e slope, close to the ridge below the larger dome",rhodocybe aureicystidiata,2013-10-08,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+151393,F26255,F26255,strict,correct,False,,,2,BBM:F026255; MO:151393,inocybe lilacina,2013-11-06,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",inocybe lilacina,2013-11-06,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+151392,F26252,F26252,strict,correct,False,,,2,BBM:F026252; MO:151392,inocybe grammata,2013-11-06,,"victoria, saanich peninsula, observatory hill; ridge behind the small dome",inocybe grammata,2013-11-06,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+151390,F26239,F26239,similar,correct,False,,,13,BBM:F026239; BBM:F025757; BBM:F025819; BBM:F025897; BBM:F034600; BBM:F034689; BBM:F034846; BBM:F035172; BBM:F035180; BBM:F035290; BBM:F035373; BBM:F035526; MO:151390,callistosporium lueteo,2013-11-06,,"victoria, saanich peninsula, observatory hill; ridge behind the small dome",callistosporium luteo,2013-11-06,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+151312,F26082,F26082,strict,correct,False,,,2,BBM:F026082; MO:151312,calocera cornea,2013-10-01,,"victoria, saanich peninsula, observatory hill; ridge behind the small dome",calocera cornea,2013-10-01,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+151310,F26083,F26083,strict,correct,False,,,2,BBM:F026083; MO:151310,cantharellula umbonata,2013-10-01,,"victoria, saanich peninsula, observatory hill; ridge behind the small dome",cantharellula umbonata,2013-10-01,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+151306,F26084,F26084,strict,correct,False,,,2,BBM:F026084; MO:151306,clitocybe trulliformis,2013-10-01,,"victoria, saanich peninsula, observatory hill; ridge behind the small dome",clitocybe trulliformis,2013-10-01,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+151305,F26092,F26092,strict,correct,False,,,2,BBM:F026092; MO:151305,mycena sanguinolenta,2013-10-01,,"victoria, saanich peninsula, observatory hill; ridge behind the small dome",mycena sanguinolenta,2013-10-01,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+150955,F23383,F23383,strict,correct,False,,,2,BBM:F023383; MO:150955,cortinarius vernalis,2011-05-28,,"victoria, observatory hill; ridge behind the small dome",cortinarius vernalis,2011-05-28,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+150347,F26171,F26171,strict,correct,False,,,2,BBM:F026171; MO:150347,gymnopus subterginus,2013-10-24,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",gymnopus subterginus,2013-10-24,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+150346,F26208,F26208,strict,correct,False,,,2,BBM:F026208; MO:150346,tubaria vinicolor,2013-10-24,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",tubaria vinicolor,2013-10-24,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+149942,F26197,F26197,strict,correct,False,,,2,BBM:F026197; MO:149942,mycena galericulata,2013-10-24,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",mycena galericulata,2013-10-24,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+149940,F26174,F26174,strict,correct,False,,,2,BBM:F026174; MO:149940,hygrocybe singeri,2013-10-24,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",hygrocybe singeri,2013-10-24,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+149939,F26205,F26205,strict,correct,False,,,2,BBM:F026205; MO:149939,russula placita,2013-10-24,,"victoria, saanich peninsula, observatory hill; ridge behind the small dome",russula placita,2013-10-24,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+149052,F26144,,,absent,,,,,,,,,,,,,
+149044,F26142,F26142,strict,correct,False,,,2,BBM:F026142; MO:149044,mycena maculata,2013-10-12,,"victoria, saanich peninsula, observatory hill; above the steep (wetern) side of the 'ravine"" on the w margin of observatory road, shortcut between the admin buildings and the hairpin curve",mycena maculata,2013-10-12,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+148533,F26128,,,absent,,,,,,,,,,,,,
+148517,F26149,F26149,strict,correct,False,,,4,BBM:F026148; BBM:F026149; MO:148514; MO:148517,russula cessans,2013-10-12,,"victoria, saanich peninsula, observatory hill; above the steep (wetern) side of the 'ravine"" on the w margin of observatory road, shortcut between the admin buildings and the hairpin curve",russula cessans,2013-10-12,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+148515,F26151,F26151,strict,correct,False,,,2,BBM:F026151; MO:148515,russula murrillii,2013-10-12,,"victoria, saanich peninsula, observatory hill; e slope below the observatory rd., just below the hairpin curve",russula murrillii,2013-10-12,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+148513,F26130,F26130,strict,correct,False,,,2,BBM:F026130; MO:148513,entoloma subsaundersii,2013-10-12,,"victoria, saanich peninsula, observatory hill; along the road on the right side of the road going down from the admin buildings to the hairpin curve",entoloma subsaundersii,2013-10-12,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+148507,F26110,F26110,strict,correct,False,,,2,BBM:F026110; MO:148507,inocybe sororia,2013-10-08,,"victoria, saanich peninsula, observatory hill; along the road on the left side of the road going down from the admin buildings to the hairpin curve",inocybe sororia,2013-10-08,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+148369,F26109,F26109,strict,correct,False,,,2,BBM:F026109; MO:148369,inocybe phaeodisca,2013-10-08,,"victoria, saanich peninsula, observatory hill; along the road on the left side of the road going down from the admin buildings to the hairpin curve",inocybe phaeodisca,2013-10-08,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+148364,F26123,F26123,strict,correct,False,,,2,BBM:F026123; MO:148364,strobilurus albipilatus,2013-10-08,,"victoria, saanich peninsula, observatory hill; 'ravine"" on the w margin of observatory road, shortcut between the admin buildings and the hairpin curve",strobilurus albipilatus,2013-10-08,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+147967,F26124,F26124,strict,correct,False,,,2,BBM:F026124; MO:147967,suillus caerulescens,2013-10-08,,"victoria, saanich peninsula, observatory hill; 'ravine"" on the w margin of observatory road, shortcut between the admin buildings and the hairpin curve",suillus caerulescens,2013-10-08,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+147965,F26099,F26099,strict,correct,False,,,2,BBM:F026099; MO:147965,xerocomellus diffractus,2013-10-08,,"victoria, saanich peninsula, observatory hill; above the steep (wetern) side of the 'ravine"" on the w margin of observatory road, shortcut between the admin buildings and the hairpin curve",xerocomellus diffractus,2013-10-08,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+147800,F26121,F26121,strict,correct,False,,,2,BBM:F026121; MO:147800,russula cascadensis,2013-10-08,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",russula cascadensis,2013-10-08,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+146405,F26056,F26056,strict,correct,False,,,2,BBM:F026056; MO:146405,cantharellus formosus,2013-09-17,,"victoria, saanich peninsula, observatory hill; along the paved road, just above the main gate, on the right side going up",cantharellus formosus,2013-09-17,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+146394,F26068,F26068,strict,correct,False,,,2,BBM:F026068; MO:146394,orbilia delicatula,2013-09-17,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",orbilia delicatula,2013-09-17,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+146314,F26065,F26065,strict,correct,False,,,2,BBM:F026065; MO:146314,leucoagaricus americanus,2013-09-17,,"victoria, saanich peninsula, observatory hill; along the paved road, just above the main gate, on the right side going up",leucoagaricus americanus,2013-09-17,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+146290,F26057,F26057,strict,correct,False,,,2,BBM:F026057; MO:146290,chlorophyllum brunneum,2013-09-17,,"victoria, saanich peninsula, observatory hill; along the paved road, just above the main gate, on the right side going up",chlorophyllum brunneum,2013-09-17,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+146214,F26071,F26071,strict,correct,False,,,2,BBM:F026071; MO:146214,phanerochaete sordida,2013-09-17,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",phanerochaete sordida,2013-09-17,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+146019,F26079,,,absent,,,,,,,,,,,,,
+145998,F26062,F26062,strict,correct,False,,,2,BBM:F026062; MO:145998,coprinopsis phaeospora,2013-09-17,,"victoria, saanich peninsula, observatory hill; along the paved road, just above the main gate, on the right side going up",coprinopsis phaeospora,2013-09-17,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+145996,F26061,F26061,strict,correct,False,,,2,BBM:F026061; MO:145996,coprinopsis gonophylla,2013-09-17,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",coprinopsis gonophylla,2013-09-17,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+145413,F26023,F26023,strict,correct,False,,,2,BBM:F026023; MO:145413,hyaloscypha quercicola,2013-08-21,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",hyaloscypha quercicola,2013-08-21,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+145346,F26045,F26045,similar,correct,False,,,5,BBM:F025977; BBM:F026045; BBM:F025846; MO:137896; MO:145346,ceriporia purpurea,2013-09-10,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road",ceriporia purpurea,2013-09-10,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+145220,F26046,F26046,strict,correct,False,,,2,BBM:F026046; MO:145220,coprinopsis cinerea,2013-09-10,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road",coprinopsis cinerea,2013-09-10,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+145219,F26047,F26047,strict,correct,False,,,2,BBM:F026047; MO:145219,coprinopsis nivea,2013-09-10,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road",coprinopsis nivea,2013-09-10,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+144649,F26024,F26024,strict,correct,False,,,2,BBM:F026024; MO:144649,lasiobelonium variegatum,2013-08-21,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",lasiobelonium variegatum,2013-08-21,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+144639,F26030,F26030,strict,correct,False,,,2,BBM:F026030; MO:144639,physisporinus vitreus,2013-08-21,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",physisporinus vitreus,2013-08-21,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+144627,F26036,,,absent,,,,,,,,,,,,,
+144430,F26020,,,absent,,,,,,,,,,,,,
+144358,F26037,,,absent,,,,,,,,,,,,,
+144126,F26034,F26034,strict,correct,False,,,2,BBM:F026034; MO:144126,simocybe sumptuosa,2013-08-21,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",simocybe sumptuosa,2013-08-21,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+144125,F26033,F26033,strict,correct,False,,,2,BBM:F026033; MO:144125,simocybe centunculus,2013-08-21,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",simocybe centunculus,2013-08-21,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+140347,F26012,F26012,strict,correct,False,,,2,BBM:F026012; MO:140347,fibulomyces mutabilis,2013-07-05,,"victoria, saanich peninsula, observatory hill; eastern slope behind the small dome",fibulomyces mutabilis,2013-07-05,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+139594,F26019,F26019,strict,correct,False,,,2,BBM:F026019; MO:139594,orbilia xanthostigma,2013-07-07,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",orbilia xanthostigma,2013-07-07,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+139556,F26000,F26000,similar,correct,False,,,2,BBM:F026000; MO:139556,galerina camerinoides,2013-06-29,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",galerina camarinoides,2013-06-29,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+139497,F26002,F26002,strict,correct,False,,,2,BBM:F026002; MO:139497,inocybe subcarpta,2013-06-29,,"victoria, saanich peninsula, observatory hill; ridge behind the small dome",inocybe subcarpta,2013-06-29,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+139355,F25913,F25913,strict,correct,False,,,2,BBM:F025913; MO:139355,cortinarius vernus,2013-04-24,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",cortinarius vernus,2013-04-24,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+139341,F25815,F25815,strict,correct,False,,,2,BBM:F025815; MO:139341,hysterographium flexuosum,2013-02-15,,"victoria, saanich peninsula, observatory hill; s-slope, below the paved road, along the ephemeral creek",hysterographium flexuosum,2013-02-15,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+138878,F26009,F26009,strict,correct,False,,,2,BBM:F026009; MO:138878,thelephora penicillata,2013-06-29,,"victoria, saanich peninsula, observatory hill; eastern slope behind the small dome, a small depresion with thuja plicata",thelephora penicillata,2013-06-29,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+138701,F25997,,,absent,,,,,,,,,,,,,
+138379,F25999,F25999,strict,correct,False,,,2,BBM:F025999; MO:138379,flammulaster muricatus,2013-06-29,,"victoria, saanich peninsula, observatory hill; ridge behind the small dome",flammulaster muricatus,2013-06-29,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+138260,F26007,F26007,strict,correct,False,,,2,BBM:F026007; MO:138260,parasola leiocephala,2013-06-29,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",parasola leiocephala,2013-06-29,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+137896,F25977,F25977,similar,correct,False,,,5,BBM:F025977; BBM:F026045; BBM:F025846; MO:137896; MO:145346,ceriporia purpurea,2013-06-10,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road",ceriporia purpurea,2013-05-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+137103,F25990,F25990,strict,correct,False,,,2,BBM:F025990; MO:137103,phanerochaete sordida,2013-06-10,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road",phanerochaete sordida,2013-06-10,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+137028,F25975,F25975,strict,correct,False,,,2,BBM:F025975; MO:137028,ascobolus hansenii,2013-06-10,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road",ascobolus hansenii,2013-06-10,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+136891,F25982,F25982,strict,correct,False,,,4,BBM:F025982; BBM:F025983; BBM:F025984; MO:136891,hyphodontia nespori,2013-06-10,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road",hyphodontia nespori,2013-06-10,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+136701,F25978,F25978,strict,correct,False,,,2,BBM:F025978; MO:136701,ceriporia reticulata,2013-06-10,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road",ceriporia reticulata,2013-06-10,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+136695,F25995,F25995,strict,correct,False,,,3,BBM:F025995; BBM:F025996; MO:136695,tubulicrinis angustus,2013-06-10,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road",tubulicrinis angustus,2013-06-10,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+136694,F25987,F25987,strict,correct,False,,,2,BBM:F025987; MO:136694,lasiobelonium variegatum,2013-06-10,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road",lasiobelonium variegatum,2013-06-10,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+136688,F25994,F25994,strict,correct,False,,,2,BBM:F025994; MO:136688,trichophaea hybrida,2013-06-10,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road",trichophaea hybrida,2013-06-10,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+136188,F25979,F25979,strict,correct,False,,,2,BBM:F025979; MO:136188,chlorociboria aeruginascens,2013-06-10,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road",chlorociboria aeruginascens,2013-06-10,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+135411,F25936,F25936,strict,correct,False,,,2,BBM:F025936; MO:135411,dasyscyphella nivea,2013-05-20,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",dasyscyphella nivea,2013-05-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+135266,F25962,F25962,strict,correct,False,,,2,BBM:F025962; MO:135266,entoloma undatum,2013-05-28,,"victoria, saanich peninsula, observatory hill; below the paved road, above the ephemeral creek",entoloma undatum,2013-05-28,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+135237,F25963,,,absent,,,,,,,,,,,,,
+135153,F25954,F25954,strict,correct,False,,,2,BBM:F025954; MO:135153,tubaria furfuracea,2013-05-20,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",tubaria furfuracea,2013-05-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+135119,F25959,F25959,strict,correct,False,,,3,BBM:F025959; BBM:F025960; MO:135119,conocybe tenera,2013-05-28,,"victoria, saanich peninsula, observatory hill; along the paved road, just above the main gate, on the right side going up",conocybe tenera,2013-05-28,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+135116,F25952,F25952,strict,correct,False,,,2,BBM:F025952; MO:135116,trechispora farinacea,2013-05-20,,"victoria, saanich peninsula, observatory hill; ridge behind the small dome",trechispora farinacea,2013-05-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+135114,F25938,F25938,strict,correct,False,,,2,BBM:F025938; MO:135114,hyphodontia subalutacea,2013-05-20,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",hyphodontia subalutacea,2013-05-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+135031,F25934,F35035,similar,wrong_F,False,,,2,BBM:F035035; MO:135031,gelatoporia subvermispora,,,vancouver island; saanich; observatory hill; by the driveway of former caretaker's property,gelatoporia subvermispora,2013-05-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+135023,F25948,F25948,strict,correct,False,,,2,BBM:F025948; MO:135023,phlebia phlebioides,2013-05-20,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",phlebia phlebioides,2013-05-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+134880,F25951,,,absent,,,,,,,,,,,,,
+134707,F25943,,,absent,,,,,,,,,,,,,
+134698,F25909,F25909,strict,correct,False,,,2,BBM:F025909; MO:134698,phaeosphaeria vagans,2013-04-22,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",phaeosphaeria vagans,2013-04-22,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+134502,F25940,F25940,strict,correct,False,,,2,BBM:F025940; MO:134502,lachnum virgineum,2013-05-20,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",lachnum virgineum,2013-05-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+134501,F25942,F25942,strict,correct,False,,,2,BBM:F025942; MO:134501,mycena abramsii,2013-05-20,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",mycena abramsii,2013-05-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+134291,F25944,,,absent,,,,,,,,,,,,,
+134267,F25949,F25949,strict,correct,False,,,2,BBM:F025949; MO:134267,psathyrella obtusata,2013-05-20,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",psathyrella obtusata,2013-05-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+134128,F25935,F25935,strict,correct,False,,,2,BBM:F025935; MO:134128,coprinellus xanthothrix,2013-05-20,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",coprinellus xanthothrix,2013-05-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+134021,F25886,F25886,strict,correct,False,,,2,BBM:F025886; MO:134021,dencoeliopsis johnstonii,2013-03-17,,"victoria, saanich peninsula, observatory hill; 'ravine"" on the w margin of observatory road, shortcut between the admin buildings and the hairpin curve",dencoeliopsis johnstonii,2013-03-17,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+133127,F25899,F25899,strict,correct,False,,,2,BBM:F025899; MO:133127,galerina dicranorum,2013-04-22,,"victoria, saanich peninsula, observatory hill; ridge behind the small dome",galerina dicranorum,2013-04-22,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+133032,F25918,F25918,strict,correct,False,,,2,BBM:F025918; MO:133032,inocybe amblyospora,2013-04-24,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",inocybe amblyospora,2013-04-24,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+132660,F25917,F25917,strict,correct,False,,,2,BBM:F025917; MO:132660,henningsomyces candidus,2013-04-24,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",henningsomyces candidus,2013-04-24,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+130633,F25866,F25866,strict,correct,False,,,2,BBM:F025866; MO:130633,dacrymyces ovisporus,2013-03-03,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",dacrymyces ovisporus,2013-03-03,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+130631,F25895,F25895,strict,correct,False,,,2,BBM:F025895; MO:130631,tremella encephala,2013-03-17,,"victoria, saanich peninsula, observatory hill; path along the road between the admin buildings and the hairpin curve",tremella encephala,2013-03-17,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+130399,F25856,F25856,strict,correct,False,,,2,BBM:F025856; MO:130399,neodasyscypha cerina,2013-02-27,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",neodasyscypha cerina,2013-02-27,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+130190,F25844,F25844,strict,correct,False,,,2,BBM:F025844; MO:130190,aleurodiscus aurantius,2013-02-27,,"victoria, saanich peninsula, observatory hill; the ridge behind the small dome",aleurodiscus aurantius,2013-02-27,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+130189,F25829,F25829,strict,correct,False,,,2,BBM:F025829; MO:130189,hymenochaete fuliginosa,2013-02-20,,"victoria, saanich peninsula, observatory hill; the ridge behind the small dome",hymenochaete fuliginosa,2013-02-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+130107,F25881,,,absent,,,,,,,,,,,,,
+129990,F25882,F25882,strict,correct,False,,,2,BBM:F025882; MO:129990,ramaria rubricarnata,2013-03-03,,"victoria, saanich peninsula, observatory hill; below the paved road, around and above a small wetland connected with the ephemeral creek",ramaria rubricarnata,2013-03-03,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+129940,F25868,,,absent,,,,,,,,,,,,,
+129939,F25864,F25864,strict,correct,False,,,2,BBM:F025864; MO:129939,clavulinopsis laeticolor,2013-03-03,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",clavulinopsis laeticolor,2013-03-03,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+129938,F25884,F25884,strict,correct,False,,,3,BBM:F025884; BBM:F025885; MO:129938,xeromphalina fulvipes,2013-03-03,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",xeromphalina fulvipes,2013-03-03,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+129738,F25827,F25827,strict,correct,False,,,2,BBM:F025827; MO:129738,hygrocybe singeri,2013-02-20,,"victoria, saanich peninsula, observatory hill; e slope, close to the ridge below the larger dome",hygrocybe singeri,2013-02-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+129693,F25849,F25849,strict,correct,False,,,2,BBM:F025849; MO:129693,deconica inquilina,2013-02-27,,"victoria, saanich peninsula, observatory hill; the ridge behind the small dome",deconica inquilina,2013-02-27,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+129022,F25807,F25807,strict,correct,False,,,2,BBM:F025807; MO:129022,oedohysterium insidens,2013-02-03,,"victoria, saanich peninsula, observatory hill; the ridge behind the small dome",oedohysterium insidens,2013-02-03,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+128891,F25790,F25790,strict,correct,False,,,2,BBM:F025790; MO:128891,hyphodontia spathulata,2013-01-25,,"victoria, saanich peninsula, observatory hill; s-slope, below the paved road, along the ephemeral creek",hyphodontia spathulata,2013-01-25,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+128817,F25793,F25793,strict,correct,False,,,2,BBM:F025793; MO:128817,phellinus ferreus,2013-01-25,,"victoria, saanich peninsula, observatory hill; s-slope, below the paved road, along the ephemeral creek",phellinus ferreus,2013-01-25,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+127155,F25787,,,absent,,,,,,,,,,,,,
+123474,F25783,F25783,strict,correct,False,,,2,BBM:F025783; MO:123474,mycena albissima,2013-01-20,,"victoria, saanich peninsula, observatory hill; s-slope, below the paved road, along the ephemeral creek",mycena albissima,2013-01-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+123270,F25779,,,absent,,,,,,,,,,,,,
+119494,F25680,F25680,strict,correct,False,,,2,BBM:F025680; MO:119494,agaricus hondensis,2012-12-04,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road",agaricus hondensis,2012-12-04,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+115808,F25579,F25579,strict,correct,False,,,2,BBM:F025579; MO:115808,resupinatus applicatus,2012-11-04,,"victoria, saanich peninsula, observatory hill; ridge behind the small dome",resupinatus applicatus,2012-11-04,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+113842,F25559,,,absent,,,,,,,,,,,,,
+106279,F23427,F23427,similar,correct,False,,,4,BBM:F023427; BBM:F023430; MO:106279; MO:106282,inocybe assimilata,2012-11-01,,"victoria, observatory hill; e-slope, close to the ridge, just below the road, opposite to the centre of the universe",inocybe assimilata,2012-01-11,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+106169,F23506,F23506,strict,correct,False,,,2,BBM:F023506; MO:106169,inocybe fuscidula,2011-05-29,,"victoria, observatory hill; behind the small dome, eastern slope",inocybe fuscidula,2011-05-29,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+102706,F25551,F25551,strict,correct,False,,,2,BBM:F025551; MO:102706,pluteus thomsonii,2012-07-20,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",pluteus thomsonii,2012-07-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+102538,F25541,F25541,strict,correct,False,,,2,BBM:F025541; MO:102538,galerina nana,2012-07-18,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",galerina nana,2012-07-18,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+99423,F23497,,,absent,,,,,,,,,,,,,
+99129,F23449,F23449,strict,correct,False,,,2,BBM:F023449; MO:99129,inocybe castanea,2012-06-20,,"victoria, observatory hill; below the paved road, along the ephemeral creek",inocybe castanea,2012-06-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+95657,F25503,F25503,strict,correct,False,,,2,BBM:F025503; MO:95657,scutellinia scutellata,2012-05-25,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",scutellinia scutellata,2012-05-25,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+95648,F25486,F25486,strict,correct,False,,,2,BBM:F025486; MO:95648,xenasma praeteritum,2012-05-13,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",xenasma praeteritum,2012-05-13,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+95524,F25500,F25500,strict,correct,False,,,2,BBM:F025500; MO:95524,pluteus thomsonii,2012-05-25,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",pluteus thomsonii,2012-05-25,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+93223,F25020,F25020,strict,correct,False,,,2,BBM:F025020; MO:93223,psathyrella prona,2011-04-20,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road",psathyrella prona,2011-04-20,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+87641,F25391,F35157,similar,wrong_F,False,,,2,BBM:F035157; MO:87641,pleuroflammula ragazziana,,,"vancouver island; saanich; observatory hill; behind the smaller dome, by the parking for astronomical society of canada hut, margin of mixed forest",pleuroflammula ragazziana,2012-01-27,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+83450,F25193,F25193,strict,correct,False,,,2,BBM:F025193; MO:83450,strobilurus albipilatus,2011-10-18,,"victoria, saanich peninsula, observatory hill; forest margin behind the small dome",strobilurus albipilatus,2011-10-18,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+83188,F25258,F25258,strict,correct,False,,,2,BBM:F025258; MO:83188,nolanea farinolens,2011-11-17,,"victoria, saanich peninsula, observatory hill; behind the smaller dome, rock outcrops by the royal canadian astronomical society hut",nolanea farinolens,2011-11-17,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+83051,F23513,F23513,similar,correct,False,,,2,BBM:F023513; MO:83051,inocybe fuscidula,2011-10-11,,"victoria, observatory hill; margin of the mixed forest behind the smaller dome",inocybe fuscidula,2011-11-10,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+83025,F22978,F22978,strict,correct,False,,,2,BBM:F022978; MO:83025,russula mordax,2011-11-17,,"victoria, observatory hill; behind the small dome, eastern slope",russula mordax,2011-11-17,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+82406,F25229,F25229,strict,correct,False,,,2,BBM:F025229; MO:82406,gymnopilus sapineus,2011-11-10,,"victoria, saanich peninsula, observatory hill; behind the smaller dome, margin of the forets",gymnopilus sapineus,2011-11-10,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+83181,F23548,F23548,strict,correct,False,,,2,BBM:F023548; MO:83181,inocybe griseolilacina,2011-11-17,,"victoria, observatory hill; ridge behind the small dome",inocybe griseolilacina,2011-11-17,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+74865,F29584,,,absent,,,,,,,,,,,,,
+146031,F25079,,,absent,,,,,,,,,,,,,
+73091,F25079,F29330,strict,wrong_F,False,,,2,BBM:F029330; MO:73091,agaricus arvensis,2007-09-30,,"victoria, saanich peninsula, observatory hill; along the paved road right side up close to the main gate",agaricus arvensis,2007-09-30,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+73025,F25079,F29449,strict,wrong_F,False,,,2,BBM:F029449; MO:73025,agaricus diminutivus,2007-11-07,,"victoria, saanich peninsula, observatory hill; mixed forest between the paved road and the ephemeral creek",agaricus diminutivus,2007-11-07,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+72975,F25079,F24235,similar,wrong_F,False,,,7,BBM:F024235; BBM:F024281; BBM:F024323; BBM:F024461; BBM:F024483; BBM:F024849; MO:72975,steccherinum ochraceum,2010-02-14,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",steccherinum ochraceum,2010-03-05,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+72945,F25079,,,absent,,,,,,,,,,,,,
+71514,F25079,F25123,strict,wrong_F,False,,,2,BBM:F025123; MO:71514,pluteus thomsonii,2011-06-30,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",pluteus thomsonii,2011-06-30,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+68217,F25079,,,absent,,,,,,,,,,,,,
+223631,F25079,,,absent,,,,,,,,,,,,,
+224260,F25079,F27202,strict,wrong_F,False,,,2,BBM:F027202; MO:224260,ischnoderma benzoinum,2009-11-18,,"victoria, saanich peninsula, observatory hill; e-slope, just above the hairpin curve",ischnoderma benzoinum,2009-11-18,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+187485,F25079,,,absent,,,,,,,,,,,,,
+235975,F25079,F25385,strict,wrong_F,False,,,2,BBM:F025385; MO:235975,psathyrella obtusata,2012-01-23,,"victoria, saanich peninsula, observatory hill; quercus garryana stand below the main parking lot in fron of the dao building",psathyrella obtusata,2012-01-23,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+77711,F25079,,,absent,,,,,,,,,,,,,
+261927,F25079,F24701,strict,wrong_F,False,,,2,BBM:F024701; MO:261927,leptonia formosa,2010-11-17,,"victoria, saanich peninsula, observatory hill; 'ravine"" on the w margin of observatory road, shortcut between the admin buildings and the hairpin curve",leptonia formosa,2010-11-17,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+281725,F25079,,,absent,,,,,,,,,,,,,
+293813,F25079,F25212,strict,wrong_F,False,,,2,BBM:F025212; MO:293813,gymnopus sublaccatus,2011-11-04,,"victoria, saanich peninsula, observatory hill; southern slope above the main gate on the left side of the road",gymnopus sublaccatus,2011-11-04,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+303770,F25079,,,absent,,,,,,,,,,,,,
+95658,F25079,F24332,strict,wrong_F,False,,,2,BBM:F024332; MO:95658,morchella eohespera,2010-04-16,,"victoria, saanich peninsula, observatory hill; along the road below the administrative building",morchella eohespera,2010-04-16,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+189823,F25079,,,absent,,,,,,,,,,,,,
+63563,F25079,,,absent,,,,,,,,,,,,,
+63555,F25079,,,absent,,,,,,,,,,,,,
+218601,F25079,F31843,strict,wrong_F,False,,,2,BBM:F031843; MO:218601,limacella ochraceolutea,2005-11-22,,"victoria, saanich peninsula, observatory hill; mixed forest behind the smaller dome",limacella ochraceolutea,2005-11-22,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
+203279,F25079,,,absent,,,,,,,,,,,,,
+189620,F25079,,,absent,,,,,,,,,,,,,
+188815,F25079,,,absent,,,,,,,,,,,,,
+188814,F25079,,,absent,,,,,,,,,,,,,
+224045,F25079,,,absent,,,,,,,,,,,,,
+224193,F25079,,,absent,,,,,,,,,,,,,
+225723,F25079,,,absent,,,,,,,,,,,,,
+256634,F25079,,,absent,,,,,,,,,,,,,
+260682,F25079,,,absent,,,,,,,,,,,,,
+261227,F25079,,,absent,,,,,,,,,,,,,
+265045,F25079,,,absent,,,,,,,,,,,,,
+361632,F25079,F31829,strict,wrong_F,False,,,2,BBM:F031829; MO:361632,rhodocybe mundula,2005-11-13,,"victoria, saanich peninsula, observatory hill; below the paved road, along the ephemeral creek",rhodocybe mundula,2005-11-13,oluna & adolf ceska,"observatory hill, victoria, british columbia, canada"
