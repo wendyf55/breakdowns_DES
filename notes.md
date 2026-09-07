@@ -80,10 +80,10 @@ actually this; needs access to up to date specify)
 ## Validation against DAP ground truth (C2) — items 1 & 2
 
 `scripts/validate_dap.py` runs `resolve.py` and scores MO->UBC matching against the gold
-F#. **Rule-based baseline (OH, scoped smoke run): 267/355 = 75.2% recovered (~83% of the
-323 whose BBM record is in the extract), all via the `similar` tier (strict = 0 — MO/BBM
-date formats differ), 33 wrong links, 55 unmatched.** The 88 wrong+unmatched are the LLM
-tier's target. Per-record output: `reports/dap_validation.csv`; notebook §9.
+F#. **Rule-based baseline (OH, default scoped run): 261/355 = 73.5% recovered,
+split 237 strict / 24 similar, with 17 wrong links and 77 unmatched.** The 94
+wrong+unmatched records are the LLM tier's target. Per-record output:
+`reports/dap_validation_rules.csv`; notebook §9.
 
 ## The working harmonization pipeline (for the automation section)
 

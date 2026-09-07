@@ -3,9 +3,9 @@
 The DAP audit (Vivian) hand-linked Mushroom Observer records to their UBC
 catalog (`F#`), GenBank accession, and the cross-reference actions each record
 still needed. `data/dap_ground_truth.csv` is the Observatory-Hill slice of that
-sheet (see dap_ground_truth builder). This script runs `resolve.py` and scores
-its MO->UBC matching against that gold standard — the C2 experiment the paper
-is missing.
+sheet, generated from the raw DAP exports by `build_dap_ground_truth.py`. This
+script runs `resolve.py` and scores its MO->UBC matching against that gold
+standard — the C2 experiment the paper is missing.
 
 What it measures (matching, the clean metric — see the temporal caveat below):
   recall     of the gold (mo_id -> ubc_F) links, did resolve recover the pair?

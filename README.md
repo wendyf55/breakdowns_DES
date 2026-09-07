@@ -131,6 +131,18 @@ python scripts/get_records.py --platform genbank   # sparse: voucher search
 
 Add `--limit N` to any `get_records.py` call for a quick smoke test.
 
+### 1a — Normalize DAP ground truth (raw CSVs → `data/`)
+
+The raw DAP 2025 exports are kept in `data2_nongenerated/`. Regenerate the
+machine-readable validation inputs from those source files with:
+
+```bash
+python scripts/build_dap_ground_truth.py
+```
+
+This writes `data/dap_ground_truth.csv` for Observatory Hill MO→UBC validation
+and `data/genbank_ground_truth.csv` for the GenBank linkage audit.
+
 ### 2 — Findings notebook (regenerates every number)
 
 ```bash
