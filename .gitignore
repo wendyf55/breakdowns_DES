@@ -3,3 +3,5 @@ data/*.csv
 __pycache__/
 *.pyc
 .DS_Store
+
+data2_nongenerated/
