@@ -1,0 +1,116 @@
+{
+  "summary": {
+    "generated_at_utc": "2026-09-08T00:41:44.672980+00:00",
+    "include_network": false,
+    "include_llm": false,
+    "bbm_records": 34856,
+    "mo_records": 5866,
+    "mycoportal_records": 34946,
+    "gbif_records": 34878,
+    "genbank_records": 213,
+    "mo_resolution_pairs": 3401,
+    "mo_duplicate_candidate_pairs": 22941,
+    "mo_bidirectional": 16,
+    "mo_unidirectional_ubc_to_platform": 2,
+    "mo_unidirectional_platform_to_ubc": 726,
+    "mo_absent": 2657,
+    "dap_mode": "rules",
+    "dap_gold_links": 355,
+    "dap_correct": 261,
+    "dap_wrong": 17,
+    "dap_unmatched": 77,
+    "dap_recall_pct": 73.5,
+    "dap_precision_linked_pct": 93.9,
+    "dap_wrong_link_rate_pct": 6.1,
+    "dap_review_required": 0,
+    "mycoportal_rows": 34856,
+    "mycoportal_present": 34633,
+    "mycoportal_present_dup": 0,
+    "mycoportal_harvest_gap": 223,
+    "mycoportal_no_guid": 0,
+    "gbif_rows": 34856,
+    "gbif_present": 33099,
+    "gbif_present_dup": 0,
+    "gbif_harvest_gap": 1757,
+    "gbif_no_guid": 0,
+    "genbank_gt_accessions": 213,
+    "genbank_ubc_cites_accession": 1,
+    "genbank_unlinked_on_ubc": 212,
+    "genbank_records_fetched": 213,
+    "genbank_voucher_cites_f": 183
+  },
+  "commands": [
+    {
+      "cmd": [
+        "/Users/wfrankel/miniforge3/envs/breakdowns-des/bin/python",
+        "scripts/build_dap_ground_truth.py"
+      ],
+      "returncode": 0,
+      "seconds": 3.3,
+      "stdout_tail": "Wrote 408 rows -> /Users/wfrankel/Desktop/breakdowns_DES/data/dap_ground_truth.csv\nWrote 213 rows -> /Users/wfrankel/Desktop/breakdowns_DES/data/genbank_ground_truth.csv\n",
+      "stderr_tail": ""
+    },
+    {
+      "cmd": [
+        "/Users/wfrankel/miniforge3/envs/breakdowns-des/bin/python",
+        "scripts/guid_discovery.py",
+        "--platform",
+        "mycoportal"
+      ],
+      "returncode": 0,
+      "seconds": 0.32,
+      "stdout_tail": "",
+      "stderr_tail": "INFO  MyCoPortal <-> BBM GUID reconciliation (34856 BBM rows)\nINFO  --------------------------------------------------\nINFO    present (harvested)   : 34633  (99.4% coverage)\nINFO      of which duplicates : 0\nINFO    harvest gap - 03      : 223\nINFO    no GUID - 02          : 0\nINFO    MyCoPortal orphans - 03       : 313  (on platform, not in BBM)\nINFO    breakdown 03 (absence from repositories): 223\nINFO  Saved -> /Users/wfrankel/Desktop/breakdowns_DES/reports/mycoportal_guid_discovery.csv\n"
+    },
+    {
+      "cmd": [
+        "/Users/wfrankel/miniforge3/envs/breakdowns-des/bin/python",
+        "scripts/guid_discovery.py",
+        "--platform",
+        "gbif"
+      ],
+      "returncode": 0,
+      "seconds": 0.27,
+      "stdout_tail": "",
+      "stderr_tail": "INFO  GBIF <-> BBM GUID reconciliation (34856 BBM rows)\nINFO  --------------------------------------------------\nINFO    present (harvested)   : 33099  (95.0% coverage)\nINFO      of which duplicates : 0\nINFO    harvest gap - 03      : 1757\nINFO    no GUID - 02          : 0\nINFO    GBIF orphans - 03       : 1779  (on platform, not in BBM)\nINFO    breakdown 03 (absence from repositories): 1757\nINFO  Saved -> /Users/wfrankel/Desktop/breakdowns_DES/reports/gbif_guid_discovery.csv\n"
+    },
+    {
+      "cmd": [
+        "/Users/wfrankel/miniforge3/envs/breakdowns-des/bin/python",
+        "scripts/resolve.py",
+        "--platform",
+        "mo",
+        "--no-llm"
+      ],
+      "returncode": 0,
+      "seconds": 32.35,
+      "stdout_tail": "",
+      "stderr_tail": "INFO  Loaded 34856 BBM + 5866 Mushroom Observer records\nINFO  Matched 3401 cross-platform pairs; 22941 same-platform duplicate pairs (cat 06)\nINFO  Saved 22941 duplicate pairs \u2192 /Users/wfrankel/Desktop/breakdowns_DES/reports/mo_duplicates.csv\nINFO  \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nINFO    bidirectional                    16\nINFO    unidirectional_ubc_to_platform   2\nINFO    unidirectional_platform_to_ubc   726\nINFO    absent                           2657\nINFO    breakdown 01 (missing identifier cross-references): 3385\nINFO    breakdown 02 (identifier integrity (wrong / hanging / wrong-field)): 430\nINFO    breakdown 05 (nomenclature breakdown): 146\nINFO    breakdown 06 (duplicate records): 22941\nINFO  Saved matched pairs \u2192 /Users/wfrankel/Desktop/breakdowns_DES/reports/mo_resolution.csv\n"
+    },
+    {
+      "cmd": [
+        "/Users/wfrankel/miniforge3/envs/breakdowns-des/bin/python",
+        "scripts/validate_dap.py",
+        "--no-llm"
+      ],
+      "returncode": 0,
+      "seconds": 2.16,
+      "stdout_tail": "",
+      "stderr_tail": "INFO  GT gold matches: 355 | present in mo_records.csv: 355 | BBM in-genera: 7862\nINFO  ========================================================\nINFO  DAP matching validation (Observatory Hill, rule-based)\nINFO    gold MO->F# links            : 355\nINFO    recovered correctly          : 261  (73.5% of all, 73.5% of present)\nINFO      strict / similar / llm     : 237 / 24 / 0\nINFO    linked to WRONG F#           : 17\nINFO    precision among linked       : 93.9%\nINFO    wrong-link rate among linked : 6.1%\nINFO    review-required links        : 0\nINFO    gold present but unmatched   : 77\nINFO    gold MO id not in corpus     : 0\nINFO  Saved per-record \u2192 /Users/wfrankel/Desktop/breakdowns_DES/reports/dap_validation_rules.csv\nINFO  Saved wrong-link diagnostics \u2192 /Users/wfrankel/Desktop/breakdowns_DES/reports/dap_validation_rules_wrong_links.csv\nINFO  Saved unmatched diagnostics \u2192 /Users/wfrankel/Desktop/breakdowns_DES/reports/dap_validation_rules_unmatched_reasons.csv\n"
+    },
+    {
+      "cmd": [
+        "/Users/wfrankel/miniforge3/envs/breakdowns-des/bin/python",
+        "scripts/genbank_audit.py"
+      ],
+      "returncode": 0,
+      "seconds": 0.21,
+      "stdout_tail": "",
+      "stderr_tail": "INFO  ========================================================\nINFO  GenBank linkage audit (collection ITS sequences vs UBC)\nINFO    collection accessions (DAP ground truth) : 213\nINFO    voucher F# present in BBM extract         : 213\nINFO    UBC -> GenBank (UBC record cites the acc.): 1\nINFO    UNLINKED on UBC lineage (category 01)     : 212  (99.5%)\nINFO    --- with fetched genbank_records.csv ---\nINFO    accessions actually fetched              : 213 / 213\nINFO    GenBank -> UBC (voucher cites the F#)     : 183\nINFO    breakdown 01 (missing identifier cross-references): 212\nINFO  Saved per-accession -> /Users/wfrankel/Desktop/breakdowns_DES/reports/genbank_linkage.csv\n"
+    }
+  ],
+  "outputs": {
+    "summary_csv": "/Users/wfrankel/Desktop/breakdowns_DES/reports/audit_summary.csv",
+    "manifest_json": "/Users/wfrankel/Desktop/breakdowns_DES/reports/audit_manifest.json"
+  }
+}

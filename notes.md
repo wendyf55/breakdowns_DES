@@ -104,6 +104,13 @@ New diagnostics for improvement tracking:
 
 ## The working harmonization pipeline (for the automation section)
 
+- **`run_audit.py` — end-to-end paper workflow.** Default command is
+  `python scripts/run_audit.py`: offline, rule-based, no LLM, no live API lookups.
+  It regenerates DAP-derived ground truth, harvested-platform GUID audits, MO
+  rule-based resolution, DAP validation diagnostics, GenBank linkage, and writes
+  `reports/audit_summary.csv` + `reports/audit_manifest.json`. Optional flags:
+  `--include-network` for live independent-platform link audits and
+  `--include-llm --llm-review-limit N` for a capped DAP-unmatched review subset.
 - **`platforms.py` — the axis.** One `Platform` per external DB, split by *coupling*:
   `IndependentPlatform` (MO, GenBank — BBM stores *their* id) vs `HarvestedPlatform`
   (MyCoPortal, GBIF — they carry *our* GUID). Shared `norm_catalog()` makes

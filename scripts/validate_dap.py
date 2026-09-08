@@ -22,6 +22,7 @@ set LLM_MODEL in .env) for the full pass.
 
     python validate_dap.py --no-llm          # rule-based baseline
     python validate_dap.py                    # + bounded LLM tier (needs LLM_MODEL)
+    python validate_dap.py --only-mo-ids 166513,210193 --label review_subset
 
 Temporal caveat: DAP is a 2025 snapshot of what still needed fixing, while
 bbm_records.csv is a 2026 refetch — so MO<->F# *matching* is stable ground
@@ -194,7 +195,7 @@ def scope(bbm_rows, mo_rows, meta, gt_ids, gold_cats, per_genus):
     return bbm_keep, mo_keep
 
 
-def validate(use_llm, per_genus, bbm_path, force_llm=False):
+def validate(use_llm, per_genus, bbm_path, force_llm=False, only_mo_ids=None, label=None):
     if (use_llm or force_llm) and not os.getenv("LLM_MODEL"):
         raise RuntimeError(
             "LLM validation requested but LLM_MODEL is not set. "
@@ -202,6 +203,9 @@ def validate(use_llm, per_genus, bbm_path, force_llm=False):
         )
 
     gold, gt_rows = load_gt()
+    if only_mo_ids:
+        wanted = {_native(str(mid)) for mid in only_mo_ids}
+        gold = {mid: fnum for mid, fnum in gold.items() if mid in wanted}
     mo = PLATFORMS["mo"]
     bbm_rows, bmeta = R.load_bbm(bbm_path, mo)
     mo_rows, pmeta = R.load_platform(str(DATA_DIR / "mo_records.csv"))
@@ -277,7 +281,7 @@ def validate(use_llm, per_genus, bbm_path, force_llm=False):
     n = len(gold)
     n_present = len(gt_ids & present)
     REPORTS_DIR.mkdir(exist_ok=True)
-    slug = "llm" if force_llm else ("rules+llm" if use_llm else "rules")
+    slug = label or ("llm" if force_llm else ("rules+llm" if use_llm else "rules"))
     out = REPORTS_DIR / f"dap_validation_{slug}.csv"
     with open(out, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
@@ -294,6 +298,8 @@ def validate(use_llm, per_genus, bbm_path, force_llm=False):
 
     logger.info("=" * 56)
     mode = "LLM-only" if force_llm else ("rule+LLM-leftover" if use_llm else "rule-based")
+    if only_mo_ids:
+        mode = f"{mode} subset"
     logger.info("DAP matching validation (Observatory Hill, %s)", mode)
     logger.info("  gold MO->F# links            : %d", n)
     logger.info("  recovered correctly          : %d  (%.1f%% of all, %.1f%% of present)",
@@ -347,10 +353,15 @@ def main():
                     help="cap of non-gold BBM decoys per genus (recall is exact regardless)")
     ap.add_argument("--bbm", default=str(DATA_DIR / "bbm_records.csv"),
                     help="BBM CSV (point at a pre-filtered subset on low-memory hosts)")
+    ap.add_argument("--only-mo-ids", default="",
+                    help="comma-separated MO ids for a small validation/review subset")
+    ap.add_argument("--label", default=None,
+                    help="override output slug, e.g. rules+llm_review")
     args = ap.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(levelname)s  %(message)s")
+    only_mo_ids = [x.strip() for x in args.only_mo_ids.split(",") if x.strip()]
     validate(use_llm=not args.no_llm, per_genus=args.per_genus, bbm_path=args.bbm,
-             force_llm=args.force_llm)
+             force_llm=args.force_llm, only_mo_ids=only_mo_ids, label=args.label)
 
 
 if __name__ == "__main__":

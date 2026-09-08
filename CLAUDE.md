@@ -22,6 +22,9 @@ categories + 0–5 confidence). Scripts in `scripts/`:
 - **`get_records.py`** — generic discovery fetch: `PlatformRecords` drives any
   platform's `fetch_ours()` → `to_common()` → `data/<platform>_records.csv`.
   `get_mo_records.py` is a thin shim over `PlatformRecords(MushroomObserver())`.
+- **`run_audit.py`** — end-to-end paper workflow. Default mode is offline,
+  rule-based, no LLM, and no live API lookups; it writes
+  `reports/audit_summary.csv` and `reports/audit_manifest.json`.
 - **`link_audit.py`** — BBM → platform cross-reference audit. Platform-agnostic
   engine: establish correspondences (stored id or GUID) → classify bidirectional /
   unidirectional / dangling, with a breakdown category + 0–5 confidence per row.

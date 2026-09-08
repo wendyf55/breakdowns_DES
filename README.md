@@ -104,7 +104,8 @@ they cite us only in free text). Harvested platforms are downstream of BBM
 ## Running the pipeline
 
 All commands run from the repo root on a machine with the `.env` credentials and
-network access. Fetches hit live APIs; the notebook writes up the numbers.
+network access. Fetches hit live APIs. The default audit runner is offline,
+rule-based, and does not call the LLM.
 
 ### One-time setup
 
@@ -145,15 +146,41 @@ python scripts/build_dap_ground_truth.py
 This writes `data/dap_ground_truth.csv` for Observatory Hill MO→UBC validation
 and `data/genbank_ground_truth.csv` for the GenBank linkage audit.
 
-### 2 — Findings notebook (regenerates every number)
+### 2 — Reproducible paper audit (offline, no LLM)
+
+```bash
+python scripts/run_audit.py
+```
+
+This is the paper-safe default workflow. It rebuilds DAP ground truth from the
+local raw DAP files, runs harvested-platform GUID reconciliation for MyCoPortal
+and GBIF, runs MO rule-based resolution, validates against DAP, and audits
+GenBank linkage. It writes:
+
+- `reports/audit_summary.csv` — compact metric/value table for the notebook and paper
+- `reports/audit_manifest.json` — commands, durations, outputs, and provenance
+- the per-audit CSVs used by the notebook
+
+Optional expensive paths are explicit:
+
+```bash
+python scripts/run_audit.py --include-network
+python scripts/run_audit.py --include-llm --llm-review-limit 10
+```
+
+`--include-network` runs live independent-platform link audits. `--include-llm`
+runs only a capped DAP-unmatched review subset, not the full MO corpus.
+
+### 3 — Findings notebook (read and explore outputs)
 
 ```bash
 jupyter lab reports/harmonization_findings.ipynb
 ```
 
 Select the **breakdowns-des** kernel, then Run All. Cells are self-locating, so
-the launch directory does not matter. Network cells: §1 MO audit, §3 resolution,
-§6 GenBank. Offline cells (read the CSVs): §2 MyCoPortal, §4 comparison, §5 GBIF.
+the launch directory does not matter. The notebook reads the audit summary and
+also keeps interactive cells for live/network checks. Leave LLM cells off unless
+you are intentionally running a small review experiment.
 
 ### Or run the pieces from the CLI
 
@@ -163,6 +190,7 @@ python scripts/link_audit.py --platform genbank
 python scripts/resolve.py    --platform mo         # attribute resolution → mo_resolution.csv
 python scripts/resolve.py    --platform mo --no-llm  # rule-based only
 python scripts/validate_dap.py --no-llm            # DAP rule baseline
+python scripts/run_audit.py                        # stable paper workflow
 ```
 
 `resolve.py` needs `data/bbm_records.csv` and `data/<platform>_records.csv`
