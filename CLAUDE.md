@@ -51,7 +51,9 @@ categories + 0–5 confidence). Scripts in `scripts/`:
   Observer, and GBIF into `data/name_synonyms.csv`. Keep it outside the default
   offline audit until synonym-expanded matching is validated. The no-argument
   command is a small resumable smoke run only; use `--all --sources
-  indexfungorum,mo,gbif` for the deliberate full slow pass.
+  indexfungorum,mo,gbif` for the deliberate full slow pass. For paper work,
+  prefer `--subset dap-name-drift --all --sources indexfungorum,mo` or
+  `--subset paper-name-drift --all --sources indexfungorum,mo`.
 - **`harmonization.py`** — the framework as code: the seven breakdown categories,
   the 0–5 confidence rubric, the report shape, and the LLM tier's guiding
   principles (from the `specimen-harmonization` skill / Kholmatova 2026).

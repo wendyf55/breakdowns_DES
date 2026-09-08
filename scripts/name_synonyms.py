@@ -12,6 +12,9 @@ the useful parts of the MDS synonym pipeline:
 Output: data/name_synonyms.csv
 
     python scripts/name_synonyms.py
+    python scripts/name_synonyms.py --subset dap-name-drift --all --dry-run
+    python scripts/name_synonyms.py --subset dap-name-drift --all
+    python scripts/name_synonyms.py --subset paper-name-drift --all
     python scripts/name_synonyms.py --names "Amanita muscaria,Boletus edulis"
     python scripts/name_synonyms.py --all --sources indexfungorum,mo,gbif
 
@@ -32,15 +35,28 @@ import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from pathlib import Path
 
-from config import DATA_DIR
+from config import DATA_DIR, REPORTS_DIR
 from resolve import norm_name
 
 OUTPUT = DATA_DIR / "name_synonyms.csv"
 SOURCES = ("indexfungorum", "mo", "gbif")
 DEFAULT_SOURCES = ("indexfungorum", "mo")
 DEFAULT_LIMIT = 25
+DEFAULT_CONTROL_LIMIT = 50
 REQUEST_TIMEOUT = 15
 HEADERS = {"User-Agent": "breakdowns-DES/0.1"}
+DAP_NAME_DRIFT_REASONS = {"genus_mismatch_blocks_match", "name_below_rule_threshold"}
+EXCLUDED_SPECIES_TOKENS = {
+    "aff",
+    "cf",
+    "group",
+    "nr",
+    "sect",
+    "section",
+    "sp",
+    "species",
+    "spp",
+}
 
 IF_TAGS = {
     "name": "NAME_x0020_OF_x0020_FUNGUS",
@@ -231,6 +247,101 @@ def collect_names(limit=None):
     return out[:limit] if limit else out
 
 
+def _valid_query_name(name):
+    name = norm_name(name)
+    genus, species = _split_name(name)
+    if (
+        not genus
+        or not species
+        or species in EXCLUDED_SPECIES_TOKENS
+        or not genus.isalpha()
+        or not species.isalpha()
+    ):
+        return ""
+    return name
+
+
+def _add_names(names, row, fields):
+    for field in fields:
+        name = _valid_query_name(row.get(field) or "")
+        if name:
+            names.add(name)
+
+
+def _rows(path):
+    path = Path(path)
+    if not path.exists():
+        return []
+    with open(path, newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+def collect_dap_unmatched_names(*, name_drift_only=False):
+    """Names from DAP gold links the rule matcher missed.
+
+    These are the highest-value synonym queries because DAP gives us a gold
+    MO->UBC link to validate against.
+    """
+    rows = _rows(REPORTS_DIR / "dap_validation_rules_unmatched_reasons.csv")
+    names = set()
+    for row in rows:
+        if name_drift_only and row.get("diagnostic_reason") not in DAP_NAME_DRIFT_REASONS:
+            continue
+        _add_names(names, row, ("gold_bbm_sci_name", "mo_sci_name"))
+    return sorted(names)
+
+
+def collect_dap_correct_control_names(limit=DEFAULT_CONTROL_LIMIT):
+    """Names from already-correct DAP links, used as a regression/control set."""
+    rows = _rows(REPORTS_DIR / "dap_validation_rules.csv")
+    names = set()
+    for row in rows:
+        if row.get("result") != "correct":
+            continue
+        _add_names(names, row, (
+            "gold_bbm_sci_name",
+            "matched_bbm_sci_name",
+            "mo_sci_name",
+        ))
+        if limit and len(names) >= limit:
+            break
+    out = sorted(names)
+    return out[:limit] if limit else out
+
+
+def collect_mo_name_drift_names():
+    """Names from current MO resolver pairs tagged with category 05."""
+    rows = _rows(REPORTS_DIR / "mo_resolution.csv")
+    names = set()
+    for row in rows:
+        cats = set(c for c in (row.get("breakdown") or "").split(",") if c)
+        if "05" not in cats:
+            continue
+        _add_names(names, row, ("bbm_sci_name", "platform_sci_name"))
+    return sorted(names)
+
+
+def collect_subset_names(subset, *, control_limit=DEFAULT_CONTROL_LIMIT, limit=None):
+    if subset == "all":
+        names = collect_names(limit=None)
+    elif subset == "dap-unmatched":
+        names = collect_dap_unmatched_names(name_drift_only=False)
+    elif subset == "dap-name-drift":
+        names = collect_dap_unmatched_names(name_drift_only=True)
+    elif subset == "mo-name-drift":
+        names = collect_mo_name_drift_names()
+    elif subset == "dap-correct-control":
+        names = collect_dap_correct_control_names(limit=control_limit)
+    elif subset == "paper-name-drift":
+        names = sorted(set(
+            collect_dap_unmatched_names(name_drift_only=True)
+            + collect_dap_correct_control_names(limit=control_limit)
+        ))
+    else:
+        raise ValueError(f"unknown subset: {subset}")
+    return names[:limit] if limit else names
+
+
 def existing_keys(path):
     keys = set()
     if not Path(path).exists():
@@ -260,15 +371,29 @@ def main():
     global REQUEST_TIMEOUT
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--names", default="", help="comma-separated names to fetch")
+    parser.add_argument("--subset", default="all",
+                        choices=[
+                            "all",
+                            "dap-unmatched",
+                            "dap-name-drift",
+                            "mo-name-drift",
+                            "dap-correct-control",
+                            "paper-name-drift",
+                        ],
+                        help="which generated-report subset to query when --names is not set")
     parser.add_argument("--sources", default=",".join(DEFAULT_SOURCES),
                         help="comma-separated sources: indexfungorum,mo,gbif")
     parser.add_argument("--limit", type=int, default=DEFAULT_LIMIT,
                         help=f"limit auto-collected names (default {DEFAULT_LIMIT}; ignored with --all)")
     parser.add_argument("--all", action="store_true",
                         help="fetch every auto-collected name; this can take hours")
+    parser.add_argument("--control-limit", type=int, default=DEFAULT_CONTROL_LIMIT,
+                        help=f"correct DAP names to include in control subsets (default {DEFAULT_CONTROL_LIMIT})")
     parser.add_argument("--output", default=str(OUTPUT))
     parser.add_argument("--refresh", action="store_true",
                         help="refetch even when query/source already exists in output")
+    parser.add_argument("--dry-run", action="store_true",
+                        help="print selected names and pending query/source count without fetching")
     parser.add_argument("--sleep", type=float, default=0.5)
     parser.add_argument("--timeout", type=int, default=REQUEST_TIMEOUT,
                         help=f"per-request timeout in seconds (default {REQUEST_TIMEOUT})")
@@ -277,7 +402,11 @@ def main():
 
     names = [norm_name(n) for n in args.names.split(",") if norm_name(n)]
     if not names:
-        names = collect_names(limit=None if args.all else args.limit)
+        names = collect_subset_names(
+            args.subset,
+            control_limit=args.control_limit,
+            limit=None if args.all else args.limit,
+        )
     sources = [s.strip().lower() for s in args.sources.split(",") if s.strip()]
     done = set() if args.refresh else existing_keys(args.output)
 
@@ -288,11 +417,18 @@ def main():
     )
     if not args.all and not args.names:
         print(
-            f"Smoke run: {len(names)} names x {len(sources)} source(s). "
+            f"Smoke run: subset={args.subset}, {len(names)} names x {len(sources)} source(s). "
             "Use --all for the full corpus."
         )
+    elif not args.names:
+        print(f"Subset run: subset={args.subset}, {len(names)} names x {len(sources)} source(s).")
     print(f"Output: {args.output}")
     print(f"Pending query/source pairs: {requests_total}")
+    if args.dry_run:
+        print("Selected names:")
+        for name in names:
+            print(f"  {name}")
+        return
     completed = 0
     try:
         for name in names:

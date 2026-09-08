@@ -110,7 +110,9 @@ cross-platform representation table.
   GBIF (`scripts/name_synonyms.py` is the first scaffold), then add
   `synonym_match` evidence to `resolve.py`. Keep genus blocking for now. A
   synonym match should help a candidate pass only when paired with date plus
-  locality/collector evidence.
+  locality/collector evidence. Do not run full-corpus synonym crawling for paper
+  iteration; use `--subset dap-name-drift --all` first because those are the DAP
+  gold links where synonym evidence can be validated directly.
 - **Automated lineage tracing across platforms.** Initial version now exists:
   `scripts/lineage_report.py` writes `reports/specimen_lineage_report.csv`.
   This is a join/action ledger over existing outputs, not a new matcher. It

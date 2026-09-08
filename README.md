@@ -226,7 +226,8 @@ python scripts/resolve.py    --platform mo --no-llm  # rule-based only
 python scripts/validate_dap.py --no-llm            # DAP rule baseline
 python scripts/dap_implementation_audit.py         # DAP action/decay audit
 python scripts/name_synonyms.py                    # synonym cache smoke run, resumable
-python scripts/name_synonyms.py --all --sources indexfungorum,mo,gbif  # full slow run
+python scripts/name_synonyms.py --subset dap-name-drift --all --dry-run
+python scripts/name_synonyms.py --subset dap-name-drift --all --sources indexfungorum,mo
 python scripts/lineage_report.py                   # unified cross-platform trace
 python scripts/spot_check_lineage.py               # lineage report consistency checks
 python scripts/run_audit.py                        # stable paper workflow
@@ -292,6 +293,19 @@ Observer, and GBIF. This is a network step and is intentionally not part of the
 default offline audit yet. The no-argument command is a small resumable smoke
 run: 25 auto-collected names against Index Fungorum and MO only. Use `--all`
 and opt into GBIF only when you deliberately want the full slow pass.
+
+For paper work, prefer targeted subsets over full-corpus crawling:
+
+```bash
+python scripts/name_synonyms.py --subset dap-name-drift --all --dry-run
+python scripts/name_synonyms.py --subset dap-name-drift --all --sources indexfungorum,mo
+python scripts/name_synonyms.py --subset paper-name-drift --all --sources indexfungorum,mo
+```
+
+`dap-name-drift` queries the DAP gold links missed for genus/name-threshold
+reasons. `paper-name-drift` adds a small already-correct DAP control set. Both
+are deterministic and resumable because completed `(query_name, source)` pairs
+are skipped unless `--refresh` is set.
 
 **Typical loop:** run step 1 once to refresh the CSVs, then step 2 to regenerate
 all the numbers and the unified lineage report.
