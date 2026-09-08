@@ -116,7 +116,7 @@ def main():
     checks = check_rows(rows)
     Path(args.output).parent.mkdir(exist_ok=True)
     with open(args.output, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=list(checks[0].keys()))
+        writer = csv.DictWriter(f, fieldnames=list(checks[0].keys()), lineterminator="\n")
         writer.writeheader()
         writer.writerows(checks)
     passed = sum(row["result"] == "pass" for row in checks)

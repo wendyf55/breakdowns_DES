@@ -1,4 +1,5 @@
 diagnostic_reason,n
-genus_mismatch_blocks_match,49
-name_below_rule_threshold,25
+genus_mismatch_blocks_match,37
+name_below_rule_threshold,22
+synonym_match_without_rule_context,7
 date_conflict_exact,3

@@ -7,8 +7,8 @@ BBM:F22978,MO missing UBC id is category 01,pass,unidirectional_ubc_to_mo,presen
 BBM:F33365,MO missing UBC id is category 01,pass,unidirectional_ubc_to_mo,present,present,,01,add UBC catalog number to MO if candidate is confirmed
 BBM:F23000,wrong MO id is category 02,pass,wrong_id,present,present,,"01,02",curator review: check incorrect or compromised identifier | review MO/BBM wrong-id cross-reference
 BBM:F23033,wrong MO id is category 02,pass,wrong_id,present,present,,"01,02",curator review: check incorrect or compromised identifier | review MO/BBM wrong-id cross-reference
-BBM:F726,attribute-only MO candidate is review action,pass,none,present,present,,01,review attribute-only MO candidate
 BBM:F15607,attribute-only MO candidate is review action,pass,none,present,present,,01,review attribute-only MO candidate
+BBM:F15609,attribute-only MO candidate is review action,pass,none,present,present,,01,review attribute-only MO candidate
 BBM:F677,MyCoPortal harvest gap is category 03,pass,none,harvest_gap,present,,03,check MyCoPortal harvest/publication
 BBM:F1322,MyCoPortal harvest gap is category 03,pass,none,harvest_gap,present,,03,check MyCoPortal harvest/publication
 BBM:F13874,GBIF harvest gap is category 03,pass,none,harvest_gap,harvest_gap,,03,check MyCoPortal harvest/publication | check GBIF harvest/publication

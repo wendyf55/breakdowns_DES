@@ -66,29 +66,38 @@ IF_TAGS = {
 }
 
 
+class SourceFetchError(RuntimeError):
+    """Raised when a synonym source request fails.
+
+    A source returning no names is a valid `Not found` result; transport,
+    decoding, or parse failures are recorded separately as `Fetch error`.
+    """
+
+
 def _urlopen(url, params=None, timeout=None):
     timeout = REQUEST_TIMEOUT if timeout is None else timeout
     if params:
         url = f"{url}?{urllib.parse.urlencode(params)}"
     req = urllib.request.Request(url, headers=HEADERS)
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
-        return resp.read().decode("utf-8", "replace")
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            return resp.read().decode("utf-8", "replace")
+    except Exception as exc:  # noqa: BLE001
+        raise SourceFetchError(f"request failed ({exc}): {url}") from exc
 
 
 def _fetch_json(url, params=None, timeout=None):
     try:
         return json.loads(_urlopen(url, params=params, timeout=timeout))
-    except Exception as exc:  # noqa: BLE001
-        print(f"request failed ({exc}): {url}")
-        return {}
+    except json.JSONDecodeError as exc:
+        raise SourceFetchError(f"invalid JSON response: {url}") from exc
 
 
 def _fetch_xml(url, params=None, timeout=None):
     try:
         return ET.fromstring(_urlopen(url, params=params, timeout=timeout))
-    except Exception as exc:  # noqa: BLE001
-        print(f"request failed ({exc}): {url}")
-        return ET.Element("empty")
+    except ET.ParseError as exc:
+        raise SourceFetchError(f"invalid XML response: {url}") from exc
 
 
 def _split_name(name):
@@ -348,6 +357,8 @@ def existing_keys(path):
         return keys
     with open(path, newline="", encoding="utf-8") as f:
         for row in csv.DictReader(f):
+            if row.get("status") == "Fetch error":
+                continue
             keys.add((row.get("query_name", ""), row.get("source", "")))
     return keys
 
@@ -440,7 +451,12 @@ def main():
                     continue
                 completed += 1
                 print(f"[{completed}/{requests_total}] {source}: {name}", flush=True)
-                rows = FETCHERS[source](name)
+                try:
+                    rows = FETCHERS[source](name)
+                except SourceFetchError as exc:
+                    print(exc)
+                    write_rows([_row(name, source, "Fetch error", "", "")], args.output)
+                    continue
                 write_rows(rows or [_row(name, source, "Not found", "", "")], args.output)
                 total += len(rows)
                 time.sleep(args.sleep)

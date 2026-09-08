@@ -60,9 +60,9 @@ cross-platform representation table.
 | **01** Missing x‑refs | unidirectional (each way) + absent | `resolve` quadrants + `link_audit` + discovery `cites_ubc` | MO explicit uni plat→UBC = 1,008; GenBank UBC-missing-accession = 212/213 | **Done both directions** |
 | **02** Identifier integrity | wrong / hanging / wrong‑field | `link_audit.wrong` + `wrong_field` (via `reference_fields`) | MO wrong‑id = 2 | **Done** (see decisions) |
 | **03** Absence | backlog / never‑published / orphans | `guid_discovery.py` + ipynb §8 | MP gap 223 / orphan 313; GBIF gap 1,757 / orphan 1,779 | **Done** for harvest‑gap & orphan; backlog n/a |
-| **04** Poor confidence | 0–5 rubric, ambiguous middle | `resolve` confidence; LLM `ambiguous`→04 when enabled | 2,657 attribute-only MO candidates have confidence 2.5-3.0; 0 accepted 04 rows in the default rule run | **Rubric done; category-04 claims need careful wording** |
-| **05** Nomenclature | name instability / basionym | `resolve` `name_mismatch`→05 | (per matched pair) | **Partial** — mismatch flagged; basionym/accepted-name expansion needs synonym pipeline |
-| **06** Duplicates | multiple records / specimen | harvested: dup-GUID (`guid_discovery` `present_dup`); independent: same-platform pairs in a matched cluster (`resolve._same_platform_pairs`) -> `reports/<platform>_duplicates.csv` | harvested dup-GUID = 0; MO full rule run: 22,941 candidate pairs / 4,927 clusters | **Done (candidate-level)** - needs id/curator/gold-set confirm |
+| **04** Poor confidence | 0–5 rubric, ambiguous middle | `resolve` confidence; LLM `ambiguous`→04 when enabled | 1,664 attribute-only MO candidates have confidence 2.5-3.0; 0 accepted 04 rows in the default rule run | **Rubric done; category-04 claims need careful wording** |
+| **05** Nomenclature | name instability / basionym | `resolve` `name_mismatch`→05 + cached `synonym_match` evidence | 225 MO candidate rows have name mismatches; 159 use synonym evidence | **Implemented as supporting evidence; validate before headline claims** |
+| **06** Duplicates | multiple records / specimen | harvested: dup-GUID (`guid_discovery` `present_dup`); independent: same-platform pairs in a matched cluster (`resolve._same_platform_pairs`) -> `reports/<platform>_duplicates.csv` | harvested dup-GUID = 0; MO full rule run: 16,830 candidate pairs / 4,295 clusters | **Done (candidate-level)** - needs id/curator/gold-set confirm |
 | **07** Decay | DAP unimplemented / dead links | `dap_implementation_audit.py` + independent dangling ids | DAP actions: 368 still unimplemented, 2 changed elsewhere, 42 cannot assess | **Done initial DAP implementation audit** |
 
 ## Decisions & status on 02 / 03 / 06 / 07
@@ -81,7 +81,7 @@ cross-platform representation table.
   (b) *independent / attribute-level* -> `resolve.py` now keeps same-platform pairs
   within an attribute-matched cluster (`_same_platform_pairs`), tags them 06, and
   writes `reports/<platform>_duplicates.csv`. Current full-MO rule run writes
-  **22,941 candidate duplicate pairs / 4,927 clusters**. **Caveat:** on the single-collector /
+  **16,830 candidate duplicate pairs / 4,295 clusters**. **Caveat:** on the single-collector /
   single-locality Ceska-OH corpus many are weak `similar`-tier candidates (same
   taxon + site, sometimes different dates = distinct specimens). Treat as
   **review candidates**, not a final duplicate count, until there is either
@@ -103,16 +103,17 @@ cross-platform representation table.
   part of the manual audit and as a reason full automation is limited, not as a
   measured automated feature.
 - **Name drift / synonym searching (category 05).** Current matching normalizes
-  names and flags mismatches, but it does not expand a name through accepted-name
-  and synonym relationships. Plan: borrow the MDS API-pipeline approach from
-  `/Users/wfrankel/Desktop/MDS/capstone/ubc-mds-project/scripts/apis_pipe/`, build
-  a cached `data/name_synonyms.csv` from Index Fungorum, Mushroom Observer, and
-  GBIF (`scripts/name_synonyms.py` is the first scaffold), then add
-  `synonym_match` evidence to `resolve.py`. Keep genus blocking for now. A
-  synonym match should help a candidate pass only when paired with date plus
-  locality/collector evidence. Do not run full-corpus synonym crawling for paper
-  iteration; use `--subset dap-name-drift --all` first because those are the DAP
-  gold links where synonym evidence can be validated directly.
+  names, flags mismatches, and uses cached accepted-name/synonym relationships
+  as `synonym_match` evidence. The targeted
+  `--subset dap-name-drift --all --sources indexfungorum,mo` run is complete
+  locally: 94 names x 2 sources, 0 pending query/source pairs. The cache now
+  contains 15,741 rows across 1,178 query names, including GBIF rows from broader
+  crawling. `resolve.py` can compare cross-genus names when they share a synonym
+  group, but a synonym match is supporting evidence only: it still needs date
+  evidence plus locality/collector context. Latest DAP validation: 9 linked
+  rows used synonym evidence, 8 correct and 1 wrong; 7 unmatched rows had synonym
+  evidence but lacked enough rule context. Treat this as a measured improvement,
+  not a stand-alone taxonomic matcher.
 - **Automated lineage tracing across platforms.** Initial version now exists:
   `scripts/lineage_report.py` writes `reports/specimen_lineage_report.csv`.
   This is a join/action ledger over existing outputs, not a new matcher. It
@@ -148,22 +149,24 @@ cross-platform representation table.
 - Strong GenBank category-01 claim: **212 / 213** UBC voucher records do not cite
   their own GenBank accession, even though **183 / 213** fetched GenBank records
   cite the UBC voucher F#.
-- DAP validation baseline for C2: rule matching recovers **261 / 355** gold
-  MO→UBC links (73.5% recall), with **17** wrong-F# links, **93.9%** precision
-  among linked records, and **77** unmatched gold records.
+- DAP validation baseline for C2: rule matching recovers **269 / 355** gold
+  MO→UBC links (75.8% recall), with **17** wrong-F# links, **94.1%** precision
+  among linked records, and **69** unmatched gold records. Of these accepted
+  links, **8 correct** and **1 wrong** use synonym evidence.
 - DAP implementation/decay claim: **412** requested action rows; **368** still
   unimplemented, **2** changed elsewhere, **42** cannot assess from current
   normalized extracts, **0** clearly implemented.
 - Unified lineage report: **36,948** rows total, **34,856** BBM specimen rows,
-  **2,092** harvested-platform orphan rows, **6,480** rows with a recommended
+  **2,092** harvested-platform orphan rows, **6,539** rows with a recommended
   action; deterministic spot check passes **22 / 22** representative cases.
 
 **Write with caveats, not as settled headline claims:**
 - MO resolver output is a review/candidate system, not the Goal 1 representation
-  table: **3,401** BBM/MO candidate pairs, with 16 bidirectional, 2 BBM→MO only,
-  726 MO→BBM only, and 2,657 absent explicit links.
-- Duplicate results are candidate-level: **22,941** same-platform MO candidate
-  pairs forming **4,927** connected components. This is useful for triage but not
+  table: **2,442** BBM/MO candidate pairs, with 16 bidirectional, 2 BBM→MO only,
+  760 MO→BBM only, and 1,664 absent explicit links. Of these, **159** carry
+  synonym evidence.
+- Duplicate results are candidate-level: **16,830** same-platform MO candidate
+  pairs forming **4,295** connected components. This is useful for triage but not
   a confirmed duplicate count.
 - Category 04 is represented by the confidence rubric and low-confidence
   attribute-only candidates, but the default rule-based run does not emit accepted
@@ -177,9 +180,10 @@ cross-platform representation table.
 **Do before final submission, but not required before drafting Results:**
 - Re-fetch live platform data and rerun `python scripts/run_audit.py`; report the
   final `generated_at_utc` timestamp from `reports/audit_summary.csv`.
-- Complete and validate synonym-expanded matching before making strong category
-  05 automation claims. The cache scaffold exists, but synonym evidence is not
-  wired into `resolve.py` yet.
+- Validate synonym-expanded matching before making strong category 05 automation
+  claims. The cache is wired into `resolve.py`, but current DAP validation still
+  shows one synonym-supported wrong link and seven synonym-supported misses that
+  lack enough context.
 - If duplicate counts become important, curate a small duplicate/non-duplicate
   validation set or present duplicates strictly as review candidates.
 - If image/physical morphology automation is mentioned, either implement it or
@@ -189,10 +193,10 @@ cross-platform representation table.
 ## Validation against DAP ground truth (C2) — items 1 & 2
 
 `scripts/validate_dap.py` runs `resolve.py` and scores MO->UBC matching against
-the gold F#. **Rule-based baseline (OH, default scoped run): 261/355 = 73.5%
-recovered, split 237 strict / 24 similar correct links, with 17 wrong-F# links
-and 77 unmatched.** Precision among linked records is **93.9%**; wrong-link rate
-is **6.1%**. Per-record output: `reports/dap_validation_rules.csv`; notebook §9.
+the gold F#. **Rule-based baseline (OH, default scoped run): 269/355 = 75.8%
+recovered, split 237 strict / 32 similar correct links, with 17 wrong-F# links
+and 69 unmatched.** Precision among linked records is **94.1%**; wrong-link rate
+is **5.9%**. Per-record output: `reports/dap_validation_rules.csv`; notebook §9.
 
 LLM validation is now opt-in and auditable. `RUN_LLM_VALIDATION = False` in the
 notebook by default; when enabled with `LLM_MODEL`, §9 compares `rules`,
@@ -206,21 +210,21 @@ LLM-derived links are `review_required` unless they also pass the stricter
 come with too many wrong-F# links.
 
 Latest validation files present:
-- `rules`: 261/355 correct (73.5% recall), 17 wrong, 77 unmatched, 93.9%
-  precision among linked, 6.1% wrong-link rate.
-- `rules+llm`: 262/355 correct (73.8% recall), 17 wrong, 76 unmatched, 1 LLM
-  correct, 1 review-required link. This is only a tiny improvement over rules.
-- `llm` / force-LLM: 232/355 correct (65.4% recall), 4 wrong, 119 unmatched,
-  98.3% precision among linked, 1.7% wrong-link rate, 6 review-required links.
-  This suggests the LLM is more conservative and cleaner when used alone, but
-  misses too many gold links to replace the rule baseline.
+- `rules`: 269/355 correct (75.8% recall), 17 wrong, 69 unmatched, 94.1%
+  precision among linked, 5.9% wrong-link rate. Synonym evidence appears on
+  9 accepted links: 8 correct and 1 wrong.
+- Older `rules+llm` and `llm` / force-LLM files may exist in `reports/`, but
+  they predate the current synonym/date-evidence resolver changes. Rerun those
+  experiments before citing them. Keep the regenerated rule baseline as the
+  paper-facing automation result for now.
 
 New diagnostics for improvement tracking:
 - `reports/dap_validation_<mode>_wrong_links.csv` - side-by-side DAP gold BBM,
   matched BBM, and MO fields for wrong-F# links.
 - `reports/dap_validation_<mode>_unmatched_reasons.csv` - unmatched gold links
-  with deterministic failure reasons. Current rule baseline: 49 genus mismatch /
-  blocking failures, 25 name-below-threshold failures, 3 exact date conflicts.
+  with deterministic failure reasons. Current rule baseline: 37 genus mismatch /
+  blocking failures, 22 name-below-threshold failures, 7 synonym matches without
+  enough rule context, and 3 exact date conflicts.
 
 ## The working harmonization pipeline (for the automation section)
 
@@ -271,12 +275,13 @@ New diagnostics for improvement tracking:
 - **`spot_check_lineage.py` — lineage report consistency check.** Samples
   representative lineage rows and verifies status/category/action consistency.
   Latest run: 22/22 checks passed.
-- **`name_synonyms.py` — synonym cache scaffold (not in default audit).** Fetches
+- **`name_synonyms.py` — synonym cache (not in default audit).** Fetches
   accepted-name/synonym relationships from Index Fungorum, Mushroom Observer, and
-  GBIF into `data/name_synonyms.csv`. This is the planned input to category-05
-  matching improvements. The no-argument command is deliberately only a small
-  resumable smoke run: 25 names against Index Fungorum + MO. Use `--all` and
-  opt into GBIF only for a deliberate full slow pass.
+  GBIF into `data/name_synonyms.csv`. `resolve.py` consumes this as supporting
+  category-05 evidence and records source failures as `Fetch error`, distinct
+  from source-level `Not found`. The no-argument command is deliberately only a
+  small resumable smoke run: 25 names against Index Fungorum + MO. Use `--all`
+  and opt into GBIF only for a deliberate full slow pass.
 - **`harmonization.py` — the framework as code.** Seven categories, the 0–5
   confidence rubric (maps to Fig‑4), and `classify_breakdowns`, driven by explicit
   02 sub‑case signals.

@@ -2,7 +2,8 @@
 
 Queries each relevant Specify table via table_rows (flat, paginated), joins
 them in Python, and writes a single CSV with every text field exposed so
-compare_records.py can scan for cross-reference patterns (e.g. MUOB numbers).
+link_audit.py can scan for cross-reference patterns and resolve.py can use
+the normalized taxon, collector, date, and locality fields.
 
 Usage:
     python get_bbm_records.py             # full fetch
@@ -27,10 +28,9 @@ PAGE_SIZE = 500
 
 # ── Fields per table ───────────────────────────────────────────────
 # table_rows field names are all-lowercase; FK columns end in _id. Every
-# free-text CO field is pulled so compare_records / audit_mo_links can scan
-# them for cross-reference patterns; the joined fields (taxon name, collector,
-# date, locality) feed resolve.py's cross-platform matching and the Ceska /
-# Observatory-Hill filters.
+# free-text CO field is pulled so link_audit.py can scan cross-reference
+# patterns; the joined fields (taxon name, collector, date, locality) feed
+# resolve.py's cross-platform matching and the Ceska / Observatory-Hill filters.
 
 CO_FIELDS = [
     "id", "catalognumber", "altcatalognumber", "guid", "fieldnumber",

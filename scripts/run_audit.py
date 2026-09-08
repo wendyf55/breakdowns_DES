@@ -90,6 +90,7 @@ def _summarize_dap(slug="rules"):
         "dap_precision_linked_pct": round(100 * correct / linked, 1) if linked else 0,
         "dap_wrong_link_rate_pct": round(100 * wrong / linked, 1) if linked else 0,
         "dap_review_required": sum(str(r.get("review_required")).lower() == "true" for r in rows),
+        "dap_synonym_matches": sum(str(r.get("synonym_match")).lower() == "true" for r in rows),
     }
 
 
@@ -101,6 +102,9 @@ def _summarize_resolution():
     out = {
         "mo_resolution_pairs": len(rows),
         "mo_duplicate_candidate_pairs": len(dups),
+        "mo_resolution_synonym_pairs": sum(
+            str(r.get("synonym_match")).lower() == "true" for r in rows
+        ),
     }
     for key in ("bidirectional", "unidirectional_ubc_to_platform",
                 "unidirectional_platform_to_ubc", "absent"):
@@ -216,7 +220,7 @@ def _write_summary(summary):
     REPORTS_DIR.mkdir(exist_ok=True)
     path = REPORTS_DIR / "audit_summary.csv"
     with open(path, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=["metric", "value"])
+        writer = csv.DictWriter(f, fieldnames=["metric", "value"], lineterminator="\n")
         writer.writeheader()
         for key in sorted(summary):
             writer.writerow({"metric": key, "value": summary[key]})

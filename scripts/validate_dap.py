@@ -33,6 +33,7 @@ import argparse
 import csv
 import logging
 import os
+from collections import Counter
 
 from config import DATA_DIR, REPORTS_DIR
 import resolve as R
@@ -93,6 +94,7 @@ def _evidence(row, mo_row):
     name_sim = R.edit_sim(row[2], mo_row[2])
     same_name = bool(row[2] and row[2] == mo_row[2])
     similar_name = name_sim >= R.NAME_SIM
+    synonym_name, synonym_evidence = R.synonym_match(row[2], mo_row[2])
     same_genus = bool(row[3] and row[3] == mo_row[3])
     exact_date = bool(len(row[6]) == 10 and row[6] == mo_row[6])
     same_year = bool(R._year(row[6]) and R._year(row[6]) == R._year(mo_row[6]))
@@ -100,12 +102,14 @@ def _evidence(row, mo_row):
     collector_overlap = R._overlap(row[5], mo_row[5], 1)
     strict_like = same_name and exact_date and (locality_overlap or collector_overlap)
     similar_like = (
-        same_genus and not _date_conflict(row, mo_row)
-        and similar_name and (locality_overlap or collector_overlap)
+        (same_genus or synonym_name) and not _date_conflict(row, mo_row)
+        and (similar_name or synonym_name) and (exact_date or same_year)
+        and (locality_overlap or collector_overlap)
     )
     score = (
         3 * same_name + 2 * (similar_name and not same_name) + 2 * same_genus
-        + 3 * exact_date + same_year + 2 * locality_overlap + collector_overlap
+        + 2 * synonym_name + 3 * exact_date + same_year
+        + 2 * locality_overlap + collector_overlap
     )
     return {
         "score": score,
@@ -113,6 +117,8 @@ def _evidence(row, mo_row):
         "same_genus": same_genus,
         "same_name": same_name,
         "similar_name": similar_name,
+        "synonym_name": synonym_name,
+        "synonym_evidence": synonym_evidence,
         "exact_date": exact_date,
         "same_year": same_year,
         "locality_overlap": locality_overlap,
@@ -139,12 +145,19 @@ def _diagnose_unmatched(mid, gf, mo_by_id, bbm_by_cat):
     if not gold_rows:
         return "gold_bbm_not_in_extract", "Gold UBC F# is not present in the BBM CSV extract", None, mo_row
     if not any(row[3] and row[3] == mo_row[3] for row in gold_rows):
+        if any(R.synonym_match(row[2], mo_row[2])[0] for row in gold_rows):
+            return (
+                "synonym_match_without_rule_context",
+                "Gold BBM and MO names share a synonym group, but date/locality/collector evidence did not pass",
+                gold_row,
+                mo_row,
+            )
         return "genus_mismatch_blocks_match", "Gold BBM genus and MO genus differ or one is missing", gold_row, mo_row
     conflict = _date_conflict(gold_row, mo_row)
     if conflict:
         return conflict, "Gold BBM date and MO date are incompatible", gold_row, mo_row
     ev = _evidence(gold_row, mo_row)
-    if not ev["similar_name"]:
+    if not (ev["similar_name"] or ev["synonym_name"]):
         return "name_below_rule_threshold", f"Best gold name similarity is {ev['name_sim']}", gold_row, mo_row
     if not (ev["locality_overlap"] or ev["collector_overlap"]):
         return "no_locality_or_collector_overlap", "Name/genus passed, but locality and collector evidence did not overlap", gold_row, mo_row
@@ -235,6 +248,7 @@ def validate(use_llm, per_genus, bbm_path, force_llm=False, only_mo_ids=None, la
 
     rows, recovered, wrong, missing_absent, review_required = [], 0, 0, 0, 0
     tier = {"strict": 0, "similar": 0, "llm": 0}
+    synonym_matches = synonym_correct = synonym_wrong = 0
     for mid, gf in gold.items():
         got = linked.get(mid)
         if got is None:
@@ -247,6 +261,7 @@ def validate(use_llm, per_genus, bbm_path, force_llm=False, only_mo_ids=None, la
                    "tier": "", "result": status, "diagnostic_reason": reason,
                    "diagnostic_detail": reason_detail, "review_required": "",
                    "accepted": "", "llm_reason": "", "guardrail": "",
+                   "synonym_match": "", "synonym_evidence": "",
                    "candidate_group_size": "", "candidate_group_ids": ""}
             row.update(_fields(gold_row, "gold_bbm"))
             row.update(_fields(None, "matched_bbm"))
@@ -264,6 +279,10 @@ def validate(use_llm, per_genus, bbm_path, force_llm=False, only_mo_ids=None, la
         wrong += (not ok)
         tier[how] = tier.get(how, 0) + ok
         review_required += bool(detail.get("review_required", how == R.LLM))
+        has_synonym = bool(detail.get("synonym_match"))
+        synonym_matches += has_synonym
+        synonym_correct += bool(ok and has_synonym)
+        synonym_wrong += bool((not ok) and has_synonym)
         row = {"mo_id": mid, "gold_F": gf, "matched_F": mf,
                "tier": how, "result": "correct" if ok else "wrong_F",
                "diagnostic_reason": reason, "diagnostic_detail": reason_detail,
@@ -271,6 +290,8 @@ def validate(use_llm, per_genus, bbm_path, force_llm=False, only_mo_ids=None, la
                "accepted": detail.get("accepted", how != R.LLM),
                "llm_reason": detail.get("llm_reason", ""),
                "guardrail": detail.get("guardrail", ""),
+               "synonym_match": detail.get("synonym_match", False),
+               "synonym_evidence": detail.get("synonym_evidence", ""),
                "candidate_group_size": detail.get("candidate_group_size", ""),
                "candidate_group_ids": detail.get("candidate_group_ids", "")}
         row.update(_fields(gold_row, "gold_bbm"))
@@ -284,17 +305,25 @@ def validate(use_llm, per_genus, bbm_path, force_llm=False, only_mo_ids=None, la
     slug = label or ("llm" if force_llm else ("rules+llm" if use_llm else "rules"))
     out = REPORTS_DIR / f"dap_validation_{slug}.csv"
     with open(out, "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
+        w = csv.DictWriter(f, fieldnames=list(rows[0].keys()), lineterminator="\n")
         w.writeheader(); w.writerows(rows)
     wrong_out = REPORTS_DIR / f"dap_validation_{slug}_wrong_links.csv"
     unmatched_out = REPORTS_DIR / f"dap_validation_{slug}_unmatched_reasons.csv"
+    unmatched_counts_out = REPORTS_DIR / f"dap_validation_{slug}_unmatched_reason_counts.csv"
     wrong_rows = [r for r in rows if r["result"] == "wrong_F"]
     unmatched_rows = [r for r in rows if r["result"] in {"absent", "not_in_corpus"}]
     for path, subset in ((wrong_out, wrong_rows), (unmatched_out, unmatched_rows)):
         if subset:
             with open(path, "w", newline="", encoding="utf-8") as f:
-                w = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
+                w = csv.DictWriter(f, fieldnames=list(rows[0].keys()), lineterminator="\n")
                 w.writeheader(); w.writerows(subset)
+    if unmatched_rows:
+        counts = Counter(r["diagnostic_reason"] for r in unmatched_rows)
+        with open(unmatched_counts_out, "w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=["diagnostic_reason", "n"], lineterminator="\n")
+            w.writeheader()
+            for reason, n_reason in counts.most_common():
+                w.writerow({"diagnostic_reason": reason, "n": n_reason})
 
     logger.info("=" * 56)
     mode = "LLM-only" if force_llm else ("rule+LLM-leftover" if use_llm else "rule-based")
@@ -318,6 +347,7 @@ def validate(use_llm, per_genus, bbm_path, force_llm=False, only_mo_ids=None, la
     logger.info("Saved per-record → %s", out)
     logger.info("Saved wrong-link diagnostics → %s", wrong_out)
     logger.info("Saved unmatched diagnostics → %s", unmatched_out)
+    logger.info("Saved unmatched reason counts → %s", unmatched_counts_out)
     summary = {
         "mode": mode,
         "slug": slug,
@@ -337,6 +367,9 @@ def validate(use_llm, per_genus, bbm_path, force_llm=False, only_mo_ids=None, la
         "similar_correct": tier.get("similar", 0),
         "llm_correct": tier.get("llm", 0),
         "review_required_links": review_required,
+        "synonym_matches": synonym_matches,
+        "synonym_correct": synonym_correct,
+        "synonym_wrong": synonym_wrong,
         "output": str(out),
         "wrong_links_output": str(wrong_out),
         "unmatched_output": str(unmatched_out),
@@ -360,8 +393,18 @@ def main():
     args = ap.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(levelname)s  %(message)s")
     only_mo_ids = [x.strip() for x in args.only_mo_ids.split(",") if x.strip()]
-    validate(use_llm=not args.no_llm, per_genus=args.per_genus, bbm_path=args.bbm,
-             force_llm=args.force_llm, only_mo_ids=only_mo_ids, label=args.label)
+    summary = validate(use_llm=not args.no_llm, per_genus=args.per_genus, bbm_path=args.bbm,
+                       force_llm=args.force_llm, only_mo_ids=only_mo_ids, label=args.label)
+    csv_summary = dict(summary)
+    for col in ("recall_all", "recall_present", "precision_linked",
+                "wrong_link_rate", "accuracy_on_gold"):
+        csv_summary[col] = round(100 * csv_summary[col], 1)
+    summary_path = REPORTS_DIR / "dap_validation_summary.csv"
+    with open(summary_path, "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=list(csv_summary.keys()), lineterminator="\n")
+        w.writeheader()
+        w.writerow(csv_summary)
+    logger.info("Saved validation summary -> %s", summary_path)
 
 
 if __name__ == "__main__":

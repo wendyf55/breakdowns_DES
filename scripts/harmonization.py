@@ -74,7 +74,7 @@ def confidence(cross_ref, match_type=None, *, dangling=False):
     if match_type == "strict":
         return (3.0, "name + exact date + locality/collector match; no cross-reference or image")
     if match_type == "similar":
-        return (2.5, "similar name + date/locality; no cross-reference or image")
+        return (2.5, "similar/synonym name + date + locality/collector; no cross-reference or image")
     return (2.0, "attribute match adjudicated by LLM; ambiguous — defer to a curator")
 
 

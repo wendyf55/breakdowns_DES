@@ -43,7 +43,9 @@ LLM_NAME_SIM = 0.65
 DEFAULT_LLM_MAX_GROUP = 6
 DEFAULT_LLM_MIN_SCORE = 4
 DEFAULT_LLM_ACCEPT_SCORE = 10
+SYNONYM_PATH = DATA_DIR / "name_synonyms.csv"
 MATCH_DETAILS = {}
+_SYNONYM_GROUPS = None
 
 
 @dataclass(frozen=True)
@@ -124,6 +126,42 @@ def edit_sim(a, b):
         prev = cur
     return 1.0 - prev[-1] / max(len(a), len(b))
 
+def _load_synonym_groups(path=SYNONYM_PATH):
+    """Map normalized names to accepted-name groups from data/name_synonyms.csv."""
+    groups = {}
+    if not path.exists():
+        return groups
+    with open(path, newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            if row.get("status") not in {"Accepted", "Synonym"}:
+                continue
+            accepted = norm_name(row.get("accepted_name"))
+            if not accepted:
+                continue
+            group = f"{row.get('source', '')}:{accepted}"
+            for field in ("query_name", "name", "accepted_name"):
+                name = norm_name(row.get(field))
+                if name:
+                    groups.setdefault(name, set()).add(group)
+    return groups
+
+
+def synonym_groups(name):
+    global _SYNONYM_GROUPS
+    if _SYNONYM_GROUPS is None:
+        _SYNONYM_GROUPS = _load_synonym_groups()
+    return _SYNONYM_GROUPS.get(norm_name(name), set())
+
+
+def synonym_match(left, right):
+    if not left or not right or norm_name(left) == norm_name(right):
+        return False, ""
+    shared = synonym_groups(left) & synonym_groups(right)
+    if not shared:
+        return False, ""
+    return True, "; ".join(sorted(shared))
+
+
 def _year(d):
     return d[:4] if d else ""
 
@@ -170,6 +208,9 @@ def _store_detail(bbm_row, plat_row, group, label, meta, guardrail=""):
     detail = _group_detail(group, label)
     detail.update(_record_details(bbm_row, "bbm"))
     detail.update(_record_details(plat_row, "platform"))
+    syn_match, syn_evidence = synonym_match(bbm_row[2], plat_row[2])
+    detail["synonym_match"] = syn_match
+    detail["synonym_evidence"] = syn_evidence
     if label == LLM:
         accepted, reason = _llm_acceptance(bbm_row, plat_row, meta)
         detail["accepted"] = accepted
@@ -212,6 +253,9 @@ def _pair_evidence_score(bbm_row, plat_row, meta):
         evidence.append("same_name"); score += 3
     elif sim >= LLM_NAME_SIM:
         evidence.append("similar_name"); score += 2
+    syn_match, _syn_evidence = synonym_match(bbm_row[2], plat_row[2])
+    if syn_match:
+        evidence.append("synonym_match"); score += 2
     if len(bbm_row[6]) == 10 and bbm_row[6] == plat_row[6]:
         evidence.append("same_exact_date"); score += 3
     elif _year(bbm_row[6]) and _year(bbm_row[6]) == _year(plat_row[6]):
@@ -246,7 +290,7 @@ def _llm_pair_guardrail(bbm_row, plat_row, meta):
     has_place_or_collector = any(e in evidence for e in (
         "locality_overlap", "weak_locality_overlap", "collector_overlap"
     ))
-    has_name = "same_name" in evidence or "similar_name" in evidence
+    has_name = any(e in evidence for e in ("same_name", "similar_name", "synonym_match"))
     if "explicit_cross_ref" in evidence:
         return True, f"passed_guardrails:{','.join(evidence)}"
     if score >= _llm_min_score() and has_date and has_place_or_collector and has_name:
@@ -258,7 +302,7 @@ def _llm_acceptance(bbm_row, plat_row, meta):
     """Allow an LLM pair into accepted output only with strong rule-like evidence."""
     score, evidence = _pair_evidence_score(bbm_row, plat_row, meta)
     has_exact_date = "same_exact_date" in evidence
-    has_name = "same_name" in evidence
+    has_name = "same_name" in evidence or "synonym_match" in evidence
     has_context = any(e in evidence for e in (
         "locality_overlap", "collector_overlap", "explicit_cross_ref"
     ))
@@ -279,12 +323,19 @@ def strict_pred(c, o, context):
     )
 
 def similar_pred(c, o, context):
-    if not (c.genus and c.genus == o.genus):
-        return False
     if _year(c.date) and _year(o.date) and _year(c.date) != _year(o.date):
         return False
-    return (edit_sim(c.sci_name, o.sci_name) >= NAME_SIM
-            and (_overlap(c.locality, o.locality, 2) or _overlap(c.collector, o.collector, 1)))
+    has_date = bool(
+        (len(c.date) == 10 and c.date == o.date)
+        or (_year(c.date) and _year(c.date) == _year(o.date))
+    )
+    if not has_date:
+        return False
+    syn_match, _syn_evidence = synonym_match(c.sci_name, o.sci_name)
+    same_genus = bool(c.genus and c.genus == o.genus)
+    name_ok = edit_sim(c.sci_name, o.sci_name) >= NAME_SIM or syn_match
+    context_ok = _overlap(c.locality, o.locality, 2) or _overlap(c.collector, o.collector, 1)
+    return (same_genus or syn_match) and name_ok and context_ok
 
 def _eval_config():
     return EvaluationConfig(
@@ -343,8 +394,31 @@ def _blocks(rows):
     for row in rows:
         genus = row[3]
         if genus:
-            b.setdefault(genus, []).append(row)
+            b.setdefault(f"genus:{genus}", []).append(row)
+        for group in synonym_groups(row[2]):
+            b.setdefault(f"synonym:{group}", []).append(row)
     return b
+
+
+def _dedupe_pairs(pairs):
+    rank = {STRICT: 0, SIMILAR: 1, LLM: 2}
+    best = {}
+    for bbm_id, plat_id, how in pairs:
+        key = (bbm_id, plat_id)
+        if key not in best or rank.get(how, 99) < rank.get(best[key], 99):
+            best[key] = how
+    return [(bbm_id, plat_id, how) for (bbm_id, plat_id), how in best.items()]
+
+
+def _dedupe_dups(dups):
+    rank = {STRICT: 0, SIMILAR: 1, LLM: 2}
+    best = {}
+    for a, b, platform, how in dups:
+        left, right = sorted((a, b))
+        key = (left, right, platform)
+        if key not in best or rank.get(how, 99) < rank.get(best[key], 99):
+            best[key] = how
+    return [(a, b, platform, how) for (a, b, platform), how in best.items()]
 
 def _cross_platform_pairs(group, meta, label):
     bbm = [c for c in group["candidates"] if meta[c[0]]["platform"] == "BBM"]
@@ -427,7 +501,8 @@ def resolve(bbm_rows, plat_rows, meta, use_llm=True, force_llm=False):
         if not os.getenv("LLM_MODEL"):
             raise RuntimeError("--force-llm needs LLM_MODEL set in .env "
                                "(start Ollama, then set LLM_MODEL)")
-        return _llm_only(blocks, meta, ecfg)
+        pairs, dups = _llm_only(blocks, meta, ecfg)
+        return _dedupe_pairs(pairs), _dedupe_dups(dups)
     ev = RuleBasedEvaluator()
     pairs, dups, leftover_blocks = [], [], []
     for genus, cands in blocks.items():
@@ -447,7 +522,7 @@ def resolve(bbm_rows, plat_rows, meta, use_llm=True, force_llm=False):
         lpairs, ldups = _llm_pass(leftover_blocks, meta, ecfg)
         pairs.extend(lpairs)
         dups.extend(ldups)
-    return pairs, dups
+    return _dedupe_pairs(pairs), _dedupe_dups(dups)
 
 def _llm_pass(leftover_blocks, meta, ecfg):
     _prompts.DOMAIN_HINTS["specimen"] = harm.LLM_DOMAIN_HINT
@@ -562,6 +637,8 @@ def main():
             "accepted": detail.get("accepted", how != LLM),
             "llm_reason": detail.get("llm_reason", ""),
             "guardrail": detail.get("guardrail", ""),
+            "synonym_match": detail.get("synonym_match", False),
+            "synonym_evidence": detail.get("synonym_evidence", ""),
             "candidate_group_size": detail.get("candidate_group_size", ""),
             "candidate_group_ids": detail.get("candidate_group_ids", ""),
             "bbm_sci_name": detail.get("bbm_sci_name", ""),
@@ -582,7 +659,7 @@ def main():
     out = REPORTS_DIR / f"{args.platform}_resolution.csv"
     if rows:
         with open(out, "w", newline="", encoding="utf-8") as f:
-            w = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
+            w = csv.DictWriter(f, fieldnames=list(rows[0].keys()), lineterminator="\n")
             w.writeheader(); w.writerows(rows)
 
     if dups:
@@ -590,7 +667,7 @@ def main():
                      "match_type": how, "breakdown": "06"} for a, b, pl, how in dups]
         dpath = REPORTS_DIR / f"{args.platform}_duplicates.csv"
         with open(dpath, "w", newline="", encoding="utf-8") as f:
-            w = csv.DictWriter(f, fieldnames=list(dup_rows[0].keys()))
+            w = csv.DictWriter(f, fieldnames=list(dup_rows[0].keys()), lineterminator="\n")
             w.writeheader(); w.writerows(dup_rows)
         cat_lists.extend([["06"]] * len(dups))
         logger.info("Saved %d duplicate pairs → %s", len(dups), dpath)

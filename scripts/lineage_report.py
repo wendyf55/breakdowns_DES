@@ -316,7 +316,7 @@ def build_report(
 def write_report(rows, output=REPORTS_DIR / "specimen_lineage_report.csv"):
     REPORTS_DIR.mkdir(exist_ok=True)
     with open(output, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
+        writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()), lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
     return output

@@ -34,8 +34,17 @@ logger = logging.getLogger(__name__)
 
 # ── shared HTTP ─────────────────────────────────────────────────────────────
 
+class PlatformRequestError(RuntimeError):
+    """Raised when a platform API request fails.
+
+    Network/API failures are not the same as a source returning zero matching
+    records. Raise so paper-facing audits do not silently count request failures
+    as absent, dangling, or not found.
+    """
+
+
 def fetch_json(url, params=None):
-    """GET a JSON endpoint, return parsed JSON (or {} on any error)."""
+    """GET a JSON endpoint and return parsed JSON."""
     if params:
         url = f"{url}?{urllib.parse.urlencode(params)}"
     req = urllib.request.Request(url, headers={"User-Agent": "breakdowns-DES/0.1"})
@@ -43,12 +52,11 @@ def fetch_json(url, params=None):
         with urllib.request.urlopen(req, timeout=60) as r:
             return json.loads(r.read().decode("utf-8"))
     except Exception as e:  # noqa: BLE001
-        print(f"request failed ({e}): {url}")
-        return {}
+        raise PlatformRequestError(f"request failed ({e}): {url}") from e
 
 
 def fetch_text(url, params=None):
-    """GET a text/XML endpoint, return the body string (or "" on any error)."""
+    """GET a text/XML endpoint and return the body string."""
     if params:
         url = f"{url}?{urllib.parse.urlencode(params)}"
     req = urllib.request.Request(url, headers={"User-Agent": "breakdowns-DES/0.1"})
@@ -56,8 +64,7 @@ def fetch_text(url, params=None):
         with urllib.request.urlopen(req, timeout=60) as r:
             return r.read().decode("utf-8", "replace")
     except Exception as e:  # noqa: BLE001
-        print(f"request failed ({e}): {url}")
-        return ""
+        raise PlatformRequestError(f"request failed ({e}): {url}") from e
 
 
 def norm_catalog(x):
@@ -450,8 +457,8 @@ class GenBank(IndependentPlatform):
         out = {}
         try:
             root = ET.fromstring(xml)
-        except ET.ParseError:
-            return out
+        except ET.ParseError as e:
+            raise PlatformRequestError("invalid GenBank efetch XML response") from e
         for seq in root.findall("GBSeq"):
             rec = self._parse_gbseq(seq)
             if rec["accession"]:
@@ -464,8 +471,8 @@ class GenBank(IndependentPlatform):
                          {"db": "nuccore", "term": term, "retmax": self.RETMAX})
         try:
             root = ET.fromstring(xml)
-        except ET.ParseError:
-            return []
+        except ET.ParseError as e:
+            raise PlatformRequestError("invalid GenBank esearch XML response") from e
         return [e.text for e in root.findall(".//IdList/Id") if e.text]
 
     # --- Platform contract -------------------------------------------------
