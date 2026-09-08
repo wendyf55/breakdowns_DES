@@ -49,8 +49,9 @@ platforms refer to the same physical specimen.
   matches on other platforms by searching on scientific name (NOT expanded to all known
   synonyms via the synonym pipeline), collector, collection date, and locality.
   Score each candidate on the strength of the match across these fields plus
-  identifier cross-references and (where available) image similarity. Flag
-  ambiguous cases for human review.
+  identifier cross-references. The manual paper workflow used image/physical
+  morphology when available, but image similarity is not implemented in this
+  repository yet. Flag ambiguous cases for human review.
 
   This directly automates the paper's matching procedure (A10 / Figure 3): "filter
   occurrence searches based on scientific name, locality, and collection date" to

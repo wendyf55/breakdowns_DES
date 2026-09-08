@@ -2,8 +2,9 @@
 
 Default mode is offline, rule-based, and laptop-friendly. It regenerates derived
 ground truth, harvested-platform coverage reports, MO attribute-resolution
-reports, DAP validation diagnostics, and GenBank linkage outputs from CSVs
-already present under data/.
+reports, DAP validation diagnostics, GenBank linkage outputs, DAP implementation
+status, the unified lineage report, and lineage spot checks from CSVs already
+present under data/.
 
 Network and LLM work are opt-in because they are slower and less reproducible:
 

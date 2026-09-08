@@ -36,8 +36,9 @@ but BBM records only **21** MO ids in return, so **1,008** BBM specimen rows are
 cited by MO without a reciprocal BBM→MO link (the paper's "UBC missing MO
 reference", 7× in n=131, is 1,008 at full scale). Of the 21 BBM→MO citations, 17 are clean
 bidirectional and **2 are wrong** (F023000→MO#66139→F23003; F023033→MO#82705,
-which belongs to F23090). MP coverage 99.4% (223 gaps); GBIF 95.0% (1,757 gaps) (probably not
-based on the latest local fetch; rerun network fetches before final submission).
+which belongs to F23090). MP coverage is 99.4% (223 gaps); GBIF coverage is
+95.0% (1,757 gaps), based on the latest local fetch; rerun network fetches
+before final submission.
 
 GenBank has a different denominator: **212 / 213 UBC voucher records do not cite
 their own GenBank accession**, which is the strongest category-01 paper claim.
@@ -59,7 +60,7 @@ cross-platform representation table.
 | **01** Missing x‑refs | unidirectional (each way) + absent | `resolve` quadrants + `link_audit` + discovery `cites_ubc` | MO explicit uni plat→UBC = 1,008; GenBank UBC-missing-accession = 212/213 | **Done both directions** |
 | **02** Identifier integrity | wrong / hanging / wrong‑field | `link_audit.wrong` + `wrong_field` (via `reference_fields`) | MO wrong‑id = 2 | **Done** (see decisions) |
 | **03** Absence | backlog / never‑published / orphans | `guid_discovery.py` + ipynb §8 | MP gap 223 / orphan 313; GBIF gap 1,757 / orphan 1,779 | **Done** for harvest‑gap & orphan; backlog n/a |
-| **04** Poor confidence | 0–5 rubric, ambiguous middle | `resolve` confidence + LLM `ambiguous`→04 | (per‑pair, not tallied) | **Done** |
+| **04** Poor confidence | 0–5 rubric, ambiguous middle | `resolve` confidence; LLM `ambiguous`→04 when enabled | 2,657 attribute-only MO candidates have confidence 2.5-3.0; 0 accepted 04 rows in the default rule run | **Rubric done; category-04 claims need careful wording** |
 | **05** Nomenclature | name instability / basionym | `resolve` `name_mismatch`→05 | (per matched pair) | **Partial** — mismatch flagged; basionym/accepted-name expansion needs synonym pipeline |
 | **06** Duplicates | multiple records / specimen | harvested: dup-GUID (`guid_discovery` `present_dup`); independent: same-platform pairs in a matched cluster (`resolve._same_platform_pairs`) -> `reports/<platform>_duplicates.csv` | harvested dup-GUID = 0; MO full rule run: 22,941 candidate pairs / 4,927 clusters | **Done (candidate-level)** - needs id/curator/gold-set confirm |
 | **07** Decay | DAP unimplemented / dead links | `dap_implementation_audit.py` + independent dangling ids | DAP actions: 368 still unimplemented, 2 changed elsewhere, 42 cannot assess | **Done initial DAP implementation audit** |
@@ -95,6 +96,12 @@ cross-platform representation table.
 
 ## Current major gaps / caveats before paper claims
 
+- **Image / physical morphology evidence.** The paper's manual workflow used
+  visual comparison between dried specimens and Mushroom Observer images. The
+  automated repo pipeline does not implement image similarity; it uses metadata
+  and identifiers only. Paper wording should treat image/physical morphology as
+  part of the manual audit and as a reason full automation is limited, not as a
+  measured automated feature.
 - **Name drift / synonym searching (category 05).** Current matching normalizes
   names and flags mismatches, but it does not expand a name through accepted-name
   and synonym relationships. Plan: borrow the MDS API-pipeline approach from
@@ -124,6 +131,58 @@ cross-platform representation table.
 - **Current-data caveat.** Latest completed fetch/audit wins. Because external
   platforms can change, paper numbers should cite the audit timestamp and source
   CSV timestamps, not imply a permanent count.
+
+## Results writing readiness check
+
+**Ready to write as quantitative Results now:**
+- Full-collection scale-up from manual n=131 to **34,856** BBM fungal records in
+  the current audit set.
+- Goal 1 explicit-link representation table:
+  MO 17 bidirectional / 2 BBM→MO only / 1,008 MO→BBM only / 2 wrong-id;
+  MyCoPortal 34,633 present, 223 harvest gaps, 313 orphans, 0 duplicate GUIDs;
+  GBIF 33,099 present, 1,757 harvest gaps, 1,779 orphans, 0 duplicate GUIDs;
+  GenBank 1 bidirectional, 182 GenBank→UBC only, 0 UBC→GenBank only, 30 with no
+  explicit cross-reference in current fields.
+- Strong GenBank category-01 claim: **212 / 213** UBC voucher records do not cite
+  their own GenBank accession, even though **183 / 213** fetched GenBank records
+  cite the UBC voucher F#.
+- DAP validation baseline for C2: rule matching recovers **261 / 355** gold
+  MO→UBC links (73.5% recall), with **17** wrong-F# links, **93.9%** precision
+  among linked records, and **77** unmatched gold records.
+- DAP implementation/decay claim: **412** requested action rows; **368** still
+  unimplemented, **2** changed elsewhere, **42** cannot assess from current
+  normalized extracts, **0** clearly implemented.
+- Unified lineage report: **36,948** rows total, **34,856** BBM specimen rows,
+  **2,092** harvested-platform orphan rows, **6,480** rows with a recommended
+  action; deterministic spot check passes **22 / 22** representative cases.
+
+**Write with caveats, not as settled headline claims:**
+- MO resolver output is a review/candidate system, not the Goal 1 representation
+  table: **3,401** BBM/MO candidate pairs, with 16 bidirectional, 2 BBM→MO only,
+  726 MO→BBM only, and 2,657 absent explicit links.
+- Duplicate results are candidate-level: **22,941** same-platform MO candidate
+  pairs forming **4,927** connected components. This is useful for triage but not
+  a confirmed duplicate count.
+- Category 04 is represented by the confidence rubric and low-confidence
+  attribute-only candidates, but the default rule-based run does not emit accepted
+  ambiguous/04 rows. Use category 04 mainly to explain why unresolved candidates
+  need human/curatorial review.
+- LLM results are experimental: prior full files show `rules+llm` improves recall
+  by only one correct link over rules, while LLM-only is cleaner but lower recall.
+  Keep the rule baseline as the paper-facing automation result unless new LLM
+  experiments improve the tradeoff.
+
+**Do before final submission, but not required before drafting Results:**
+- Re-fetch live platform data and rerun `python scripts/run_audit.py`; report the
+  final `generated_at_utc` timestamp from `reports/audit_summary.csv`.
+- Complete and validate synonym-expanded matching before making strong category
+  05 automation claims. The cache scaffold exists, but synonym evidence is not
+  wired into `resolve.py` yet.
+- If duplicate counts become important, curate a small duplicate/non-duplicate
+  validation set or present duplicates strictly as review candidates.
+- If image/physical morphology automation is mentioned, either implement it or
+  explicitly frame it as out of scope for this repo and central to why curator
+  judgment remains necessary.
 
 ## Validation against DAP ground truth (C2) — items 1 & 2
 
@@ -166,9 +225,9 @@ New diagnostics for improvement tracking:
 - **`run_audit.py` — end-to-end paper workflow.** Default command is
   `python scripts/run_audit.py`: offline, rule-based, no LLM, no live API lookups.
   It regenerates DAP-derived ground truth, harvested-platform GUID audits, MO
-  rule-based resolution, DAP validation diagnostics, GenBank linkage, the unified
-  lineage report, and writes `reports/audit_summary.csv` +
-  `reports/audit_manifest.json`. Optional flags:
+  rule-based resolution, DAP validation diagnostics, GenBank linkage, DAP
+  implementation status, the unified lineage report, lineage spot checks, and
+  writes `reports/audit_summary.csv` + `reports/audit_manifest.json`. Optional flags:
   `--include-network` for live independent-platform link audits and
   `--include-llm --llm-review-limit N` for a capped DAP-unmatched review subset.
 - **`platforms.py` — the axis.** One `Platform` per external DB, split by *coupling*:
