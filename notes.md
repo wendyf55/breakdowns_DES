@@ -8,8 +8,9 @@
   `get_records` pulls each platform's full corpus.
 - **Methods · Audit procedure.** *Harmonization assessment* (bidirectional /
   unidirectional / absent + incorrect flag) is automated for all four platforms.
-  *Lineage tracing* (the full BBM→MP→GBIF→MO→GenBank chain in one pass) is **not**
-  built — audits run per platform. *Record harmonization* (fixing) is out of scope.
+  *Lineage tracing* is now represented by `reports/specimen_lineage_report.csv`,
+  which joins BBM, MO, MP, GBIF, and GenBank outputs into one action ledger.
+  *Record harmonization* (fixing live database records) is out of scope.
 - **Methods · Phase III (Automated Catalog Audit?)** The scripts reproducing
   Phase I's digital‑catalog audit with the entire fungal collection. Does not
   yet exist in the paper draft.
@@ -27,7 +28,7 @@ BBM: 34,856 records all have a GUID
 | MO | independent | 5,866 | — | — | — | — | 17 | 1 | 992 | 2 |
 | MyCoPortal | harvested | 34,946 | 34,633 | 223 | 313 | 0 | — | — | — | — |
 | GBIF | harvested | 34,878 | 33,099 | 1,757 | 1,779 | 0 | — | — | — | — |
-| GenBank | independent | 500 | — | — | — | — | — | — | 10 | — |
+| GenBank | independent | 213 | — | — | — | — | — | — | 212 | — |
 
 Reading these: MO — of 5,866 Ceska/O.H. observations, **1,010 cite a UBC number**,
 but BBM records only **20** MO ids in return, so ~**992** MO records reference a
@@ -37,6 +38,13 @@ bidirectional and **2 are wrong** (F023000→MO#66139→F23003; F023033→MO#827
 which belongs to F23090). MP coverage 99.4% (223 gaps); GBIF 95.0% (1,757 gaps) (probably not
 actually this; needs access to up to date specify)
 
+Important counting distinction: the table above is the **Goal 1 explicit-link**
+view. It counts stored identifiers and reverse identifiers in the latest fetched
+data. `reports/mo_resolution.csv` is the **Goal 2 resolver-candidate** view: it
+counts inferred BBM/MO candidate pairs from name/date/locality/collector. Both
+are valid, but only the explicit-link view should be used as the paper-facing
+cross-platform representation table.
+
 ## Category-by-category mapping
 
 | Cat | Paper definition (§5.1) | Repo output | Verified | Status |
@@ -45,7 +53,7 @@ actually this; needs access to up to date specify)
 | **02** Identifier integrity | wrong / hanging / wrong‑field | `link_audit.wrong` + `wrong_field` (via `reference_fields`) | MO wrong‑id = 2 | **Done** (see decisions) |
 | **03** Absence | backlog / never‑published / orphans | `guid_discovery.py` + ipynb §8 | MP gap 223 / orphan 313; GBIF gap 1,757 / orphan 1,779 | **Done** for harvest‑gap & orphan; backlog n/a |
 | **04** Poor confidence | 0–5 rubric, ambiguous middle | `resolve` confidence + LLM `ambiguous`→04 | (per‑pair, not tallied) | **Done** |
-| **05** Nomenclature | name instability / basionym | `resolve` `name_mismatch`→05 | (per matched pair) | **Partial** — mismatch flagged; basionym needs synonym pipeline |
+| **05** Nomenclature | name instability / basionym | `resolve` `name_mismatch`→05 | (per matched pair) | **Partial** — mismatch flagged; basionym/accepted-name expansion needs synonym pipeline |
 | **06** Duplicates | multiple records / specimen | harvested: dup-GUID (`guid_discovery` `present_dup`); independent: same-platform pairs in a matched cluster (`resolve._same_platform_pairs`) -> `reports/<platform>_duplicates.csv` | harvested dup-GUID = 0; MO full rule run: 22,941 candidate pairs / 4,927 clusters | **Done (candidate-level)** - needs id/curator/gold-set confirm |
 | **07** Decay | DAP unimplemented / dead links | independent dangling→07 (dead cited id) | 1 MO dangling | **Scoped to dead links** (TODO: incorporate DAP data) |
 
@@ -75,6 +83,34 @@ actually this; needs access to up to date specify)
 - **07 — dead links only.** The DAP 2025 dataset has not yet been diffed against,
   so decay is scoped to **dead links**: an independent cited id that no longer
   resolves (`link_audit` dangling → 07). DAP drift / re‑minted GUIDs are out of reach.
+
+## Current major gaps / caveats before paper claims
+
+- **Name drift / synonym searching (category 05).** Current matching normalizes
+  names and flags mismatches, but it does not expand a name through accepted-name
+  and synonym relationships. Plan: borrow the MDS API-pipeline approach from
+  `/Users/wfrankel/Desktop/MDS/capstone/ubc-mds-project/scripts/apis_pipe/`, build
+  a cached `data/name_synonyms.csv` from Index Fungorum, Mushroom Observer, and
+  GBIF (`scripts/name_synonyms.py` is the first scaffold), then add
+  `synonym_match` evidence to `resolve.py`. Keep genus blocking for now. A
+  synonym match should help a candidate pass only when paired with date plus
+  locality/collector evidence.
+- **Automated lineage tracing across platforms.** Initial version now exists:
+  `scripts/lineage_report.py` writes `reports/specimen_lineage_report.csv`.
+  This is a join/action ledger over existing outputs, not a new matcher. It
+  should be the basis for the paper's automated "digital fingerprint" table.
+- **DAP / harmonization decay (category 07).** Dead links are represented, but
+  DAP drift is not yet fully measured. The needed next step is a diff between
+  DAP's 2025 expected actions and the latest live BBM/MO/GenBank state, so the
+  paper can distinguish "never harmonized" from "previously harmonized, then
+  decayed or remained unimplemented."
+- **Duplicate validation (category 06).** `mo_duplicates.csv` is a review queue,
+  not a confirmed duplicate count. The available gold truth validates OH/Ceska
+  MO->UBC links, not duplicate/non-duplicate labels. Paper language should say
+  "duplicate candidates" unless a curated duplicate gold set is added.
+- **Current-data caveat.** Latest completed fetch/audit wins. Because external
+  platforms can change, paper numbers should cite the audit timestamp and source
+  CSV timestamps, not imply a permanent count.
 
 ## Validation against DAP ground truth (C2) — items 1 & 2
 
@@ -107,8 +143,9 @@ New diagnostics for improvement tracking:
 - **`run_audit.py` — end-to-end paper workflow.** Default command is
   `python scripts/run_audit.py`: offline, rule-based, no LLM, no live API lookups.
   It regenerates DAP-derived ground truth, harvested-platform GUID audits, MO
-  rule-based resolution, DAP validation diagnostics, GenBank linkage, and writes
-  `reports/audit_summary.csv` + `reports/audit_manifest.json`. Optional flags:
+  rule-based resolution, DAP validation diagnostics, GenBank linkage, the unified
+  lineage report, and writes `reports/audit_summary.csv` +
+  `reports/audit_manifest.json`. Optional flags:
   `--include-network` for live independent-platform link audits and
   `--include-llm --llm-review-limit N` for a capped DAP-unmatched review subset.
 - **`platforms.py` — the axis.** One `Platform` per external DB, split by *coupling*:
@@ -137,6 +174,16 @@ New diagnostics for improvement tracking:
   `reports/<platform>_duplicates.csv`). Main report rows now carry audit columns
   for LLM reason, guardrail result, candidate group size/ids, review status, and
   the compared fields.
+- **`lineage_report.py` — automated lineage tracing.** Joins the current outputs
+  into `reports/specimen_lineage_report.csv`: one row per BBM specimen plus
+  harvested-platform orphan rows. Columns carry BBM identity fields, explicit MO
+  link status, MO resolver candidates, MP/GBIF harvest status, GenBank accession
+  status, breakdown categories, and recommended action. Use this as the automated
+  digital-fingerprint/action ledger.
+- **`name_synonyms.py` — synonym cache scaffold (not in default audit).** Fetches
+  accepted-name/synonym relationships from Index Fungorum, Mushroom Observer, and
+  GBIF into `data/name_synonyms.csv`. This is the planned input to category-05
+  matching improvements.
 - **`harmonization.py` — the framework as code.** Seven categories, the 0–5
   confidence rubric (maps to Fig‑4), and `classify_breakdowns`, driven by explicit
   02 sub‑case signals.

@@ -24,7 +24,8 @@ categories + 0–5 confidence). Scripts in `scripts/`:
   `get_mo_records.py` is a thin shim over `PlatformRecords(MushroomObserver())`.
 - **`run_audit.py`** — end-to-end paper workflow. Default mode is offline,
   rule-based, no LLM, and no live API lookups; it writes
-  `reports/audit_summary.csv` and `reports/audit_manifest.json`.
+  `reports/audit_summary.csv`, `reports/audit_manifest.json`, and
+  `reports/specimen_lineage_report.csv`.
 - **`link_audit.py`** — BBM → platform cross-reference audit. Platform-agnostic
   engine: establish correspondences (stored id or GUID) → classify bidirectional /
   unidirectional / dangling, with a breakdown category + 0–5 confidence per row.
@@ -35,6 +36,14 @@ categories + 0–5 confidence). Scripts in `scripts/`:
   (bidirectional / unidirectional UBC→platform / platform→UBC / absent) with
   categories + confidence. Report rows include audit columns for LLM reason,
   guardrail result, candidate group size/ids, review status, and compared fields.
+- **`lineage_report.py`** — unified cross-platform lineage/action report. Joins
+  existing outputs for BBM, MO explicit links, MO resolver candidates,
+  MyCoPortal/GBIF GUID coverage, and GenBank linkage. This is a reporting layer,
+  not a new matcher.
+- **`name_synonyms.py`** — networked synonym-cache scaffold for category 05.
+  Fetches accepted-name/synonym relationships from Index Fungorum, Mushroom
+  Observer, and GBIF into `data/name_synonyms.csv`. Keep it outside the default
+  offline audit until synonym-expanded matching is validated.
 - **`harmonization.py`** — the framework as code: the seven breakdown categories,
   the 0–5 confidence rubric, the report shape, and the LLM tier's guiding
   principles (from the `specimen-harmonization` skill / Kholmatova 2026).
@@ -71,6 +80,14 @@ Runtime dep: `requests`.
 - Constants at the top of each file.
 - Don't over-engineer scoring or classification — build incrementally,
   verify each step before adding complexity.
+- Goal 1 numbers are explicit identifier-link counts from the latest fetched
+  data. Do not substitute `mo_resolution.csv` candidate-pair quadrants for the
+  paper-facing representation table.
+- Treat `mo_duplicates.csv` and same-platform duplicate rows as review
+  candidates unless a duplicate/non-duplicate gold set exists.
+- For name/taxonomic drift, add a cached synonym/accepted-name layer before
+  relaxing the resolver. Keep genus blocking until the DAP validation shows the
+  synonym layer improves recall without increasing wrong-F# links.
 - Filters (collector, locality) are configurable via `.env` so scripts
   work for any subset of the collection without code changes.
 - Environment: Python 3.12 (conda env `breakdowns-des`, see `environment.yml`);
@@ -82,8 +99,9 @@ Runtime dep: `requests`.
 ## Related projects
 
 - **Synonym lookup pipeline** (`ubc-mds-project/scripts/apis_pipe/`) — API
-  clients for MO, GBIF, MyCoPortal, GenBank, etc. Used for taxonomic name
-  expansion.
+  clients for MO, GBIF, MyCoPortal, GenBank, Index Fungorum, etc. Use the idea
+  and source-specific clients for taxonomic name expansion, but keep this repo's
+  runtime self-contained by copying/adapting only the minimal code needed.
 - **Specify dedup pipeline** (`orchestration/`) — LangGraph dedup system for
   Specify 7. Its search → classify → review architecture is the template for the
   entity resolution here; its evaluator subsystem (classify half only) is

@@ -133,6 +133,21 @@ def _summarize_genbank():
     }
 
 
+def _summarize_lineage():
+    rows = _read_csv(REPORTS_DIR / "specimen_lineage_report.csv")
+    if not rows:
+        return {}
+    bbm_rows = [r for r in rows if r["specimen_key"].startswith(("BBM:", "BBM_ID:"))]
+    orphan_rows = [r for r in rows if r["specimen_key"].startswith("ORPHAN:")]
+    needs_action = [r for r in rows if r.get("recommended_action") not in {"", "none"}]
+    return {
+        "lineage_rows": len(rows),
+        "lineage_bbm_rows": len(bbm_rows),
+        "lineage_orphan_rows": len(orphan_rows),
+        "lineage_rows_needing_action": len(needs_action),
+    }
+
+
 def _write_summary(summary):
     REPORTS_DIR.mkdir(exist_ok=True)
     path = REPORTS_DIR / "audit_summary.csv"
@@ -189,6 +204,7 @@ def main():
     commands.append(_run([py, "scripts/resolve.py", "--platform", "mo", "--no-llm"]))
     commands.append(_run([py, "scripts/validate_dap.py", "--no-llm"]))
     commands.append(_run([py, "scripts/genbank_audit.py"]))
+    commands.append(_run([py, "scripts/lineage_report.py"]))
 
     if args.include_llm:
         if not os.getenv("LLM_MODEL"):
@@ -220,6 +236,7 @@ def main():
     summary.update(_summarize_guid("mycoportal"))
     summary.update(_summarize_guid("gbif"))
     summary.update(_summarize_genbank())
+    summary.update(_summarize_lineage())
 
     summary_path = _write_summary(summary)
     manifest = {
@@ -228,6 +245,7 @@ def main():
         "outputs": {
             "summary_csv": str(summary_path),
             "manifest_json": str(REPORTS_DIR / "audit_manifest.json"),
+            "lineage_report_csv": str(REPORTS_DIR / "specimen_lineage_report.csv"),
         },
     }
     manifest_path = REPORTS_DIR / "audit_manifest.json"
