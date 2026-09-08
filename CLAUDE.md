@@ -40,10 +40,17 @@ categories + 0–5 confidence). Scripts in `scripts/`:
   existing outputs for BBM, MO explicit links, MO resolver candidates,
   MyCoPortal/GBIF GUID coverage, and GenBank linkage. This is a reporting layer,
   not a new matcher.
+- **`dap_implementation_audit.py`** — DAP implementation/decay audit. Compares
+  2025 DAP requested actions against the latest local BBM, MO, and GenBank CSVs
+  and writes action-level status rows plus a summary.
+- **`spot_check_lineage.py`** — deterministic consistency spot check for the
+  lineage report. This checks reporting logic, not biological correctness.
 - **`name_synonyms.py`** — networked synonym-cache scaffold for category 05.
   Fetches accepted-name/synonym relationships from Index Fungorum, Mushroom
   Observer, and GBIF into `data/name_synonyms.csv`. Keep it outside the default
-  offline audit until synonym-expanded matching is validated.
+  offline audit until synonym-expanded matching is validated. The no-argument
+  command is a small resumable smoke run only; use `--all --sources
+  indexfungorum,mo,gbif` for the deliberate full slow pass.
 - **`harmonization.py`** — the framework as code: the seven breakdown categories,
   the 0–5 confidence rubric, the report shape, and the LLM tier's guiding
   principles (from the `specimen-harmonization` skill / Kholmatova 2026).

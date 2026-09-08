@@ -1,0 +1,23 @@
+specimen_key,case,result,mo_status,mycoportal_status,gbif_status,genbank_accessions,breakdown_categories,recommended_action
+BBM:F22976,bidirectional MO links need no action,pass,bidirectional,present,present,,,none
+BBM:F22977,bidirectional MO links need no action,pass,bidirectional,present,present,,,none
+BBM:F2300,UBC missing MO id is category 01,pass,unidirectional_mo_to_ubc,present,present,,01,add MO id to BBM if candidate is confirmed
+BBM:F3741,UBC missing MO id is category 01,pass,unidirectional_mo_to_ubc,present,present,,01,add MO id to BBM if candidate is confirmed
+BBM:F22978,MO missing UBC id is category 01,pass,unidirectional_ubc_to_mo,present,present,MH718192,01,add UBC catalog number to MO if candidate is confirmed | add GenBank accession to BBM voucher record
+BBM:F33365,MO missing UBC id is category 01,pass,unidirectional_ubc_to_mo,present,present,,01,add UBC catalog number to MO if candidate is confirmed
+BBM:F23000,wrong MO id is category 02,pass,wrong_id,present,present,,"01,02",curator review: check incorrect or compromised identifier | review MO/BBM wrong-id cross-reference
+BBM:F23033,wrong MO id is category 02,pass,wrong_id,present,present,,"01,02",curator review: check incorrect or compromised identifier | review MO/BBM wrong-id cross-reference
+BBM:F726,attribute-only MO candidate is review action,pass,none,present,present,,01,review attribute-only MO candidate
+BBM:F15607,attribute-only MO candidate is review action,pass,none,present,present,,01,review attribute-only MO candidate
+BBM:F677,MyCoPortal harvest gap is category 03,pass,none,harvest_gap,present,,03,check MyCoPortal harvest/publication
+BBM:F1322,MyCoPortal harvest gap is category 03,pass,none,harvest_gap,present,,03,check MyCoPortal harvest/publication
+BBM:F13874,GBIF harvest gap is category 03,pass,none,harvest_gap,harvest_gap,,03,check MyCoPortal harvest/publication | check GBIF harvest/publication
+BBM:F13875,GBIF harvest gap is category 03,pass,none,harvest_gap,harvest_gap,,03,check MyCoPortal harvest/publication | check GBIF harvest/publication
+BBM:F14444,GenBank accession missing on UBC is action,pass,unidirectional_mo_to_ubc,present,present,KP257157,01,add MO id to BBM if candidate is confirmed | add GenBank accession to BBM voucher record
+BBM:F15371,GenBank accession missing on UBC is action,pass,unidirectional_mo_to_ubc,present,present,FJ157055,01,add MO id to BBM if candidate is confirmed | add GenBank accession to BBM voucher record
+ORPHAN:mycoportal:MP:2661096,MyCoPortal orphan is category 03,pass,no_bbm_record,orphan,,,03,investigate mycoportal record not joined to current BBM GUID set
+ORPHAN:mycoportal:MP:2661312,MyCoPortal orphan is category 03,pass,no_bbm_record,orphan,,,03,investigate mycoportal record not joined to current BBM GUID set
+ORPHAN:gbif:GBIF:4974571037,GBIF orphan is category 03,pass,no_bbm_record,,orphan,,03,investigate gbif record not joined to current BBM GUID set
+ORPHAN:gbif:GBIF:4974569747,GBIF orphan is category 03,pass,no_bbm_record,,orphan,,03,investigate gbif record not joined to current BBM GUID set
+BBM:F1,clean row has no recommended action,pass,none,present,present,,,none
+BBM:F2,clean row has no recommended action,pass,none,present,present,,,none

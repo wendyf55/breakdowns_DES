@@ -1,0 +1,413 @@
+mo_id,ubc_F,genbank,action_scope,requested_action,status,current_evidence,breakdown
+202702,F19470,HQ604807,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19470 does not contain MO ref 202702,07
+202702,F19470,HQ604807,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19470 missing accession(s) HQ604807,07
+202702,F19470,HQ604807,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+191206,F19454,HQ604426,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19454 does not contain MO ref 191206,07
+191206,F19454,HQ604426,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19454 missing accession(s) HQ604426,07
+191206,F19454,HQ604426,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+159260,F25054,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25054 does not contain MO ref 159260,07
+74905,F19659,HQ604329,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19659 does not contain MO ref 74905,07
+74905,F19659,HQ604329,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19659 missing accession(s) HQ604329,07
+74905,F19659,HQ604329,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+72828,F19499,HQ604539,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19499 does not contain MO ref 72828,07
+72828,F19499,HQ604539,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19499 missing accession(s) HQ604539,07
+72828,F19499,HQ604539,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+66965,F19493,HQ604534,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19493 does not contain MO ref 66965,07
+66965,F19493,HQ604534,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19493 missing accession(s) HQ604534,07
+66965,F19493,HQ604534,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+66321,F19368,HQ604122,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19368 does not contain MO ref 66321,07
+66321,F19368,HQ604122,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19368 missing accession(s) HQ604122,07
+66321,F19368,HQ604122,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+66305,F19258,HQ604338,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19258 does not contain MO ref 66305,07
+66305,F19258,HQ604338,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19258 missing accession(s) HQ604338,07
+66305,F19258,HQ604338,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+66304,F19352,–,UBC/BBM,Add MO #,still_unimplemented,BBM F19352 does not contain MO ref 66304,07
+166513,F19584,HQ604715,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19584 does not contain MO ref 166513,07
+166513,F19584,HQ604715,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19584 missing accession(s) HQ604715,07
+166513,F19584,HQ604715,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+64022,F19355,HQ604092,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19355 does not contain MO ref 64022,07
+64022,F19355,HQ604092,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19355 missing accession(s) HQ604092,07
+64022,F19355,HQ604092,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+218853,F17260,GQ159846,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F17260 does not contain MO ref 218853,07
+218853,F17260,GQ159846,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F17260 missing accession(s) GQ159846,07
+218853,F17260,GQ159846,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+210193,F19553,HQ604480,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19553 does not contain MO ref 210193,07
+210193,F19553,HQ604480,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19553 missing accession(s) HQ604480,07
+210193,F19553,HQ604480,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+162109,F19618,HQ604654,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19618 does not contain MO ref 162109,07
+162109,F19618,HQ604654,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19618 missing accession(s) HQ604654,07
+162109,F19618,HQ604654,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+209961,F19266,HQ604578,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19266 does not contain MO ref 209961,07
+209961,F19266,HQ604578,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19266 missing accession(s) HQ604578,07
+209961,F19266,HQ604578,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+202610,F19645,HQ604553,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19645 does not contain MO ref 202610,07
+202610,F19645,HQ604553,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19645 missing accession(s) HQ604553,07
+202610,F19645,HQ604553,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+191211,F19450,HQ604185,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19450 does not contain MO ref 191211,07
+191211,F19450,HQ604185,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19450 missing accession(s) HQ604185,07
+191211,F19450,HQ604185,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+74819,F16364,FJ039585,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F16364 does not contain MO ref 74819,07
+74819,F16364,FJ039585,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F16364 missing accession(s) FJ039585,07
+74819,F16364,FJ039585,GenBank,"Add MO #, add F#",still_unimplemented,FJ039585: missing_F,07
+74819,F16364,FJ039585,GenBank,"Add MO #, add F#",cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+167151,F19611,HQ604341,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19611 does not contain MO ref 167151,07
+167151,F19611,HQ604341,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19611 missing accession(s) HQ604341,07
+167151,F19611,HQ604341,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+166830,F19599,–,UBC/BBM,Add MO #,still_unimplemented,BBM F19599 does not contain MO ref 166830,07
+166825,F19593,HQ604737,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19593 does not contain MO ref 166825,07
+166825,F19593,HQ604737,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19593 missing accession(s) HQ604737,07
+166825,F19593,HQ604737,Mushroom Observer,Add GB,cannot_assess_current_extract,Current mo_records.csv keeps UBC refs but not GenBank refs/comments needed for this action,07
+166825,F19593,HQ604737,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+166543,F19544,HQ604139,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19544 does not contain MO ref 166543,07
+166543,F19544,HQ604139,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19544 missing accession(s) HQ604139,07
+166543,F19544,HQ604139,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+157035,F19274,HQ604117,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19274 does not contain MO ref 157035,07
+157035,F19274,HQ604117,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19274 missing accession(s) HQ604117,07
+157035,F19274,HQ604117,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+156780,F19255,HQ604211,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19255 does not contain MO ref 156780,07
+156780,F19255,HQ604211,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19255 missing accession(s) HQ604211,07
+156780,F19255,HQ604211,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+156778,F19257,HQ604179,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19257 does not contain MO ref 156778,07
+156778,F19257,HQ604179,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19257 missing accession(s) HQ604179,07
+156778,F19257,HQ604179,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+156777,F19256,HQ604582,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19256 does not contain MO ref 156777,07
+156777,F19256,HQ604582,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19256 missing accession(s) HQ604582,07
+156777,F19256,HQ604582,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+156771,F19259,HQ604552,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19259 does not contain MO ref 156771,07
+156771,F19259,HQ604552,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19259 missing accession(s) HQ604552,07
+156771,F19259,HQ604552,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+85244,F27331,,UBC/BBM,Change to MO # 85244,still_unimplemented,BBM F27331 does not contain requested MO ref 85244,"02,07"
+132649,F16319,FJ039540,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F16319 does not contain MO ref 132649,07
+132649,F16319,FJ039540,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F16319 missing accession(s) FJ039540,07
+132649,F16319,FJ039540,GenBank,"Add MO #, add F#",still_unimplemented,FJ039540: missing_F,07
+132649,F16319,FJ039540,GenBank,"Add MO #, add F#",cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+166061,F29822,,Mushroom Observer,Correct to F29822,still_unimplemented,MO 166061 does not cite F29822,07
+75671,F19354,HQ604453,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19354 does not contain MO ref 75671,07
+75671,F19354,HQ604453,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19354 missing accession(s) HQ604453,07
+75671,F19354,HQ604453,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+74998,F19660,HQ604400,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19660 does not contain MO ref 74998,07
+74998,F19660,HQ604400,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19660 missing accession(s) HQ604400,07
+74998,F19660,HQ604400,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+74901,F19655,HQ604510,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19655 does not contain MO ref 74901,07
+74901,F19655,HQ604510,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19655 missing accession(s) HQ604510,07
+74901,F19655,HQ604510,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+73020,F19465,HQ604635,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19465 does not contain MO ref 73020,07
+73020,F19465,HQ604635,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19465 missing accession(s) HQ604635,07
+73020,F19465,HQ604635,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+72897,F19521,HQ604787,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19521 does not contain MO ref 72897,07
+72897,F19521,HQ604787,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19521 missing accession(s) HQ604787,07
+72897,F19521,HQ604787,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+72889,F19522,HQ604398,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19522 does not contain MO ref 72889,07
+72889,F19522,HQ604398,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19522 missing accession(s) HQ604398,07
+72889,F19522,HQ604398,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+72857,F19492,–,UBC/BBM,Add MO #,still_unimplemented,BBM F19492 does not contain MO ref 72857,07
+71652,F19441,HQ604396,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19441 does not contain MO ref 71652,07
+71652,F19441,HQ604396,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19441 missing accession(s) HQ604396,07
+71652,F19441,HQ604396,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+146033,F33821,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F33821 does not contain MO ref 146033,07
+146033,F33821,,Mushroom Observer,Correct to F33821,changed_elsewhere,"MO 146033 cites F26070, not F33821","02,07"
+148518,F26145,NR_199755.1,UBC/BBM,"Add GB #, add prefix ""MO #""",still_unimplemented,BBM F26145 does not contain MO ref 148518,07
+148518,F26145,NR_199755.1,UBC/BBM,"Add GB #, add prefix ""MO #""",still_unimplemented,BBM F26145 missing accession(s) NR_199755,07
+148518,F26145,NR_199755.1,Mushroom Observer,Correct to NR_199755.1,cannot_assess_current_extract,Current mo_records.csv keeps UBC refs but not GenBank refs/comments needed for this action,07
+330089,F19540,HQ604296,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19540 does not contain MO ref 330089,07
+330089,F19540,HQ604296,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19540 missing accession(s) HQ604296,07
+330089,F19540,HQ604296,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+64347,F24557,MZ817019,UBC/BBM,"Add GB #, add prefix ""MO #""",still_unimplemented,BBM F24557 does not contain MO ref 64347,07
+64347,F24557,MZ817019,UBC/BBM,"Add GB #, add prefix ""MO #""",still_unimplemented,BBM F24557 missing accession(s) MZ817019,07
+160579,F25924,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25924 does not contain MO ref 160579,07
+159014,F25111,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25111 does not contain MO ref 159014,07
+149944,F26200,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26200 does not contain MO ref 149944,07
+144428,F25553,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25553 does not contain MO ref 144428,07
+136789,F25988,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25988 does not contain MO ref 136789,07
+129959,F25876,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25876 does not contain MO ref 129959,07
+95526,F25496,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25496 does not contain MO ref 95526,07
+218820,F20130,–,UBC/BBM,Add MO #,still_unimplemented,BBM F20130 does not contain MO ref 218820,07
+202712,F27094,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F27094 does not contain MO ref 202712,07
+153803,F26366,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26366 does not contain MO ref 153803,07
+153618,F26274,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26274 does not contain MO ref 153618,07
+153612,F26339,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26339 does not contain MO ref 153612,07
+151560,F26246,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26246 does not contain MO ref 151560,07
+149941,F26163,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26163 does not contain MO ref 149941,07
+149863,F26116,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26116 does not contain MO ref 149863,07
+148514,F26148,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26148 does not contain MO ref 148514,07
+145997,F26060,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26060 does not contain MO ref 145997,07
+144839,F26026,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26026 does not contain MO ref 144839,07
+144427,F26028,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26028 does not contain MO ref 144427,07
+144387,F26038,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26038 does not contain MO ref 144387,07
+139393,F25923,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25923 does not contain MO ref 139393,07
+136760,F25991,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25991 does not contain MO ref 136760,07
+136429,F25908,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25908 does not contain MO ref 136429,07
+130240,F25875,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25875 does not contain MO ref 130240,07
+128847,F25806,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25806 does not contain MO ref 128847,07
+237405,F28978,,UBC/BBM,Add MO #,still_unimplemented,BBM F28978 does not contain MO ref 237405,07
+237405,F28978,,Mushroom Observer,Correct to F28978,changed_elsewhere,"MO 237405 cites F25578, not F28978","02,07"
+102451,F25547,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25547 does not contain MO ref 102451,07
+98424,F25524,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25524 does not contain MO ref 98424,07
+98424,F25524,,Mushroom Observer,Add F25524,still_unimplemented,MO 98424 does not cite F25524,07
+66969,F24400,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F24400 does not contain MO ref 66969,07
+152711,F26258,,UBC/BBM,"Add prefix ""MO #"" to 160703",still_unimplemented,BBM F26258 does not contain MO ref 152711,07
+152711,F26258,,Mushroom Observer,Delete MUOB 152711; update name in MUOB 160703,cannot_assess_current_extract,Unsupported or editorial MO action; inspect source row manually,07
+65673,F27310,,UBC/BBM,Add MO #,still_unimplemented,BBM F27310 does not contain MO ref 65673,07
+64910,F20266,–,UBC/BBM,Add MO #,still_unimplemented,BBM F20266 does not contain MO ref 64910,07
+64908,F20228,–,UBC/BBM,Add MO #,still_unimplemented,BBM F20228 does not contain MO ref 64908,07
+203748,F24279,–,UBC/BBM,Add MO #,still_unimplemented,BBM F24279 does not contain MO ref 203748,07
+191204,F29428,–,UBC/BBM,Add MO #,still_unimplemented,BBM F29428 does not contain MO ref 191204,07
+190669,F26410,–,UBC/BBM,Add MO #,still_unimplemented,BBM F26410 does not contain MO ref 190669,07
+172733,F28792,–,UBC/BBM,Add MO #,still_unimplemented,BBM F28792 does not contain MO ref 172733,07
+140003,F16326,FJ039547,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F16326 does not contain MO ref 140003,07
+140003,F16326,FJ039547,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F16326 missing accession(s) FJ039547,07
+140003,F16326,FJ039547,GenBank,"Add MO #, add F#",still_unimplemented,FJ039547: missing_F,07
+140003,F16326,FJ039547,GenBank,"Add MO #, add F#",cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+170938,F24476,,UBC/BBM,Add MO #,still_unimplemented,BBM F24476 does not contain MO ref 170938,07
+170808,F24455,–,UBC/BBM,Add MO #,still_unimplemented,BBM F24455 does not contain MO ref 170808,07
+170785,F24448,–,UBC/BBM,Add MO #,still_unimplemented,BBM F24448 does not contain MO ref 170785,07
+166541,F22962,–,UBC/BBM,Add MO #,still_unimplemented,BBM F22962 does not contain MO ref 166541,07
+166104,F29841,–,UBC/BBM,Add MO #,still_unimplemented,BBM F29841 does not contain MO ref 166104,07
+165193,F26589,–,UBC/BBM,Add MO #,still_unimplemented,BBM F26589 does not contain MO ref 165193,07
+163801,F20103,–,UBC/BBM,Add MO #,still_unimplemented,BBM F20103 does not contain MO ref 163801,07
+161585,F24420,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F24420 does not contain MO ref 161585,07
+161569,F24374,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F24374 does not contain MO ref 161569,07
+161534,F24342,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F24342 does not contain MO ref 161534,07
+161533,F24363,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F24363 does not contain MO ref 161533,07
+161532,F24358,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F24358 does not contain MO ref 161532,07
+160704,F26118,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26118 does not contain MO ref 160704,07
+160662,F26107,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26107 does not contain MO ref 160662,07
+160580,F25937,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25937 does not contain MO ref 160580,07
+160424,F25961,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25961 does not contain MO ref 160424,07
+160417,F25953,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25953 does not contain MO ref 160417,07
+160381,F25927,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25927 does not contain MO ref 160381,07
+160380,F25928,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25928 does not contain MO ref 160380,07
+160378,F25930,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25930 does not contain MO ref 160378,07
+160377,F25915,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25915 does not contain MO ref 160377,07
+159833,F25282,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25282 does not contain MO ref 159833,07
+159821,F25250,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25250 does not contain MO ref 159821,07
+159804,F25226,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25226 does not contain MO ref 159804,07
+159756,F25200,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25200 does not contain MO ref 159756,07
+159755,F25203,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25203 does not contain MO ref 159755,07
+159754,F25202,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25202 does not contain MO ref 159754,07
+159753,F25199,MF955059,UBC/BBM,"Add GB #, add prefix ""MO #""",still_unimplemented,BBM F25199 does not contain MO ref 159753,07
+159753,F25199,MF955059,UBC/BBM,"Add GB #, add prefix ""MO #""",still_unimplemented,BBM F25199 missing accession(s) MF955059,07
+159753,F25199,MF955059,GenBank,Add MO# (has F-),cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+159703,F24923,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F24923 does not contain MO ref 159703,07
+159702,F24943,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F24943 does not contain MO ref 159702,07
+159694,F25462,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25462 does not contain MO ref 159694,07
+159693,F24944,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F24944 does not contain MO ref 159693,07
+159336,F25002,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25002 does not contain MO ref 159336,07
+159319,F25005,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25005 does not contain MO ref 159319,07
+159256,F25063,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25063 does not contain MO ref 159256,07
+159096,F25068,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25068 does not contain MO ref 159096,07
+159094,F25070,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25070 does not contain MO ref 159094,07
+159093,F25092,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25092 does not contain MO ref 159093,07
+159049,F25080,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25080 does not contain MO ref 159049,07
+159048,F25084,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25084 does not contain MO ref 159048,07
+159047,F25091,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25091 does not contain MO ref 159047,07
+159011,F25103,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25103 does not contain MO ref 159011,07
+157498,F26371,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26371 does not contain MO ref 157498,07
+156944,F29666,,UBC/BBM,Add MO #,still_unimplemented,BBM F29666 does not contain MO ref 156944,07
+156089,F26406,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26406 does not contain MO ref 156089,07
+155785,F26198,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26198 does not contain MO ref 155785,07
+155784,F26194,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26194 does not contain MO ref 155784,07
+155754,F26391,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26391 does not contain MO ref 155754,07
+155752,F26392,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26392 does not contain MO ref 155752,07
+155746,F26380,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26380 does not contain MO ref 155746,07
+155602,F26404,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26404 does not contain MO ref 155602,07
+154945,F26379,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26379 does not contain MO ref 154945,07
+154944,F26397,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26397 does not contain MO ref 154944,07
+154934,F26172,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26172 does not contain MO ref 154934,07
+154933,F26173,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26173 does not contain MO ref 154933,07
+154902,F26346,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26346 does not contain MO ref 154902,07
+154832,F26409,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26409 does not contain MO ref 154832,07
+154831,F26372,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26372 does not contain MO ref 154831,07
+154830,F26344,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26344 does not contain MO ref 154830,07
+154826,F26359,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26359 does not contain MO ref 154826,07
+154494,F26319,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26319 does not contain MO ref 154494,07
+154379,F26377,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26377 does not contain MO ref 154379,07
+154378,F26400,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26400 does not contain MO ref 154378,07
+154377,F26376,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26376 does not contain MO ref 154377,07
+154375,F26341,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26341 does not contain MO ref 154375,07
+154374,F26370,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26370 does not contain MO ref 154374,07
+154366,F26388,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26388 does not contain MO ref 154366,07
+154364,F26354,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26354 does not contain MO ref 154364,07
+154363,F26347,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26347 does not contain MO ref 154363,07
+154362,F26345,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26345 does not contain MO ref 154362,07
+154355,F26348,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26348 does not contain MO ref 154355,07
+153895,F26395,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26395 does not contain MO ref 153895,07
+153894,F26368,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26368 does not contain MO ref 153894,07
+153893,F26320,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26320 does not contain MO ref 153893,07
+153890,F26321,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26321 does not contain MO ref 153890,07
+153840,F26322,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26322 does not contain MO ref 153840,07
+153837,F26318,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26318 does not contain MO ref 153837,07
+153802,F26340,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26340 does not contain MO ref 153802,07
+153801,F26361,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26361 does not contain MO ref 153801,07
+153626,F26314,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26314 does not contain MO ref 153626,07
+153624,F26334,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26334 does not contain MO ref 153624,07
+153598,F26323,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26323 does not contain MO ref 153598,07
+153552,F26281,MF954807,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26281 does not contain MO ref 153552,07
+152922,F26242,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26242 does not contain MO ref 152922,07
+157064,F19276,HQ604331,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19276 does not contain MO ref 157064,07
+157064,F19276,HQ604331,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F19276 missing accession(s) HQ604331,07
+157064,F19276,HQ604331,GenBank,Add MO #,cannot_assess_current_extract,Current genbank_records.csv keeps UBC voucher refs but not MO refs/comments needed for this action,07
+152704,F26271,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26271 does not contain MO ref 152704,07
+152320,F26245,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26245 does not contain MO ref 152320,07
+152319,F26299,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26299 does not contain MO ref 152319,07
+152317,F26305,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26305 does not contain MO ref 152317,07
+152315,F26301,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26301 does not contain MO ref 152315,07
+152312,F26312,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26312 does not contain MO ref 152312,07
+152311,F26308,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26308 does not contain MO ref 152311,07
+152310,F26307,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26307 does not contain MO ref 152310,07
+152309,F26270,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26270 does not contain MO ref 152309,07
+152307,F26257,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26257 does not contain MO ref 152307,07
+152235,F26309,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26309 does not contain MO ref 152235,07
+152200,F26268,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26268 does not contain MO ref 152200,07
+152199,F26267,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26267 does not contain MO ref 152199,07
+152086,F26195,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26195 does not contain MO ref 152086,07
+151889,F26231,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26231 does not contain MO ref 151889,07
+151888,F26230,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26230 does not contain MO ref 151888,07
+151887,F26216,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26216 does not contain MO ref 151887,07
+151874,F26220,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26220 does not contain MO ref 151874,07
+151873,F26029,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26029 does not contain MO ref 151873,07
+151566,F26238,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26238 does not contain MO ref 151566,07
+151565,F26219,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26219 does not contain MO ref 151565,07
+151564,F26237,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26237 does not contain MO ref 151564,07
+151561,F26236,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26236 does not contain MO ref 151561,07
+151558,F26101,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26101 does not contain MO ref 151558,07
+151393,F26255,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26255 does not contain MO ref 151393,07
+151392,F26252,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26252 does not contain MO ref 151392,07
+151390,F26239,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26239 does not contain MO ref 151390,07
+151312,F26082,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26082 does not contain MO ref 151312,07
+151310,F26083,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26083 does not contain MO ref 151310,07
+151306,F26084,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26084 does not contain MO ref 151306,07
+151305,F26092,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26092 does not contain MO ref 151305,07
+150955,F23383,–,UBC/BBM,Add MO #,still_unimplemented,BBM F23383 does not contain MO ref 150955,07
+150347,F26171,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26171 does not contain MO ref 150347,07
+150346,F26208,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26208 does not contain MO ref 150346,07
+149942,F26197,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26197 does not contain MO ref 149942,07
+149940,F26174,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26174 does not contain MO ref 149940,07
+149939,F26205,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26205 does not contain MO ref 149939,07
+149052,F26144,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26144 does not contain MO ref 149052,07
+149044,F26142,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26142 does not contain MO ref 149044,07
+148533,F26128,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26128 does not contain MO ref 148533,07
+148517,F26149,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26149 does not contain MO ref 148517,07
+148515,F26151,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26151 does not contain MO ref 148515,07
+148513,F26130,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26130 does not contain MO ref 148513,07
+148507,F26110,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26110 does not contain MO ref 148507,07
+148369,F26109,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26109 does not contain MO ref 148369,07
+148364,F26123,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26123 does not contain MO ref 148364,07
+147967,F26124,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26124 does not contain MO ref 147967,07
+147965,F26099,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26099 does not contain MO ref 147965,07
+147800,F26121,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26121 does not contain MO ref 147800,07
+146405,F26056,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26056 does not contain MO ref 146405,07
+146394,F26068,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26068 does not contain MO ref 146394,07
+146314,F26065,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26065 does not contain MO ref 146314,07
+146290,F26057,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26057 does not contain MO ref 146290,07
+146214,F26071,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26071 does not contain MO ref 146214,07
+146019,F26079,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26079 does not contain MO ref 146019,07
+145998,F26062,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26062 does not contain MO ref 145998,07
+145996,F26061,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26061 does not contain MO ref 145996,07
+145413,F26023,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26023 does not contain MO ref 145413,07
+145346,F26045,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26045 does not contain MO ref 145346,07
+145220,F26046,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26046 does not contain MO ref 145220,07
+145219,F26047,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26047 does not contain MO ref 145219,07
+144649,F26024,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26024 does not contain MO ref 144649,07
+144639,F26030,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26030 does not contain MO ref 144639,07
+144627,F26036,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26036 does not contain MO ref 144627,07
+144430,F26020,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26020 does not contain MO ref 144430,07
+144358,F26037,,UBC/BBM,Add MO #,still_unimplemented,BBM F26037 does not contain MO ref 144358,07
+144126,F26034,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26034 does not contain MO ref 144126,07
+144125,F26033,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26033 does not contain MO ref 144125,07
+140347,F26012,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26012 does not contain MO ref 140347,07
+139594,F26019,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26019 does not contain MO ref 139594,07
+139556,F26000,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26000 does not contain MO ref 139556,07
+139497,F26002,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26002 does not contain MO ref 139497,07
+139355,F25913,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25913 does not contain MO ref 139355,07
+139341,F25815,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25815 does not contain MO ref 139341,07
+138878,F26009,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26009 does not contain MO ref 138878,07
+138701,F25997,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25997 does not contain MO ref 138701,07
+138379,F25999,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25999 does not contain MO ref 138379,07
+138260,F26007,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F26007 does not contain MO ref 138260,07
+137896,F25977,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25977 does not contain MO ref 137896,07
+137103,F25990,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25990 does not contain MO ref 137103,07
+137028,F25975,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25975 does not contain MO ref 137028,07
+136891,F25982,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25982 does not contain MO ref 136891,07
+136701,F25978,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25978 does not contain MO ref 136701,07
+136695,F25995,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25995 does not contain MO ref 136695,07
+136694,F25987,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25987 does not contain MO ref 136694,07
+136688,F25994,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25994 does not contain MO ref 136688,07
+136188,F25979,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25979 does not contain MO ref 136188,07
+135411,F25936,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25936 does not contain MO ref 135411,07
+135266,F25962,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25962 does not contain MO ref 135266,07
+135237,F25963,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25963 does not contain MO ref 135237,07
+135153,F25954,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25954 does not contain MO ref 135153,07
+135119,F25959,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25959 does not contain MO ref 135119,07
+135116,F25952,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25952 does not contain MO ref 135116,07
+135114,F25938,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25938 does not contain MO ref 135114,07
+135031,F25934,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25934 does not contain MO ref 135031,07
+135023,F25948,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25948 does not contain MO ref 135023,07
+134880,F25951,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25951 does not contain MO ref 134880,07
+134707,F25943,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25943 does not contain MO ref 134707,07
+134698,F25909,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25909 does not contain MO ref 134698,07
+134502,F25940,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25940 does not contain MO ref 134502,07
+134501,F25942,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25942 does not contain MO ref 134501,07
+134291,F25944,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25944 does not contain MO ref 134291,07
+134267,F25949,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25949 does not contain MO ref 134267,07
+134128,F25935,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25935 does not contain MO ref 134128,07
+134021,F25886,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25886 does not contain MO ref 134021,07
+133127,F25899,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25899 does not contain MO ref 133127,07
+133032,F25918,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25918 does not contain MO ref 133032,07
+132660,F25917,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25917 does not contain MO ref 132660,07
+130633,F25866,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25866 does not contain MO ref 130633,07
+130631,F25895,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25895 does not contain MO ref 130631,07
+130399,F25856,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25856 does not contain MO ref 130399,07
+130190,F25844,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25844 does not contain MO ref 130190,07
+130189,F25829,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25829 does not contain MO ref 130189,07
+130107,F25881,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25881 does not contain MO ref 130107,07
+129990,F25882,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25882 does not contain MO ref 129990,07
+129940,F25868,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25868 does not contain MO ref 129940,07
+129939,F25864,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25864 does not contain MO ref 129939,07
+129938,F25884,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25884 does not contain MO ref 129938,07
+129738,F25827,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25827 does not contain MO ref 129738,07
+129693,F25849,,UBC/BBM,Add MO #,still_unimplemented,BBM F25849 does not contain MO ref 129693,07
+129022,F25807,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25807 does not contain MO ref 129022,07
+128891,F25790,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25790 does not contain MO ref 128891,07
+128817,F25793,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25793 does not contain MO ref 128817,07
+127155,F25787,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25787 does not contain MO ref 127155,07
+123474,F25783,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25783 does not contain MO ref 123474,07
+123270,F25779,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25779 does not contain MO ref 123270,07
+119494,F25680,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25680 does not contain MO ref 119494,07
+115808,F25579,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25579 does not contain MO ref 115808,07
+113842,F25559,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25559 does not contain MO ref 113842,07
+102706,F25551,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25551 does not contain MO ref 102706,07
+102538,F25541,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25541 does not contain MO ref 102538,07
+95657,F25503,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25503 does not contain MO ref 95657,07
+95648,F25486,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25486 does not contain MO ref 95648,07
+95524,F25500,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25500 does not contain MO ref 95524,07
+93223,F25020,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25020 does not contain MO ref 93223,07
+87641,F25391,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25391 does not contain MO ref 87641,07
+83450,F25193,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25193 does not contain MO ref 83450,07
+83188,F25258,–,UBC/BBM,"add prefix ""MO #""",still_unimplemented,BBM F25258 does not contain MO ref 83188,07
+83025,F22978,MH718192,UBC/BBM,Add GB #,still_unimplemented,BBM F22978 missing accession(s) MH718192,07
+83025,F22978,MH718192,Mushroom Observer,Add GB#,cannot_assess_current_extract,Current mo_records.csv keeps UBC refs but not GenBank refs/comments needed for this action,07
+82406,F25229,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25229 does not contain MO ref 82406,07
+146031,F25079,–,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25079 does not contain MO ref 146031,07
+146031,F25079,–,Mushroom Observer,F33822,still_unimplemented,MO 146031 does not cite F33822,07
+72975,F25079,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25079 does not contain MO ref 72975,07
+71514,F25079,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25079 does not contain MO ref 71514,07
+68217,F25079,,UBC/BBM,"Add prefix ""MO #""",still_unimplemented,BBM F25079 does not contain MO ref 68217,07
+223631,F25079,,UBC/BBM,Add MO #,still_unimplemented,BBM F25079 does not contain MO ref 223631,07
+224260,F25079,,UBC/BBM,Add MO #,still_unimplemented,BBM F25079 does not contain MO ref 224260,07
+187485,F25079,FJ039595,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F25079 does not contain MO ref 187485,07
+187485,F25079,FJ039595,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F25079 missing accession(s) FJ039595,07
+187485,F25079,FJ039595,Mushroom Observer,cite only this specimen,cannot_assess_current_extract,Unsupported or editorial MO action; inspect source row manually,07
+235975,F25079,,UBC/BBM,Add MO #,still_unimplemented,BBM F25079 does not contain MO ref 235975,07
+77711,F25079,,Mushroom Observer,remove comment,cannot_assess_current_extract,Unsupported or editorial MO action; inspect source row manually,07
+261927,F25079,,UBC/BBM,Add MO #,still_unimplemented,BBM F25079 does not contain MO ref 261927,07
+281725,F25079,,UBC/BBM,Add MO #,still_unimplemented,BBM F25079 does not contain MO ref 281725,07
+293813,F25079,KY026762; KY026763,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F25079 does not contain MO ref 293813,07
+293813,F25079,KY026762; KY026763,UBC/BBM,"Add MO #, add GB #",still_unimplemented,BBM F25079 missing accession(s) KY026762; KY026763,07
+303770,F25079,,UBC/BBM,Add MO #,still_unimplemented,BBM F25079 does not contain MO ref 303770,07
+95658,F25079,MH718195,UBC/BBM,"Add prefix ""MO #"",  Move GB #",still_unimplemented,BBM F25079 does not contain MO ref 95658,07
+189823,F25079,,UBC/BBM,Add MO #,still_unimplemented,BBM F25079 does not contain MO ref 189823,07
+63555,F25079,,UBC/BBM,Add MO #,still_unimplemented,BBM F25079 does not contain MO ref 63555,07
+218601,F25079,,UBC/BBM,Add MO #,still_unimplemented,BBM F25079 does not contain MO ref 218601,07
+224045,F25079,–,UBC/BBM,Add MO #,still_unimplemented,BBM F25079 does not contain MO ref 224045,07
+361632,F25079,–,UBC/BBM,Add MO #,still_unimplemented,BBM F25079 does not contain MO ref 361632,07

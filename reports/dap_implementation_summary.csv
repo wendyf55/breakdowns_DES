@@ -1,0 +1,10 @@
+scope,status,count
+ALL,cannot_assess_current_extract,42
+ALL,changed_elsewhere,2
+ALL,still_unimplemented,368
+GenBank,cannot_assess_current_extract,36
+GenBank,still_unimplemented,3
+Mushroom Observer,cannot_assess_current_extract,6
+Mushroom Observer,changed_elsewhere,2
+Mushroom Observer,still_unimplemented,3
+UBC/BBM,still_unimplemented,362

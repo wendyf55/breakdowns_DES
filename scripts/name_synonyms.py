@@ -11,8 +11,14 @@ the useful parts of the MDS synonym pipeline:
 
 Output: data/name_synonyms.csv
 
+    python scripts/name_synonyms.py
     python scripts/name_synonyms.py --names "Amanita muscaria,Boletus edulis"
-    python scripts/name_synonyms.py --limit 25
+    python scripts/name_synonyms.py --all --sources indexfungorum,mo,gbif
+
+By default this is a small, resumable smoke run: 25 names, Index Fungorum + MO
+only. Use `--all` and opt into GBIF when you deliberately want the slow pass.
+Existing `(query_name, source)` pairs in the output are skipped unless
+`--refresh` is set.
 """
 
 import argparse
@@ -31,6 +37,9 @@ from resolve import norm_name
 
 OUTPUT = DATA_DIR / "name_synonyms.csv"
 SOURCES = ("indexfungorum", "mo", "gbif")
+DEFAULT_SOURCES = ("indexfungorum", "mo")
+DEFAULT_LIMIT = 25
+REQUEST_TIMEOUT = 15
 HEADERS = {"User-Agent": "breakdowns-DES/0.1"}
 
 IF_TAGS = {
@@ -41,7 +50,8 @@ IF_TAGS = {
 }
 
 
-def _urlopen(url, params=None, timeout=60):
+def _urlopen(url, params=None, timeout=None):
+    timeout = REQUEST_TIMEOUT if timeout is None else timeout
     if params:
         url = f"{url}?{urllib.parse.urlencode(params)}"
     req = urllib.request.Request(url, headers=HEADERS)
@@ -49,7 +59,7 @@ def _urlopen(url, params=None, timeout=60):
         return resp.read().decode("utf-8", "replace")
 
 
-def _fetch_json(url, params=None, timeout=60):
+def _fetch_json(url, params=None, timeout=None):
     try:
         return json.loads(_urlopen(url, params=params, timeout=timeout))
     except Exception as exc:  # noqa: BLE001
@@ -57,7 +67,7 @@ def _fetch_json(url, params=None, timeout=60):
         return {}
 
 
-def _fetch_xml(url, params=None, timeout=60):
+def _fetch_xml(url, params=None, timeout=None):
     try:
         return ET.fromstring(_urlopen(url, params=params, timeout=timeout))
     except Exception as exc:  # noqa: BLE001
@@ -247,36 +257,60 @@ def write_rows(rows, output, append=True):
 
 
 def main():
+    global REQUEST_TIMEOUT
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--names", default="", help="comma-separated names to fetch")
-    parser.add_argument("--sources", default=",".join(SOURCES),
+    parser.add_argument("--sources", default=",".join(DEFAULT_SOURCES),
                         help="comma-separated sources: indexfungorum,mo,gbif")
-    parser.add_argument("--limit", type=int, default=None,
-                        help="limit auto-collected names for a smoke run")
+    parser.add_argument("--limit", type=int, default=DEFAULT_LIMIT,
+                        help=f"limit auto-collected names (default {DEFAULT_LIMIT}; ignored with --all)")
+    parser.add_argument("--all", action="store_true",
+                        help="fetch every auto-collected name; this can take hours")
     parser.add_argument("--output", default=str(OUTPUT))
     parser.add_argument("--refresh", action="store_true",
                         help="refetch even when query/source already exists in output")
     parser.add_argument("--sleep", type=float, default=0.5)
+    parser.add_argument("--timeout", type=int, default=REQUEST_TIMEOUT,
+                        help=f"per-request timeout in seconds (default {REQUEST_TIMEOUT})")
     args = parser.parse_args()
+    REQUEST_TIMEOUT = args.timeout
 
     names = [norm_name(n) for n in args.names.split(",") if norm_name(n)]
     if not names:
-        names = collect_names(limit=args.limit)
+        names = collect_names(limit=None if args.all else args.limit)
     sources = [s.strip().lower() for s in args.sources.split(",") if s.strip()]
     done = set() if args.refresh else existing_keys(args.output)
 
     total = 0
-    for name in names:
-        for source in sources:
-            if source not in FETCHERS:
-                print(f"unknown source: {source}")
-                continue
-            if (name, source) in done:
-                continue
-            rows = FETCHERS[source](name)
-            write_rows(rows or [_row(name, source, "Not found", "", "")], args.output)
-            total += len(rows)
-            time.sleep(args.sleep)
+    requests_total = sum(
+        1 for name in names for source in sources
+        if source in FETCHERS and (args.refresh or (name, source) not in done)
+    )
+    if not args.all and not args.names:
+        print(
+            f"Smoke run: {len(names)} names x {len(sources)} source(s). "
+            "Use --all for the full corpus."
+        )
+    print(f"Output: {args.output}")
+    print(f"Pending query/source pairs: {requests_total}")
+    completed = 0
+    try:
+        for name in names:
+            for source in sources:
+                if source not in FETCHERS:
+                    print(f"unknown source: {source}")
+                    continue
+                if (name, source) in done:
+                    continue
+                completed += 1
+                print(f"[{completed}/{requests_total}] {source}: {name}", flush=True)
+                rows = FETCHERS[source](name)
+                write_rows(rows or [_row(name, source, "Not found", "", "")], args.output)
+                total += len(rows)
+                time.sleep(args.sleep)
+    except KeyboardInterrupt:
+        print("\nInterrupted. Partial output is saved; rerun the same command to resume.")
+        raise SystemExit(130)
     print(f"Wrote/updated {args.output} ({total} synonym/accepted rows fetched)")
 
 

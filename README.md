@@ -180,13 +180,18 @@ python scripts/run_audit.py
 
 This is the paper-safe default workflow. It rebuilds DAP ground truth from the
 local raw DAP files, runs harvested-platform GUID reconciliation for MyCoPortal
-and GBIF, runs MO rule-based resolution, validates against DAP, and audits
-GenBank linkage, then builds the unified lineage report. It writes:
+and GBIF, runs MO rule-based resolution, validates against DAP, audits GenBank
+linkage, audits DAP implementation/decay, builds the unified lineage report, and
+runs lineage spot checks. It writes:
 
 - `reports/audit_summary.csv` — compact metric/value table for the notebook and paper
 - `reports/audit_manifest.json` — commands, durations, outputs, and provenance
+- `reports/dap_implementation_audit.csv` — DAP requested actions classified
+  against the current local extracts
 - `reports/specimen_lineage_report.csv` — one cross-platform trace/action row per
   BBM specimen, plus harvested-platform orphan rows
+- `reports/lineage_spot_check.csv` — representative consistency checks for the
+  lineage report
 - the per-audit CSVs used by the notebook
 
 Optional expensive paths are explicit:
@@ -218,8 +223,11 @@ python scripts/link_audit.py --platform genbank
 python scripts/resolve.py    --platform mo         # attribute resolution → mo_resolution.csv
 python scripts/resolve.py    --platform mo --no-llm  # rule-based only
 python scripts/validate_dap.py --no-llm            # DAP rule baseline
-python scripts/name_synonyms.py --limit 25         # synonym cache smoke run (network)
+python scripts/dap_implementation_audit.py         # DAP action/decay audit
+python scripts/name_synonyms.py                    # synonym cache smoke run, resumable
+python scripts/name_synonyms.py --all --sources indexfungorum,mo,gbif  # full slow run
 python scripts/lineage_report.py                   # unified cross-platform trace
+python scripts/spot_check_lineage.py               # lineage report consistency checks
 python scripts/run_audit.py                        # stable paper workflow
 ```
 
@@ -251,6 +259,21 @@ writes focused diagnostics: `reports/dap_validation_<mode>_wrong_links.csv` and
 `reports/dap_validation_<mode>_unmatched_reasons.csv`. If LLM improves recall
 but raises the wrong-F# rate too much, keep it out of headline numbers.
 
+Current full validation files in `reports/` show: `rules+llm` recovered
+262 / 355 links (73.8%) with the same 17 wrong-F# links as rules, so it adds
+only one correct LLM link over the rule baseline. The `llm` / force-LLM run is
+cleaner but less complete: 232 / 355 links recovered (65.4%), 4 wrong-F# links,
+and 6 review-required links.
+
+### DAP implementation / decay audit
+
+`scripts/dap_implementation_audit.py` compares each 2025 DAP requested action
+against the latest local extracts. It classifies action rows as `implemented`,
+`still_unimplemented`, `possibly_implemented_unprefixed`, `changed_elsewhere`,
+or `cannot_assess_current_extract`. The last status is used when the normalized
+CSV does not retain the comment/reference field needed to judge the action, such
+as adding an MO reference to a GenBank record.
+
 ### Unified lineage report
 
 `reports/specimen_lineage_report.csv` is the cross-platform digital-fingerprint
@@ -265,8 +288,9 @@ entries as review candidates unless validated against a gold set.
 `scripts/name_synonyms.py` fetches accepted-name and synonym rows into
 `data/name_synonyms.csv`. It currently supports Index Fungorum, Mushroom
 Observer, and GBIF. This is a network step and is intentionally not part of the
-default offline audit yet. Use it for smoke tests and to inspect category-05
-name drift before wiring synonym evidence into `resolve.py`.
+default offline audit yet. The no-argument command is a small resumable smoke
+run: 25 auto-collected names against Index Fungorum and MO only. Use `--all`
+and opt into GBIF only when you deliberately want the full slow pass.
 
 **Typical loop:** run step 1 once to refresh the CSVs, then step 2 to regenerate
 all the numbers and the unified lineage report.

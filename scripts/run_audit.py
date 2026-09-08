@@ -124,13 +124,48 @@ def _summarize_genbank():
     ubc_links = sum(str(r.get("ubc_cites_accession")).lower() == "true" for r in rows)
     fetched = sum(str(r.get("genbank_fetched")).lower() == "true" for r in rows)
     voucher_links = sum(str(r.get("voucher_cites_F")).lower() == "true" for r in rows)
+    bidirectional = sum(
+        str(r.get("ubc_cites_accession")).lower() == "true"
+        and str(r.get("voucher_cites_F")).lower() == "true"
+        for r in rows
+    )
+    uni_ubc_to_platform = sum(
+        str(r.get("ubc_cites_accession")).lower() == "true"
+        and str(r.get("voucher_cites_F")).lower() != "true"
+        for r in rows
+    )
+    uni_platform_to_ubc = sum(
+        str(r.get("ubc_cites_accession")).lower() != "true"
+        and str(r.get("voucher_cites_F")).lower() == "true"
+        for r in rows
+    )
     return {
         "genbank_gt_accessions": len(rows),
         "genbank_ubc_cites_accession": ubc_links,
         "genbank_unlinked_on_ubc": len(rows) - ubc_links,
         "genbank_records_fetched": fetched,
         "genbank_voucher_cites_f": voucher_links,
+        "genbank_bidirectional": bidirectional,
+        "genbank_unidirectional_ubc_to_platform": uni_ubc_to_platform,
+        "genbank_unidirectional_platform_to_ubc": uni_platform_to_ubc,
+        "genbank_no_explicit_crossref": len(rows) - bidirectional - uni_ubc_to_platform - uni_platform_to_ubc,
     }
+
+
+def _summarize_dap_implementation():
+    rows = _read_csv(REPORTS_DIR / "dap_implementation_audit.csv")
+    if not rows:
+        return {}
+    out = {"dap_action_rows": len(rows)}
+    for status in (
+        "implemented",
+        "still_unimplemented",
+        "possibly_implemented_unprefixed",
+        "changed_elsewhere",
+        "cannot_assess_current_extract",
+    ):
+        out[f"dap_actions_{status}"] = sum(r["status"] == status for r in rows)
+    return out
 
 
 def _summarize_lineage():
@@ -140,11 +175,39 @@ def _summarize_lineage():
     bbm_rows = [r for r in rows if r["specimen_key"].startswith(("BBM:", "BBM_ID:"))]
     orphan_rows = [r for r in rows if r["specimen_key"].startswith("ORPHAN:")]
     needs_action = [r for r in rows if r.get("recommended_action") not in {"", "none"}]
-    return {
+    out = {
         "lineage_rows": len(rows),
         "lineage_bbm_rows": len(bbm_rows),
         "lineage_orphan_rows": len(orphan_rows),
         "lineage_rows_needing_action": len(needs_action),
+    }
+    for status in (
+        "none",
+        "bidirectional",
+        "unidirectional_ubc_to_mo",
+        "unidirectional_mo_to_ubc",
+        "wrong_id",
+    ):
+        out[f"mo_explicit_{status}"] = sum(
+            r.get("mo_explicit_link_status") == status for r in bbm_rows
+        )
+    out["lineage_mycoportal_orphan_rows"] = sum(
+        r["specimen_key"].startswith("ORPHAN:mycoportal:") for r in orphan_rows
+    )
+    out["lineage_gbif_orphan_rows"] = sum(
+        r["specimen_key"].startswith("ORPHAN:gbif:") for r in orphan_rows
+    )
+    return out
+
+
+def _summarize_lineage_spot_check():
+    rows = _read_csv(REPORTS_DIR / "lineage_spot_check.csv")
+    if not rows:
+        return {}
+    return {
+        "lineage_spot_checks": len(rows),
+        "lineage_spot_checks_passed": sum(r["result"] == "pass" for r in rows),
+        "lineage_spot_checks_needing_attention": sum(r["result"] != "pass" for r in rows),
     }
 
 
@@ -204,7 +267,9 @@ def main():
     commands.append(_run([py, "scripts/resolve.py", "--platform", "mo", "--no-llm"]))
     commands.append(_run([py, "scripts/validate_dap.py", "--no-llm"]))
     commands.append(_run([py, "scripts/genbank_audit.py"]))
+    commands.append(_run([py, "scripts/dap_implementation_audit.py"]))
     commands.append(_run([py, "scripts/lineage_report.py"]))
+    commands.append(_run([py, "scripts/spot_check_lineage.py"]))
 
     if args.include_llm:
         if not os.getenv("LLM_MODEL"):
@@ -236,7 +301,9 @@ def main():
     summary.update(_summarize_guid("mycoportal"))
     summary.update(_summarize_guid("gbif"))
     summary.update(_summarize_genbank())
+    summary.update(_summarize_dap_implementation())
     summary.update(_summarize_lineage())
+    summary.update(_summarize_lineage_spot_check())
 
     summary_path = _write_summary(summary)
     manifest = {
@@ -245,7 +312,9 @@ def main():
         "outputs": {
             "summary_csv": str(summary_path),
             "manifest_json": str(REPORTS_DIR / "audit_manifest.json"),
+            "dap_implementation_audit_csv": str(REPORTS_DIR / "dap_implementation_audit.csv"),
             "lineage_report_csv": str(REPORTS_DIR / "specimen_lineage_report.csv"),
+            "lineage_spot_check_csv": str(REPORTS_DIR / "lineage_spot_check.csv"),
         },
     }
     manifest_path = REPORTS_DIR / "audit_manifest.json"
