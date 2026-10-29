@@ -1,313 +1,63 @@
-# Breakdowns in Realizing the Digital Extended Specimen — Extensions
-
-The original paper audited 131 BBM fungal records across five platforms (BBM, MO,
-MyCoPortal, GenBank, GBIF), identified seven recurring breakdown categories, and
-produced a manual harmonization workflow (Figure 3). This project scales that work
-from a sample to the full collection and begins automating the audit.
-
-## Goals
-
-### 1. Quantifying cross-platform representation
-
-For the full BBM fungal collection, harmonization assessment:
-
-This goal counts **explicit identifier cross-references in the latest fetched
-data**, not attribute-resolution candidate pairs. If BBM, MO, MyCoPortal, GBIF,
-or GenBank changes, re-fetch and re-run the audit; the most recent completed
-run is the current source of truth.
-
-- Bidirectional: we cite a foreign key or number used on a public database, and that database cites back to our record's internal ID
-
-- Unidirectional: our database contains the id number or link of a public record on a database, but that record does not point back to us
-  ---- OR ----
-  an online record points to our database, and gives an id number we have in the database, but in BBM system, we don't list the public record anywhere
-
-- Absent - we don't cite the public record, and the public record doesn't cite us. Same exact specimen or sighting, but not connected in either direction.
-
-- MO: we list the MO number in our database as MO # 66139, Mushroom Observer observation #254611, "MO posted as Leucopaxillus gentianeus (Quél.) Kotl." (so there is a record associated, but no MO number).
-- Once these references were gathered, I used that to query the MO database and find the associated record, which answers bidirectional and unidirectional UBC --> MO cases.
-
-### 2. Quantifying Ceska / Observatory hill completeness in our database
-
-- **How many MO records are likely ours, but are not connected?** Query MO for observations by known BBM
-  collectors (the Ceskas), filter by locality (Observatory
-  Hill, Victoria BC), and find:
-  - total number of records with these filters on MO
-  - our number of records with these filters
-  - how many records have a bidirectional relationship
-  - how many records have a unidirectional relationship, going either direction
-  
-  estimate:
-  - how many MO records likely correspond to BBM holdings - equal to Ceska OH records? or more filters needed?
-
-### 3. Entity resolution pipeline
-
-Build a system that can determine whether two records from the same or different
-platforms refer to the same physical specimen.
-
-- **Cross-platform specimen matching.** Given a specimen record, generate candidate
-  matches on other platforms by searching on scientific name, accepted-name/synonym
-  evidence from the local cache, collector, collection date, and locality.
-  Score each candidate on the strength of the match across these fields plus
-  identifier cross-references. The manual paper workflow used image/physical
-  morphology when available, but image similarity is not implemented in this
-  repository yet. Flag ambiguous cases for human review.
-
-  This directly automates the paper's matching procedure (A10 / Figure 3): "filter
-  occurrence searches based on scientific name, locality, and collection date" to
-  produce a shortlist, then compare identifiers, collection information.
-
-- **Automated lineage audit.** Given a specimen record (or a matched pair), trace
-  its full lineage across BBM -> MP -> GBIF -> MO -> GenBank and check every
-  cross-reference link. `scripts/lineage_report.py` builds this as a unified
-  report by joining the existing per-platform audits; it is a reporting/action
-  layer, not a new matcher.
-  - Is the MO ID present on the UBC record? Does it point to the right MO record?
-  - Is the catalog number present on the MO record? Is it correct?
-  - Does the GBIF record carry the correct occurrenceID / catalog number?
-  - Does the GenBank accession link back to the voucher specimen?
-
-  Assign a harmonization quality score (the paper's 0-5 scale) and output a report.
-
-### Name drift / synonym searching
-
-Current matching flags cross-platform name mismatches and can use cached
-accepted-name/synonym relationships as supporting evidence. A synonym match is
-never enough by itself; it must be paired with date evidence plus locality or
-collector evidence before the resolver accepts a candidate:
-
-- Build a cached `data/name_synonyms.csv` from the MDS synonym API pipeline
-  (`/Users/wfrankel/Desktop/MDS/capstone/ubc-mds-project/scripts/apis_pipe/`),
-  prioritizing fungal sources: Index Fungorum, Mushroom Observer, and GBIF.
-  `scripts/name_synonyms.py` builds this cache and records request failures as
-  `Fetch error` rather than conflating them with source-level `Not found`.
-- Store `query_name`, `accepted_name`, `name`, `source`, source id/link, and
-  fetch timestamp.
-- In `resolve.py`, treat two names in the same accepted-name group as
-  `synonym_match` evidence. A synonym match alone should not create a specimen
-  match without date plus locality/collector evidence.
-- Validate on the Observatory Hill / Ceska DAP ground truth currently available,
-  comparing recall, wrong-F# rate, and review-required links before using
-  synonym-expanded results as headline numbers.
-
-## Vendored from the Specify dedup pipeline (`scripts/evaluators/`)
-
-Rather than depend on the orchestration repo at runtime, the **classify half** of
-its evaluator subsystem is copied into `scripts/evaluators/` and used by
-`resolve.py` for cross-platform record resolution. What was taken:
-
-- `rule_based.py` — `RuleBasedEvaluator`, the first-match-wins ordered-predicate
-  engine; drives the confident matches (name + date + locality/collector overlap).
-- `llm.py` + `llm_client.py` + `prompts.py` — `LLMEvaluator` and its
-  OpenAI/Ollama-compatible client. `resolve.py` calls it only on bounded
-  candidate sets and applies deterministic guardrails afterward.
-- `base.py`, `types.py` — the `BaseEvaluator` interface and the `MatchRule` /
-  `EvaluationConfig` / `MatchContext` types the engine consumes.
-- `record.py` (`RecordObject`) and `equality.py` (`get_matches`) — the record
-  model and the pure matching helper the rule engine reaches through.
-
-What was **not** vendored: candidate generation (replaced by genus-blocking in
-`resolve.py`), the LangGraph workflow engine, the RabbitMQ review queue, and all
-merge code (Specify-schema-bound and irreversible). Cross-package imports were
-rewritten package-local; each file names its upstream source. The copy is a
-snapshot — re-sync deliberately if the upstream evaluator contract changes.
-Runtime dependency: `requests` only.
-
-## Platforms (`scripts/platforms.py`)
-
-Each external database the paper touches is one `Platform`, organized by **coupling**
-(which decides the matching method). Audit, discovery, and resolution all consume
-these — a new database is one subclass, no new script.
-
-| Platform | Class | Coupling | Matched by |
-| --- | --- | --- | --- |
-| Mushroom Observer | `MushroomObserver` | independent | the MO id BBM stored (`MO # 82752`) |
-| GenBank | `GenBank` | independent | a cited accession; reverse-linked via `specimen_voucher` |
-| MyCoPortal | `MyCoPortal` | harvested | our GUID (`occurrenceID`) |
-| GBIF | `GBIF` | harvested | our GUID (`occurrenceID`), via the UBC Fungi dataset |
-
-Independent platforms are upstream/separately maintained (BBM stores *their* id;
-they cite us only in free text). Harvested platforms are downstream of BBM
-(Symbiota/GBIF harvest our Specify records, so they carry our GUID + catalog).
-
-## Running the pipeline
-
-All commands run from the repo root on a machine with the `.env` credentials and
-network access. Fetches hit live APIs. The default audit runner is offline,
-rule-based, and does not call the LLM.
-
-### One-time setup
-
-```bash
-conda env create -f environment.yml        # creates the "breakdowns-des" env
-conda activate breakdowns-des
-python -m ipykernel install --user --name breakdowns-des
-```
-
-`.env` holds the Specify creds and MO discovery seeds (see `.env.example`).
-Leaving `FILTER_COLLECTORS` / `FILTER_LOCALITY` blank fetches the **whole**
-fungal collection; set them (e.g. `Ceska` / `Observatory Hill`) for the pilot
-subset. Leave `LLM_MODEL` unset for reproducible rule-based runs. Set it only
-when deliberately running the experimental LLM tier.
-
-### 1 — Fetch data (network → `data/`)
-
-```bash
-python scripts/get_bbm_records.py                 # our side  → data/bbm_records.csv
-python scripts/get_records.py --platform mo        #           → data/mo_records.csv
-python scripts/get_records.py --platform mycoportal
-python scripts/get_records.py --platform gbif      # heavy: ~35k occurrences
-python scripts/get_records.py --platform genbank   # sparse: voucher search
-```
-
-Add `--limit N` to any `get_records.py` call for a quick smoke test.
-
-### 1a — Normalize DAP ground truth (raw CSVs → `data/`)
-
-The raw DAP 2025 exports live locally in `data2_nongenerated/`, which is
-gitignored because these are source data rather than generated repo artifacts.
-Regenerate the machine-readable validation inputs from those source files with:
-
-```bash
-python scripts/build_dap_ground_truth.py
-```
-
-This writes `data/dap_ground_truth.csv` for Observatory Hill MO→UBC validation
-and `data/genbank_ground_truth.csv` for the GenBank linkage audit.
-
-### 2 — Reproducible paper audit (offline, no LLM)
-
-```bash
-python scripts/run_audit.py
-```
-
-This is the paper-safe default workflow. It rebuilds DAP ground truth from the
-local raw DAP files, runs harvested-platform GUID reconciliation for MyCoPortal
-and GBIF, runs MO rule-based resolution, validates against DAP, audits GenBank
-linkage, audits DAP implementation/decay, builds the unified lineage report, and
-runs lineage spot checks. It writes:
-
-- `reports/audit_summary.csv` — compact metric/value table for the notebook and paper
-- `reports/audit_manifest.json` — commands, durations, outputs, and provenance
-- `reports/dap_implementation_audit.csv` — DAP requested actions classified
-  against the current local extracts
-- `reports/specimen_lineage_report.csv` — one cross-platform trace/action row per
-  BBM specimen, plus harvested-platform orphan rows
-- `reports/lineage_spot_check.csv` — representative consistency checks for the
-  lineage report
-- the per-audit CSVs used by the notebook
-
-Optional expensive paths are explicit:
-
-```bash
-python scripts/run_audit.py --include-network
-python scripts/run_audit.py --include-llm --llm-review-limit 10
-```
-
-`--include-network` runs live independent-platform link audits. `--include-llm`
-runs only a capped DAP-unmatched review subset, not the full MO corpus.
-
-### 3 — Findings notebook (read and explore outputs)
-
-```bash
-jupyter lab reports/harmonization_findings.ipynb
-```
-
-Select the **breakdowns-des** kernel, then Run All. Cells are self-locating, so
-the launch directory does not matter. The notebook reads the audit summary and
-also keeps interactive cells for live/network checks. Leave LLM cells off unless
-you are intentionally running a small review experiment.
-
-### Or run the pieces from the CLI
-
-```bash
-python scripts/link_audit.py --platform mo         # cross-ref audit → counts
-python scripts/link_audit.py --platform genbank
-python scripts/resolve.py    --platform mo         # attribute resolution → mo_resolution.csv
-python scripts/resolve.py    --platform mo --no-llm  # rule-based only
-python scripts/validate_dap.py --no-llm            # DAP rule baseline
-python scripts/dap_implementation_audit.py         # DAP action/decay audit
-python scripts/name_synonyms.py                    # synonym cache smoke run, resumable
-python scripts/name_synonyms.py --subset dap-name-drift --all --dry-run
-python scripts/name_synonyms.py --subset dap-name-drift --all --sources indexfungorum,mo
-python scripts/lineage_report.py                   # unified cross-platform trace
-python scripts/spot_check_lineage.py               # lineage report consistency checks
-python scripts/run_audit.py                        # stable paper workflow
-```
-
-`resolve.py` needs `data/bbm_records.csv` and `data/<platform>_records.csv`
-present first. `link_audit.py --probe <ID>` checks a single id end-to-end.
-The LLM tier is experimental: it runs only when `LLM_MODEL` is set, receives
-bounded candidate groups (`LLM_MAX_GROUP_SIZE`, default 6), applies deterministic
-guardrails after the model, and marks LLM-derived links as `review_required` in
-the report CSV unless they also pass a stricter deterministic threshold
-(`LLM_ACCEPT_SCORE`, default 10).
-
-### DAP validation and LLM auditability
-
-`scripts/validate_dap.py` scores MO->UBC links against `data/dap_ground_truth.csv`.
-It reports recall, precision among linked records, wrong-F# rate, and
-review-required links. The current rule-based Observatory Hill baseline is:
-
-- 269 / 355 gold links recovered (75.8% recall)
-- 237 strict + 32 similar correct links
-- 17 wrong-F# links (94.1% precision among linked; 5.9% wrong-link rate)
-- 69 gold records present in MO but unmatched
-- 9 accepted links use synonym evidence (8 correct, 1 wrong)
-
-The notebook keeps LLM validation off by default (`RUN_LLM_VALIDATION = False`).
-When enabled with a working `LLM_MODEL`, it compares `rules`, `rules+llm`, and
-`force-llm` and writes `reports/dap_validation_summary.csv`. Per-record
-validation CSVs include `llm_reason`, `guardrail`, `candidate_group_size`,
-`candidate_group_ids`, and the compared BBM/MO field values. The validator also
-writes focused diagnostics: `reports/dap_validation_<mode>_wrong_links.csv` and
-`reports/dap_validation_<mode>_unmatched_reasons.csv`. If LLM improves recall
-but raises the wrong-F# rate too much, keep it out of headline numbers.
-
-Current paper-facing validation is the rule-based run regenerated by
-`run_audit.py`. Older `rules+llm` and `llm` files may exist in `reports/`, but
-rerun those experiments after resolver changes before citing them.
-
-### DAP implementation / decay audit
-
-`scripts/dap_implementation_audit.py` compares each 2025 DAP requested action
-against the latest local extracts. It classifies action rows as `implemented`,
-`still_unimplemented`, `possibly_implemented_unprefixed`, `changed_elsewhere`,
-or `cannot_assess_current_extract`. The last status is used when the normalized
-CSV does not retain the comment/reference field needed to judge the action, such
-as adding an MO reference to a GenBank record.
-
-### Unified lineage report
-
-`reports/specimen_lineage_report.csv` is the cross-platform digital-fingerprint
-table. It is generated by `scripts/lineage_report.py` and by `run_audit.py`.
-Columns include BBM identity fields, explicit MO link status, MO resolver
-candidates, MyCoPortal and GBIF harvest status, GenBank accession linkage,
-breakdown categories, and a recommended action. Treat resolver and duplicate
-entries as review candidates unless validated against a gold set.
-
-### Synonym cache
-
-`scripts/name_synonyms.py` fetches accepted-name and synonym rows into
-`data/name_synonyms.csv`. It currently supports Index Fungorum, Mushroom
-Observer, and GBIF. Fetch failures are recorded as `Fetch error`, distinct from
-source-level `Not found`. This is a network step and is intentionally not part
-of the default offline audit yet. The no-argument command is a small resumable
-smoke run: 25 auto-collected names against Index Fungorum and MO only. Use
-`--all` and opt into GBIF only when you deliberately want the full slow pass.
-
-For paper work, prefer targeted subsets over full-corpus crawling:
-
-```bash
-python scripts/name_synonyms.py --subset dap-name-drift --all --dry-run
-python scripts/name_synonyms.py --subset dap-name-drift --all --sources indexfungorum,mo
-python scripts/name_synonyms.py --subset paper-name-drift --all --sources indexfungorum,mo
-```
-
-`dap-name-drift` queries the DAP gold links missed for genus/name-threshold
-reasons. `paper-name-drift` adds a small already-correct DAP control set. Both
-are deterministic and resumable because completed `(query_name, source)` pairs
-are skipped unless `--refresh` is set.
-
-**Typical loop:** run step 1 once to refresh the CSVs, then step 2 to regenerate
-all the numbers and the unified lineage report.
+# Breakdowns in the Digital Extended Specimen — cross-platform link census
+
+Descriptive statistics for the CHI 2027 revision: how often UBC Beaty Biodiversity
+Museum records and records on other platforms point at each other, in which
+direction, and how good those pointers are.
+
+## Data
+
+- **UBC side:** the full GBIF export for publisher `b542788f-0dc2-4a2b-b652-fceced449591`
+  (Beaty Biodiversity Museum, all collections). Use an official GBIF download
+  (Darwin Core Archive) so the snapshot has a DOI. Store it untouched in `data/raw/gbif/`.
+- **Platforms (start):** Mushroom Observer, GenBank, iNaturalist.
+  GBIF and MyCoPortal *harvest* UBC records, so they are not counted as independent
+  link partners; report them separately if at all.
+- **Snapshot:** every platform is fetched within one fixed window. Every raw API
+  response is cached under `data/cache/<platform>/`, so reruns are offline and auditable.
+- **Legacy (read-only):** `data/legacy_2026-09/` holds the September 2026 export of the
+  museum's database (Specify), which we no longer have access to, plus the DAP and GenBank ground
+  truth. It is the baseline for checking what does or doesn't survive into GBIF.
+  `data2_nongenerated/` holds the original hand-made MO/DAP datasets.
+
+## Questions
+
+1. **UBC → platform:** how many UBC records point to a record on platform X?
+2. **Point-back:** for those, does the platform record point back to UBC?
+3. **Platform → UBC:** how many platform records point to UBC (found by searching the platform)?
+
+Steps 2 and 3 should find the same bidirectional set from opposite ends, which serves as a consistency check.
+
+## Definitions
+
+**Unit:** UBC records (for questions 1–2) and platform records (for question 3). A record with several
+links takes its best tier per platform. Broken and incorrect links are counted separately,
+so a good link elsewhere never hides them.
+
+**Direction** (paper §4.1): bidirectional · unidirectional UBC→X · unidirectional X→UBC · absent.
+
+**Link tiers** (per pointer, either direction; built from §4.1 and HB2):
+
+| Tier | Meaning |
+|---|---|
+| 1 explicit | Attributed ID/URL in a proper field; resolves to an existing record |
+| 2 hanging / wrong field | Resolves, but bare number without attribution, or buried in free text (HB2) |
+| 3 mention only | Refers to the platform/UBC with no identifier ("posted to MO", "voucher at UBC") |
+| broken | Identifier given but target does not exist / link dead |
+| incorrect | Resolves, but to a different specimen (other catalog number or taxon) — paper's *incorrect* flag |
+
+**Point-back tiers** (question 2):
+
+| Tier | Meaning |
+|---|---|
+| exact | Cites this UBC record's catalog number / occurrence ID |
+| institution only | Cites UBC but no specific record |
+| wrong record | Cites a different UBC catalog number |
+| none | Does not cite UBC |
+
+The 0–5 match-confidence score from the earlier pipeline is for matching records with no link
+between them (a later step), not for these descriptive counts.
+
+## History
+
+The previous pipeline (entity resolution, DAP validation, reviewer bundle) was removed
+on 2026-10-29. The tracked code remains in git history (`git log`, last commit `f78e2a6`).

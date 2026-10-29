@@ -1,0 +1,147 @@
+% =====================================================================
+% Section 7 — Automated AI Workflow: Methods (REWRITE)
+% Table-referencing, pattern-focused. Paste-ready LaTeX prose.
+%
+% Table label conventions used below (rename \ref keys to match your .tex):
+%   Table 22 -> \label{tab:main-audit-scale}
+%   Table 23 -> \label{tab:main-resolver-validation}
+%   Table 24 -> \label{tab:main-breakdowns-across-levels}
+%
+% NUMBERS TO RE-VERIFY against the freshly regenerated tables before submit
+% are marked with %%VERIFY. Everything else is a stable headline figure.
+% =====================================================================
+
+\section{Automated AI Workflow: Methods}
+
+We evaluated the automated audit workflow at four increasingly larger scales:
+a rerun of the original 80-record Phase~I sample, a rerun of the larger 2025 DAP
+validation set, an uncontrolled run over the full Ceska / Observatory Hill record
+set, and an uncontrolled run over the entire museum fungal collection. These
+levels trade evidence quality for scale. The two smaller levels have a
+human-reviewed ground truth and let us measure resolver accuracy; the two larger
+levels have none and instead estimate the maintenance burden a curator would face
+across a whole collection. Table~\ref{tab:main-audit-scale} summarizes the sample
+frame, purpose, and principal limitation of each level;
+Table~\ref{tab:main-resolver-validation} reports resolver performance wherever a
+ground truth existed; and Table~\ref{tab:main-breakdowns-across-levels} reports
+how the seven-category breakdown typology distributes at each scale.
+
+Read together, the three tables tell a single story. Explicit cross-references
+between the museum and Mushroom Observer are rare and, where they exist, almost
+never mutual; the resolver recovers most human-reviewed links but conservatively
+defers exactly the cases the manual audit also flagged for physical or curatorial
+judgment; and the relative weight of the seven breakdown categories shifts
+systematically as the audit widens from a hand-picked sample to the full
+collection. We take each level in turn and then return to the cross-scale pattern.
+
+\subsection{Recreating the Phase~I sample}
+
+We reran the automated audit on the exact 80 Mushroom Observer records used in the
+manual Phase~I sample. Of these, 34 had at least one manually listed museum
+catalog candidate and 46 had no manually identified museum counterpart. Against
+the 34 manual-candidate rows the resolver achieved 73.5\% recall and 100.0\%
+precision among the links it selected (Table~\ref{tab:main-resolver-validation}).
+
+The Phase~I rerun shows why the automated audit should be read as a diagnostic
+instrument rather than a replacement for manual harmonization. The records it
+missed or deferred were precisely the kinds the manual workflow set aside for
+physical inspection, image comparison, or curator judgment: uncertain catalog
+numbers, multiple candidate museum specimens, duplicated Mushroom Observer
+records, and date or taxonomic inconsistencies. Among the 46 records without a
+manually listed candidate, the resolver proposed three possible museum matches.
+We treat these not as confirmed harmonizations but as a review queue that can help
+curators prioritize unresolved records.
+
+\subsection{Recreating the DAP 2025 audit}
+
+Because the DAP dataset begins with Mushroom Observer records, this run used a
+top-down audit direction: each Mushroom Observer record was traced outward to the
+museum database, MyCoPortal, GBIF, and GenBank where possible. The DAP file
+contained 408 Mushroom Observer records, of which 355 carried a DAP-listed museum
+catalog number. Assessing the current exported records for \emph{explicit}
+cross-references reproduces the paper's central linkage finding at larger scale:
+no DAP pair was bidirectionally cross-referenced, and where a link existed at all
+it ran overwhelmingly in one direction, from the Mushroom Observer record to the
+museum, with the reciprocal citation on the museum record absent
+(Table~\ref{tab:main-breakdowns-across-levels}, HB1). Across the 408 records the
+audit surfaced all seven breakdown types.
+
+The DAP set's value is that it also supplies a ground truth for what \emph{should}
+be linked, letting us validate the resolver's matching component rather than only
+its cross-reference bookkeeping. For the paper-facing validation we excluded 33
+rows in which the raw DAP export repeats a single identifier across many taxa and
+dates, leaving 322 validation links. On these the resolver selected the same
+museum catalog number as DAP for 277 records, a different number for 5, and no
+acceptable match for 40, giving 86.0\% recall and 98.2\% precision
+(Table~\ref{tab:main-resolver-validation}). Critically, the 40 misses were not
+absent from the museum data; they failed the resolver's matching rules, splitting
+into names below the similarity threshold despite matching date and locality,
+genus- or name-blocked pairs, and matching names with conflicting collection
+dates.%%VERIFY split of the 40 misses (22 / 15 / 3) against regenerated diagnostics
+The resolver additionally proposed museum candidates for 20 of the 53 Mushroom
+Observer records that had no DAP-listed catalog number. These failure modes are
+instructive: date conflicts, where different collection conventions place the same
+specimen on different dates, and name drift, where taxonomy has moved since
+collection, are exactly the reconciliations that depend on curatorial knowledge or
+an up-to-date synonym source rather than string matching.
+
+\subsection{Audit of C. / O.H. records}
+
+Using the same skill-supported framework, we ran the audit over the broader
+Ceska / Observatory Hill record set. The two sides were scoped differently and are
+reported as two frames in Table~\ref{tab:main-audit-scale}: the museum side by
+locality (Observatory Hill) and the Mushroom Observer side by both locality and
+collector. This asymmetry is a property of the export, not a choice---the museum
+collector field is blank in the current extract---and it should be stated wherever
+these numbers are used.
+
+At this scale the cross-reference pattern from the smaller levels holds and
+sharpens: only a handful of Observatory Hill museum records carry a Mushroom
+Observer identifier, yet hundreds are cited by at least one Mushroom Observer
+record, so the linkage is almost entirely one-directional from the citizen-science
+side to the museum (Table~\ref{tab:main-breakdowns-across-levels}). The downstream
+harvested platforms behave very differently: MyCoPortal coverage of the
+Observatory Hill museum records is near-complete, GBIF coverage is weaker, and
+GenBank remains barely integrated, with most associated accessions uncited on the
+museum record. The resolver proposed at least one museum candidate for roughly a
+third of the Mushroom Observer records and left the majority with no digital
+candidate (Table~\ref{tab:main-resolver-validation}). The system can therefore
+scale explicit cross-reference checks, flag candidate matches, and produce review
+queues across thousands of records, but the large residue of unmatched and
+ambiguous cases is itself the finding: visual, physical, and curatorial judgment
+remain necessary for high-confidence harmonization.
+
+\subsection{Full museum fungal collection run}
+
+The full-collection run covers all 34,856 museum fungal records and is a
+collection-scale triage rather than an accuracy test, since no collection-wide
+manual gold standard exists. Its headline is the scarcity of mutual linkage: only
+17 records in the entire collection are bidirectionally cross-referenced with
+Mushroom Observer, and although the museum's harvested links to MyCoPortal and
+GBIF are largely intact, its connection to derivative sequence data is not---within
+the locally available GenBank evidence, 212 of 213 accessions associated with a
+museum catalog number are not cited on the corresponding museum record. The
+resolver generated 2,444 metadata-based museum--Mushroom Observer candidate pairs,
+which we report as a review queue rather than confirmed identities. Mapped onto the
+seven-category typology (Table~\ref{tab:main-breakdowns-across-levels}), the
+full-collection audit flags records under every breakdown, dominated by
+missing-cross-reference, repository-absence, and duplicate-candidate cases.
+
+\subsection{Patterns across scales}
+
+Two movements stand out when the breakdown proportions are compared across scales
+(Table~\ref{tab:main-breakdowns-across-levels}). First, absence from repositories
+(HB3) falls sharply as the sample widens, from 58.8\% in the Phase~I automated
+rerun to 5.6\% collection-wide. This suggests the high backlog rate we measured by
+hand is a property of the C. collection's particular digitization history rather
+than a collection-wide condition: the full export is, on the whole, better
+digitized than the sample we deliberately drew from the backlog. Second, duplicate
+record candidates (HB6) move in the opposite direction, from single digits in the
+manual audit to 28.2\% collection-wide. This is more consistent with an artifact of
+automated harvesting and resolver behavior at scale---near-duplicates the resolver
+cannot yet disambiguate---than with a real rise in true duplication. Whether HB6 at
+scale is a data-quality problem or a resolver-precision problem changes what should
+be done about it, and future work should test the two apart. We treat both
+movements as hypotheses the resolver's output makes newly visible, not as confirmed
+findings, because neither larger level had a curator-reviewed ground truth to check
+them against.

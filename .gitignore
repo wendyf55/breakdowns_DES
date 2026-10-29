@@ -1,8 +1,7 @@
 .env
-data/*.csv
+.venv/
 __pycache__/
 *.pyc
 .DS_Store
-
+data/
 data2_nongenerated/
-reports/dap_validation_subset_test*.csv
